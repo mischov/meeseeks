@@ -39,6 +39,24 @@ defmodule Meeseeks.Selector.AttributeTest do
     assert Attribute.match?(attributes, selector)
   end
 
+  test "attribute has whitespace separated values including value" do
+    attributes = [{"x", "a b c"}]
+    selector = %Attribute{match: :value_includes, attribute: "x", value: "b"}
+    assert Attribute.match?(attributes, selector)
+  end
+
+  test "attribute is has value (value_dash version)" do
+    attributes = [{"lang", "en"}]
+    selector = %Attribute{match: :value_dash, attribute: "lang", value: "en"}
+    assert Attribute.match?(attributes, selector)
+  end
+
+  test "attribute starts with value then dash" do
+    attributes = [{"lang", "en-proper"}]
+    selector = %Attribute{match: :value_dash, attribute: "lang", value: "en"}
+    assert Attribute.match?(attributes, selector)
+  end
+
   test "attribute has value with prefix" do
     attributes = [{"x", "abcde"}]
       selector = %Attribute{match: :value_prefix, attribute: "x", value: "ab"}

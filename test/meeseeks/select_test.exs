@@ -69,6 +69,12 @@ defmodule Meeseeks.SelectTest do
     assert Select.one(@document, selector) == expected
   end
 
+  test "select second-of-type that does not have [data-id=second-p]" do
+    selector = "p:nth-of-type(2):not([data-id=second-p])"
+    expected = %Result{id: 22, document: @document}
+    assert Select.one(@document, selector) == expected
+  end
+
   test "select all with class 'nonexistent' (no match)" do
     selector = ".nonexistent"
     expected = []

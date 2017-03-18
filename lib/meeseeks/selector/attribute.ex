@@ -13,6 +13,8 @@ defmodule Meeseeks.Selector.Attribute do
                | :attribute_prefix
                | :class
                | :value
+               | :value_includes
+               | :value_dash
                | :value_prefix
                | :value_suffix
                | :value_contains
@@ -41,26 +43,29 @@ defmodule Meeseeks.Selector.Attribute do
     value == a.value
   end
 
+  def match?(attributes, %Attribute{match: :value_includes} = a) do
+    values = attribute_value(attributes, a.attribute) |> String.split(~r/\s/)
+    Enum.any?(values, &(&1 == a.value))
+  end
+
+  def match?(attributes, %Attribute{match: :value_dash} = a) do
+    value = attribute_value(attributes, a.attribute)
+    value == a.value || String.starts_with?(value, a.value <> "-")
+  end
+
   def match?(attributes, %Attribute{match: :value_prefix} = a) do
-    attributes
-    |> attribute_value(a.attribute)
-    |> String.starts_with?(a.value)
+    value = attribute_value(attributes, a.attribute)
+    String.starts_with?(value, a.value)
   end
 
   def match?(attributes, %Attribute{match: :value_suffix} = a) do
-    attributes
-    |> attribute_value(a.attribute)
-    |> String.ends_with?(a.value)
+    value = attribute_value(attributes, a.attribute)
+    String.ends_with?(value, a.value)
   end
 
   def match?(attributes, %Attribute{match: :value_contains} = a) do
-    attributes
-    |> attribute_value(a.attribute)
-    |> String.contains?(a.value)
-  end
-
-  def match?(_attributes, _selector) do
-    false
+    value = attribute_value(attributes, a.attribute)
+    String.contains?(value, a.value)
   end
 
   defp attribute?(attributes, attribute) do

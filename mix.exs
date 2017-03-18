@@ -1,7 +1,7 @@
 defmodule Meeseeks.Mixfile do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "0.2.0"
 
   def project do
     [app: :meeseeks,
@@ -39,7 +39,7 @@ defmodule Meeseeks.Mixfile do
   defp package do
     [maintainers: ["Mischov"],
      licenses: ["MIT"],
-     files: ["lib", "mix.exs", "README.md", "LICENSE"],
+     files: ["lib", "src/*.xrl", "mix.exs", "README.md", "LICENSE"],
      links: %{"Github" => "https://github.com/mischov/meeseeks",
               "Docs" => "https://hexdocs.pm/meeseeks"}]
   end

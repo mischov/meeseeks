@@ -23,7 +23,7 @@ Add Meeseeks to your `mix.exs`:
 ```elixir
 defp deps do
   [
-    {:meeseeks, "~> 0.1.0"},
+    {:meeseeks, "~> 0.2.0"},
   ]
 end
 ```
@@ -112,28 +112,35 @@ Meeseeks.text(result)
 
 ## Selector Syntax
 
-The selector syntax is based on (a subset of) CSS selectors.
+Meeseeks's selector syntax is based on CSS selector syntax.
 
 | Pattern | Example | Notes |
 | --- | --- | --- |
-| **Simple Selectors** | --- | --- |
-| `*` | `*` | Matches any. Valid for `ns` or `tag` |
+| **Basic Selectors** | --- | --- |
+| `*` | `*` | Matches any for `ns` or `tag` |
 | `tag` | `div` | |
 | `ns|tag` | `<foo:div>` | |
 | `#id` | `div#bar`, `#bar` | |
 | `.class` | `div.baz`, `.baz` | |
 | `[attr]` | `a[href]`, `[lang]` | |
 | `[^attrPrefix]` | `div[^data-]` | |
-| `[attr=val]` | `a[ref=nofollow]` | |
-| `[attr="val"]` | `a[rel="nofollow"]` | |
+| `[attr=val]` | `a[rel="nofollow"]` | |
+| `[attr~=valIncludes]` | `div[things~=thing1]` | |
+| `[attr|=valDash]` | `p[lang|=en]` | |
 | `[attr^=valPrefix]` | `a[href^=https:]` | |
-| `[attr$=valSuffix]` | `img[src$=.png]` | |
+| `[attr$=valSuffix]` | `img[src$=".png"]` | |
 | `[attr*=valContaining]` | `a[href*=admin]` | |
 | &#8203; | | |
-| **Pseudo Selectors** | --- | --- |
-| `:nth-child(n)` | `p:nth-child(2)` | n can be 1.., or even, or odd |
+| **Pseudo Classes** | --- | --- |
 | `:first-child` | `li:first-child` | |
+| `:first-of-type` | `li:first-of-type` | |
 | `:last-child` | `tr:last-child` | |
+| `:last-of-type` | `tr:last-of-type` | |
+| `:not` | `not(p:nth-child(even))` | Selectors cannot contain combinators or the `not` pseudo class |
+| `:nth-child(n)` | `p:nth-child(even)` | Supports even, odd, 1.., or *a*n+*b* formulas |
+| `:nth-last-child(n)` | `p:nth-last-child(2)` | Supports even, odd, 1.., or *a*n+*b* formulas |
+| `:nth-last-of-type(n)` | `p:nth-last-of-type(2n+1)` | Supports even, odd, 1.., or *a*n+*b* formulas |
+| `:nth-of-type(n)` | `p:nth-of-type(1)` | Supports even, odd, 1.., or *a*n+*b* formulas |
 | &#8203; | | |
 | **Combinators** | --- | --- |
 | `X Y` | `div.header .logo` | `Y` descendant of `X` |

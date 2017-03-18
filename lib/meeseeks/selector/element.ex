@@ -8,14 +8,14 @@ defmodule Meeseeks.Selector.Element do
     namespace: nil,
     tag: nil,
     attributes: [],
-    pseudo: nil,
+    pseudos: [],
     combinator: nil
   )
 
   @type t :: %Element{namespace: String.t | nil,
                       tag: String.t | nil,
                       attributes: [Attribute.t],
-                      pseudo: Pseudo.t | nil,
+                      pseudos: [Pseudo.t],
                       combinator: Combinator.t | nil}
 
   @spec match?(Document.t, Document.node_t, t) :: boolean
@@ -36,7 +36,7 @@ defmodule Meeseeks.Selector.Element do
     namespace_match?(element, selector.namespace)
     && tag_match?(element, selector.tag)
     && attributes_match?(element, selector.attributes)
-    && pseudo_match?(document, element, selector.pseudo)
+    && pseudos_match?(document, element, selector.pseudos)
   end
 
   defp namespace_match?(_element, nil) do
@@ -75,11 +75,11 @@ defmodule Meeseeks.Selector.Element do
     Enum.all?(attribute_selectors, &(Attribute.match?(attributes, &1)))
   end
 
-  defp pseudo_match?(_context, _element, nil) do
+  defp pseudos_match?(_context, _element, []) do
     true
   end
 
-  defp pseudo_match?(context, element, pseudo) do
-    Pseudo.match?(context, element, pseudo)
+  defp pseudos_match?(context, element, pseudos) do
+    Enum.all?(pseudos, &(Pseudo.match?(context, element, &1)))
   end
 end
