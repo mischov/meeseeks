@@ -2,11 +2,12 @@ defmodule Meeseeks.Accumulator.All do
   @moduledoc false
 
   alias Meeseeks.Accumulator.All
+  alias Meeseeks.Document
   alias Meeseeks.Result
 
   defstruct(
-    values: :ordsets.new()
+    values: %{}
   )
 
-  @type t :: %All{values: [Result.t]}
+  @type t :: %All{values: %{optional(Document.node_id) => Result.t}}
 end

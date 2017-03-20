@@ -14,17 +14,12 @@ defmodule Meeseeks.Accumulator do
 
   def add(%All{values: values} = acc, document, id) do
     result = %Result{document: document, id: id}
-    %{acc | values: :ordsets.add_element(result, values)}
+    %{acc | values: Map.put(values, id, result)}
   end
 
   @spec return(One.t) :: Result.t | nil
   @spec return(All.t) :: [Result.t]
 
-  def return(%One{value: value}) do
-    value
-  end
-
-  def return(%All{values: values}) do
-    values
-  end
+  def return(%One{value: value}), do: value
+  def return(%All{values: values}), do: Map.values(values)
 end

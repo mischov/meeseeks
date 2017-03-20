@@ -31,8 +31,7 @@ defmodule Meeseeks.Document do
   end
 
   defp add_root_nodes(document, roots) do
-    reducer = &(add_root_node &2, &1)
-    Enum.reduce(roots, document, reducer)
+    Enum.reduce(roots, document, &(add_root_node &2, &1))
   end
 
   defp add_root_node(document, {tag, attributes, children}) do
@@ -55,8 +54,7 @@ defmodule Meeseeks.Document do
   end
 
   defp add_child_nodes(document, parent_id, children) do
-    reducer = &(add_child_node &2, parent_id, &1)
-    Enum.reduce(children, document, reducer)
+    Enum.reduce(children, document, &(add_child_node &2, parent_id, &1))
   end
 
   defp add_child_node(document, parent, {tag, attributes, children}) do
@@ -109,9 +107,9 @@ defmodule Meeseeks.Document do
   defp next_id(n), do: n + 1
 
   defp split_namespace_from_tag(maybe_namespaced_tag) do
-    case String.split(maybe_namespaced_tag, ":") do
-      [ns, tg] -> [ns, tg]
+    case :binary.split(maybe_namespaced_tag, ":", []) do
       [tg] -> [nil, tg]
+      [ns, tg] -> [ns, tg]
     end
   end
 
@@ -126,14 +124,6 @@ defmodule Meeseeks.Document do
     |> Map.put(child, node)
     |> Map.put(parent, %{parent_node | children: [child | children]})
   end
-
-  # defp put!(map, key, value) do
-  #   case Map.has_key?(map, key) do
-  #     # Probably Not KeyError
-  #     true -> raise KeyError, key: key, term: map
-  #     false -> Map.put(map, key, value)
-  #   end
-  # end
 
   # Query
 
