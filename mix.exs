@@ -20,11 +20,11 @@ defmodule Meeseeks.Mixfile do
   end
 
   defp deps do
-    [{:html5ever, "~> 0.2.0"},
+    [{:html5ever, "~> 0.3.0"},
 
      # dev
      {:credo, "~> 0.6.1", only: :dev},
-     {:dialyxir, "~> 0.4", only: [:dev], runtime: false},
+     {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
 
      # docs
      {:ex_doc, "~> 0.14", only: :docs}]

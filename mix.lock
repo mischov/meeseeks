@@ -1,7 +1,7 @@
 %{"bunt": {:hex, :bunt, "0.2.0", "951c6e801e8b1d2cbe58ebbd3e616a869061ddadcc4863d0a2182541acae9a38", [:mix], []},
   "credo": {:hex, :credo, "0.6.1", "a941e2591bd2bd2055dc92b810c174650b40b8290459c89a835af9d59ac4a5f8", [:mix], [{:bunt, "~> 0.2.0", [hex: :bunt, optional: false]}]},
-  "dialyxir": {:hex, :dialyxir, "0.4.4", "e93ff4affc5f9e78b70dc7bec7b07da44ae1ed3fef38e7113568dd30ad7b01d3", [:mix], []},
+  "dialyxir": {:hex, :dialyxir, "0.5.0", "5bc543f9c28ecd51b99cc1a685a3c2a1a93216990347f259406a910cf048d1d7", [:mix], []},
   "earmark": {:hex, :earmark, "1.1.1", "433136b7f2e99cde88b745b3a0cfc3fbc81fe58b918a09b40fce7f00db4d8187", [:mix], []},
   "ex_doc": {:hex, :ex_doc, "0.14.5", "c0433c8117e948404d93ca69411dd575ec6be39b47802e81ca8d91017a0cf83c", [:mix], [{:earmark, "~> 1.0", [hex: :earmark, optional: false]}]},
-  "html5ever": {:hex, :html5ever, "0.2.0", "e215291305c732cfaf0da170b84006e7689c7017b37f7586808b31fb32695434", [:mix], [{:rustler, "~> 0.8", [hex: :rustler, optional: false]}]},
-  "rustler": {:hex, :rustler, "0.8.0", "337e2b39c80dafb4a5d65d7791a9a97b3d566941bdb5c718d33488025e0299b0", [:mix], []}}
+  "html5ever": {:hex, :html5ever, "0.3.0", "54fcb8331290363fd0e85301675e6079daf1524aef436104ed0bf485bc0757cd", [:mix], [{:rustler, "~> 0.9", [hex: :rustler, optional: false]}]},
+  "rustler": {:hex, :rustler, "0.9.0", "6fa87ac78f48f70aa8ecfb6e16b8af41c398989d33de41d292b5581d6a2eeb5a", [:mix], []}}
