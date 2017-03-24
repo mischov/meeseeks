@@ -1,17 +1,16 @@
 defmodule Meeseeks.Document.Comment do
   @moduledoc false
 
-  alias Meeseeks.Document
-  alias Meeseeks.Document.Comment
+  use Meeseeks.Document.Node
 
   @enforce_keys [:id]
-  defstruct(
-    parent: nil,
-    id: nil,
-    content: ""
-  )
+  defstruct parent: nil, id: nil, content: ""
 
-  @type t :: %Comment{parent: Document.node_id | nil,
-                      id: Document.node_id,
-                      content: String.t}
+  def html(node, _document) do
+    "<!-- #{node.content} -->"
+  end
+
+  def tree(node, _document) do
+    {:comment, node.content}
+  end
 end

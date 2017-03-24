@@ -1,17 +1,22 @@
 defmodule Meeseeks.Document.Data do
   @moduledoc false
 
-  alias Meeseeks.Document
-  alias Meeseeks.Document.Data
+  use Meeseeks.Document.Node
+
+  alias Meeseeks.Document.Helpers
 
   @enforce_keys [:id]
-  defstruct(
-    parent: nil,
-    id: nil,
-    content: ""
-  )
+  defstruct parent: nil, id: nil, content: ""
 
-  @type t :: %Data{parent: Document.node_id | nil,
-                   id: Document.node_id,
-                   content: String.t}
+  def data(node, _document) do
+    Helpers.collapse_whitespace(node.content)
+  end
+
+  def html(node, _document) do
+    node.content
+  end
+
+  def tree(node, _document) do
+    node.content
+  end
 end
