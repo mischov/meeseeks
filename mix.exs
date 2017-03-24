@@ -27,7 +27,8 @@ defmodule Meeseeks.Mixfile do
      {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
 
      # docs
-     {:ex_doc, "~> 0.14", only: :docs}]
+     {:ex_doc, "~> 0.14", only: :docs},
+     {:markdown, github: "devinus/markdown", only: :docs}]
   end
 
   defp description do
