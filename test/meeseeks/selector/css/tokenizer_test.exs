@@ -1,7 +1,7 @@
-defmodule Meeseeks.Selector.TokenizerTest do
+defmodule Meeseeks.Selector.CSS.TokenizerTest do
   use ExUnit.Case
 
-  alias Meeseeks.Selector.Tokenizer
+  alias Meeseeks.Selector.CSS.Tokenizer
 
   test "start with namespaced tag" do
     selector = "namespace|tag.class"

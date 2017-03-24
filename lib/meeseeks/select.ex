@@ -4,18 +4,18 @@ defmodule Meeseeks.Select do
   alias Meeseeks.{Accumulator, Document, Result, Selector}
 
   @type queryable :: Document.t | Result.t
-  @type selectors :: String.t | [Selector.t]
+  @type selectors :: String.t | Selector.t | [Selector.t]
 
   # All
 
   @spec all(queryable, selectors) :: [Result.t]
 
   def all(queryable, selector_string) when is_binary(selector_string) do
-    selectors = Selector.parse_selectors(selector_string)
+    selectors = Selector.CSS.compile_selectors(selector_string)
     walk(queryable, selectors, %Accumulator.All{})
   end
 
-  def all(queryable, selectors) when is_list(selectors) do
+  def all(queryable, selectors) do
     walk(queryable, selectors, %Accumulator.All{})
   end
 
@@ -24,11 +24,11 @@ defmodule Meeseeks.Select do
   @spec one(queryable, selectors) :: Result.t
 
   def one(queryable, selector_string) when is_binary(selector_string) do
-    selectors = Selector.parse_selectors(selector_string)
+    selectors = Selector.CSS.compile_selectors(selector_string)
     walk(queryable, selectors, %Accumulator.One{})
   end
 
-  def one(queryable, selectors) when is_list(selectors) do
+  def one(queryable, selectors) do
     walk(queryable, selectors, %Accumulator.One{})
   end
 
@@ -55,11 +55,11 @@ defmodule Meeseeks.Select do
     acc
   end
 
-  defp walk_nodes(_, _, [], acc) do
+  defp walk_nodes([], _, _, acc) do
     acc
   end
 
-  defp walk_nodes([], _, _, acc) do
+  defp walk_nodes(_, _, [], acc) do
     acc
   end
 
@@ -77,32 +77,39 @@ defmodule Meeseeks.Select do
     acc
   end
 
-  defp walk_node(_, _, [], acc) do
-    acc
-  end
-
   defp walk_node(nil, _, _, acc) do
     acc
   end
 
-  defp walk_node(%Document.Text{}, _, _, acc) do
+  defp walk_node(_, _, [], acc) do
     acc
   end
 
-  defp walk_node(%Document.Comment{}, _, _, acc) do
+  defp walk_node(node, document, [selector|selectors], acc) do
+    acc = walk_node(node, document, selector, acc)
+    walk_node(node, document, selectors, acc)
+  end
+
+  defp walk_node(%Document.Element{} = node, document, %Selector.Element{} = selector, acc) do
+    if Selector.match?(selector, node, document) do
+      case Selector.combinator(selector) do
+        nil -> Accumulator.add(acc, document, node.id)
+        combinator -> walk_combinator(combinator, node, document, acc)
+      end
+    else
+      acc
+    end
+  end
+
+  defp walk_node(_node, _document, %Selector.Element{} = _selector, acc) do
     acc
   end
 
-  defp walk_node(element, document, [selector|selectors], acc) do
-    acc1 = walk_node(element, document, selector, acc)
-    walk_node(element, document, selectors, acc1)
-  end
-
-  defp walk_node(element, document, selector, acc) do
-    if Selector.Element.match?(document, element, selector) do
-      case selector.combinator do
-        nil -> Accumulator.add(acc, document, element.id)
-        combinator -> walk_combinator(combinator, element, document, acc)
+  defp walk_node(node, document, selector, acc) do
+    if Selector.match?(selector, node, document) do
+      case Selector.combinator(selector) do
+        nil -> Accumulator.add(acc, document, node.id)
+        combinator -> walk_combinator(combinator, node, document, acc)
       end
     else
       acc
@@ -111,33 +118,17 @@ defmodule Meeseeks.Select do
 
   # Walk Combinator
 
-  defp walk_combinator(_, %Document.Element{children: []}, _, acc) do
-    acc
-  end
+  defp walk_combinator(combinator, node, document, acc) do
+    case Selector.Combinator.next(combinator, node, document) do
+      nil -> acc
 
-  defp walk_combinator(combinator, element, document, acc) do
-    selector = combinator.selector
+      nodes when is_list(nodes) ->
+        selector = Selector.Combinator.selector(combinator)
+        walk_nodes(nodes, document, selector, acc)
 
-    case combinator.match do
-      :descendant ->
-        descendants = Document.descendants(document, element.id)
-        descendant_nodes = Document.get_nodes(document, descendants)
-        walk_nodes(descendant_nodes, document, [selector], acc)
-
-      :child ->
-        children = Document.children(document, element.id)
-        child_nodes = Document.get_nodes(document, children)
-        walk_nodes(child_nodes, document, [selector], acc)
-
-      :next_sibling ->
-        next_sibling = Document.next_sibling(document, element.id)
-        next_sibling_node = Document.get_node(document, next_sibling)
-        walk_node(next_sibling_node, document, [selector], acc)
-
-      :next_siblings ->
-        next_siblings = Document.next_siblings(document, element.id)
-        next_sibling_nodes = Document.get_nodes(document, next_siblings)
-        walk_nodes(next_sibling_nodes, document, [selector], acc)
+      node ->
+        selector = Selector.Combinator.selector(combinator)
+        walk_node(node, document, selector, acc)
     end
   end
 end

@@ -136,14 +136,6 @@ defmodule Meeseeks.Document do
     end
   end
 
-  @spec next_sibling(Document.t, node_id) :: node_id
-
-  def next_sibling(document, node_id) do
-    document
-    |> next_siblings(node_id)
-    |> List.first
-  end
-
   @spec next_siblings(Document.t, node_id) :: [node_id]
 
   def next_siblings(document, node_id) do
@@ -196,14 +188,14 @@ defmodule Meeseeks.Document do
 
   @spec get_nodes(Document.t, [node_id]) :: [node_t]
 
-  def get_nodes(document, node_ids) do
-    Enum.map(node_ids, fn(node_id) -> get_node(document, node_id) end)
+  def get_nodes(%Document{nodes: nodes}, node_ids) do
+    Enum.map(node_ids, fn(node_id) -> Map.get(nodes, node_id, nil) end)
   end
 
   @spec get_node(Document.t, node_id) :: node_t
 
   def get_node(%Document{nodes: nodes}, node_id) do
-    Map.get(nodes, node_id)
+    Map.get(nodes, node_id, nil)
   end
 end
 

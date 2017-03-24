@@ -1,8 +1,7 @@
 defmodule Meeseeks.SelectTest do
   use ExUnit.Case
 
-  alias Meeseeks.Result
-  alias Meeseeks.Select
+  alias Meeseeks.{Result, Select}
 
   @document Meeseeks.Parser.parse(
     """

@@ -20,7 +20,7 @@ defmodule Meeseeks do
 
   @type source :: String.t | TupleTree.t
   @type queryable :: source | Document.t | Result.t
-  @type selectors :: String.t | [Selector.t]
+  @type selectors :: String.t | Selector.t | [Selector.t]
 
   # Parse
 

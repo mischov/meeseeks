@@ -3,15 +3,17 @@ defmodule Meeseeks.Selector.ElementTest do
 
   alias Meeseeks.Document
   alias Meeseeks.Selector
+  alias Meeseeks.Selector.Element
 
   test "namespace matches" do
     element = %Document.Element{
       id: 1,
       namespace: "namespaced",
       tag: "tag"}
-    selector = %Selector.Element{
-      namespace: "namespaced"}
-    assert Selector.Element.match?(nil, element, selector)
+    selector = %Element{
+      selectors: [
+        %Element.Namespace{value: "namespaced"}]}
+    assert Selector.match?(selector, element, nil)
   end
 
   test "namespace and tag matches" do
@@ -19,10 +21,11 @@ defmodule Meeseeks.Selector.ElementTest do
       id: 1,
       namespace: "namespaced",
       tag: "tag"}
-    selector = %Selector.Element{
-      namespace: "namespaced",
-      tag: "tag"}
-    assert Selector.Element.match?(nil, element, selector)
+    selector = %Element{
+      selectors: [
+        %Element.Namespace{value: "namespaced"},
+        %Element.Tag{value: "tag"}]}
+    assert Selector.match?(selector, element, nil)
   end
 
   test "tag matches namespaced tag" do
@@ -30,79 +33,44 @@ defmodule Meeseeks.Selector.ElementTest do
       id: 1,
       namespace: "namespaced",
       tag: "tag"}
-    selector = %Selector.Element{
-      tag: "tag"}
-    assert Selector.Element.match?(nil, element, selector)
+    selector = %Element{
+      selectors: [
+        %Element.Tag{value: "tag"}]}
+    assert Selector.match?(selector, element, nil)
   end
 
   test "tag matches unnamespaced tag" do
     element = %Document.Element{
       id: 1,
       tag: "tag"}
-    selector = %Selector.Element{
-      tag: "tag"
-    }
-    assert Selector.Element.match?(nil, element, selector)
+    selector = %Element{
+      selectors: [
+        %Element.Tag{value: "tag"}]}
+    assert Selector.match?(selector, element, nil)
   end
 
   test "tag doesn't match" do
     element = %Document.Element{
       id: 1,
       tag: "element"}
-    selector = %Selector.Element{
-      tag: "tag"
-    }
-    refute Selector.Element.match?(nil, element, selector)
+    selector = %Element{
+      selectors: [
+        %Element.Tag{value: "tag"}]}
+    refute Selector.match?(selector, element, nil)
   end
 
-  test "id matches" do
+  test "namespace, tag, id, and class matches" do
     element = %Document.Element{
       id: 1,
-      attributes: [{"id", "valid"}]}
-    selector = %Selector.Element{
-      attributes: [
-	%Selector.Attribute{match: :value, attribute: "id", value: "valid"}
-      ]
-    }
-    assert Selector.Element.match?(nil, element, selector)
-  end
-
-  test "class matches" do
-    element = %Document.Element{
-      id: 1,
-      attributes: [{"class", "good bad ugly"}]}
-    selector = %Selector.Element{
-      attributes: [
-	%Selector.Attribute{match: :class, attribute: "class", value: "good"}
-      ]
-    }
-    assert Selector.Element.match?(nil, element, selector)
-  end
-
-  test "class doesn't match" do
-    element = %Document.Element{
-      id: 1,
-      attributes: [{"class", "live laugh love"}]}
-    selector = %Selector.Element{
-      attributes: [
-	%Selector.Attribute{match: :class, attribute: "class", value: "good"}
-      ]
-    }
-    refute Selector.Element.match?(nil, element, selector)
-  end
-
-  test "tag, id, and class matches" do
-    element = %Document.Element{
-      id: 1,
+      namespace: "some",
       tag: "tag",
       attributes: [{"id", "valid"}, {"class", "match"}]}
-    selector = %Selector.Element{
-      tag: "tag",
-      attributes: [
-	%Selector.Attribute{match: :value, attribute: "id", value: "valid"},
-	%Selector.Attribute{match: :class, attribute: "class", value: "match"}
-      ]
-    }
-    assert Selector.Element.match?(nil, element, selector)
+    selector = %Element{
+      selectors: [
+        %Element.Namespace{value: "some"},
+        %Element.Tag{value: "tag"},
+        %Element.Attribute.Value{attribute: "id", value: "valid"},
+        %Element.Attribute.ValueIncludes{attribute: "class", value: "match"}]}
+    assert Selector.match?(selector, element, nil)
   end
 end
