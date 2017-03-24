@@ -4,16 +4,11 @@ defmodule Meeseeks.Select do
   alias Meeseeks.{Accumulator, Document, Result, Selector}
 
   @type queryable :: Document.t | Result.t
-  @type selectors :: String.t | Selector.t | [Selector.t]
+  @type selectors :: Selector.t | [Selector.t]
 
   # All
 
   @spec all(queryable, selectors) :: [Result.t]
-
-  def all(queryable, selector_string) when is_binary(selector_string) do
-    selectors = Selector.CSS.compile_selectors(selector_string)
-    walk(queryable, selectors, %Accumulator.All{})
-  end
 
   def all(queryable, selectors) do
     walk(queryable, selectors, %Accumulator.All{})
@@ -22,11 +17,6 @@ defmodule Meeseeks.Select do
   # One
 
   @spec one(queryable, selectors) :: Result.t
-
-  def one(queryable, selector_string) when is_binary(selector_string) do
-    selectors = Selector.CSS.compile_selectors(selector_string)
-    walk(queryable, selectors, %Accumulator.One{})
-  end
 
   def one(queryable, selectors) do
     walk(queryable, selectors, %Accumulator.One{})
