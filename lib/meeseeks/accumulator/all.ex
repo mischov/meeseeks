@@ -2,8 +2,7 @@ defmodule Meeseeks.Accumulator.All do
   @moduledoc false
 
   alias Meeseeks.Accumulator.All
-  alias Meeseeks.Document
-  alias Meeseeks.Result
+  alias Meeseeks.{Document, Result}
 
   defstruct(
     values: %{}
