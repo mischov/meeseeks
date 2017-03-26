@@ -1,119 +1,150 @@
 defmodule Meeseeks.Result do
-  @moduledoc false
+  @moduledoc """
+  Results are the product of running selections on a document, and package
+  together a node id and the `Meeseeks.Document` for which that id is
+  valid.
+
+  Results may be used in two ways:
+
+    - Data, such as an element's tag, can be extracted from a result
+    - Further selections may be ran using the result as a source
+
+  ## Examples
+
+  ```elixir
+  iex> import Meeseeks.CSS
+  Meeseeks.CSS
+
+  iex> document = Meeseeks.parse("<div><ul><li>1</li><li>2</li></ul></div>")
+  %Document{...}
+
+  iex> ul = Meeseeks.one(document, css("ul"))
+  %Meeseeks.Result{ "<ul><li>1</li><li>2</li></ul>" }
+
+  iex> Meeseeks.tag(ul)
+  "ul"
+
+  iex> Meeseeks.all(ul, css("li"))
+  [%Meeseeks.Result{ "<li>1</li>" }, %Meeseeks.Result{ "<li>2</li>" }]
+  ```
+  """
 
   alias Meeseeks.Document
   alias Meeseeks.Result
   alias Meeseeks.TupleTree
 
   @enforce_keys [:document, :id]
-  defstruct(
-    document: nil,
-    id: nil
-  )
+  defstruct document: nil, id: nil
 
   @type t :: %Result{document: Document.t,
                      id: Document.node_id}
 
-  @spec tag(Result.t) :: String.t | nil
-
-  def tag(%Result{id: id, document: document}) do
-    case Document.get_node(document, id) do
-      %Document.Element{tag: tag} -> tag
-      _ -> nil
-    end
-  end
-
-  @spec attrs(Result.t) :: [{String.t, String.t}] | nil
-
-  def attrs(%Result{id: id, document: document}) do
-    case Document.get_node(document, id) do
-      %Document.Element{attributes: attributes} -> attributes
-      _ -> nil
-    end
-  end
-
+  @doc """
+  Returns the value for attribute in result, or nil if there isn't one.
+  """
   @spec attr(Result.t, String.t) :: String.t | nil
+  def attr(result, attribute)
 
   def attr(%Result{id: id, document: document}, attribute) do
-    case Document.get_node(document, id) do
-      %Document.Element{attributes: attributes} ->
-        {_attr, value} = List.keyfind(attributes, attribute, 0, {nil, nil})
-        value
-      _ ->
-        nil
-    end
+    node = Document.get_node(document, id)
+    Document.Node.attr(node, attribute)
   end
 
-  @spec tree(Result.t) :: TupleTree.node_t
+  @doc """
+  Returns the result's attributes list, which may be empty, or nil if
+  result represents a node without attributes.
+  """
+  @spec attrs(Result.t) :: [{String.t, String.t}] | nil
+  def attrs(result)
 
-  def tree(%Result{id: id, document: document}) do
-    build_tree(document, id)
+  def attrs(%Result{id: id, document: document}) do
+    node = Document.get_node(document, id)
+    Document.Node.attrs(node)
   end
 
-  defp build_tree(document, id) do
-    case Document.get_node(document, id) do
-      %Document.Comment{content: content} -> {:comment, content}
-      %Document.Data{content: content} -> content
-      %Document.Text{content: content} -> content
-      %Document.Element{} = element ->
-        {element.tag,
-         element.attributes,
-         element.children
-         |> Enum.reverse()
-         |> Enum.map(&(build_tree document, &1))}
-    end
-  end
-
-  @spec text(Result.t) :: String.t
-
-  def text(%Result{id: id, document: document}) do
-    document
-    |> get_text(id, "")
-    |> String.trim()
-  end
-
-  defp get_text(document, id, acc) do
-    case Document.get_node(document, id) do
-      %Document.Comment{} -> acc
-      %Document.Data{} -> acc
-      %Document.Text{content: content} -> << acc <> normalize_ws content >>
-      %Document.Element{children: children} ->
-        children
-        |> Enum.reverse()
-        |> Enum.reduce(acc, &(get_text document, &1, &2))
-    end
-  end
-
+  @doc """
+  Returns the combined data of result or result's children, which may be an
+  empty string.
+  """
   @spec data(Result.t) :: String.t
+  def data(result)
 
   def data(%Result{id: id, document: document}) do
-    document
-    |> get_data(id, "")
+    node = Document.get_node(document, id)
+    Document.Node.data(node, document)
     |> String.trim()
   end
 
-  defp get_data(document, id, acc) do
-    case Document.get_node(document, id) do
-      %Document.Comment{} -> acc
-      %Document.Text{} -> acc
-      %Document.Data{content: content} -> << acc <> normalize_ws content >>
-      %Document.Element{children: children} ->
-        children
-        |> Enum.reverse()
-        |> Enum.reduce(acc, &(get_data document, &1, &2))
-    end
+  @doc """
+  Returns the combined HTML of result and its descendants.
+  """
+  @spec html(Result.t) :: String.t
+  def html(result)
+
+  def html(%Result{id: id, document: document}) do
+    node = Document.get_node(document, id)
+    Document.Node.html(node, document)
+    |> String.trim()
   end
 
-  defp normalize_ws(string) do
-    string
-    |> String.replace(~r/[\s]+/, " ")
+  @doc """
+  Returns the combined text of result or result's children, which may be an
+  empty string.
+  """
+  @spec own_text(Result.t) :: String.t
+  def own_text(result)
+
+  def own_text(%Result{id: id, document: document}) do
+    node = Document.get_node(document, id)
+    Document.Node.own_text(node, document)
+    |> String.trim()
+  end
+
+  @doc """
+  Returns result's tag, or nil if result represents a node without a tag.
+  """
+  @spec tag(Result.t) :: String.t | nil
+  def tag(result)
+
+  def tag(%Result{id: id, document: document}) do
+    node = Document.get_node(document, id)
+    Document.Node.tag(node)
+  end
+
+  @doc """
+  Returns the combined text of result or result's descendants, which may be
+  an empty string.
+  """
+  @spec text(Result.t) :: String.t
+  def text(result)
+
+  def text(%Result{id: id, document: document}) do
+    node = Document.get_node(document, id)
+    Document.Node.text(node, document)
+    |> String.trim()
+  end
+
+  @doc """
+  Returns a `Meeseeks.TupleTree` of result and its descendants.
+  """
+  @spec tree(Result.t) :: TupleTree.node_t
+  def tree(result)
+
+  def tree(%Result{id: id, document: document}) do
+    node = Document.get_node(document, id)
+    Document.Node.tree(node, document)
   end
 end
 
 defimpl Inspect, for: Meeseeks.Result do
   @moduledoc false
 
+  alias Meeseeks.Result
+
   def inspect(result, _opts) do
-    "%Meeseeks.Result{id: #{result.id}, ...}"
+    result_html = Result.html(result)
+    |> String.replace(~r/[\s]+/, " ")
+    |> String.replace(~s("), ~s(\\"))
+    "%Meeseeks.Result{ \"#{result_html}\" }"
   end
 end
