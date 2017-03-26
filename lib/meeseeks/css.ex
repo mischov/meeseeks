@@ -44,7 +44,7 @@ defmodule Meeseeks.CSS do
   ```elixir
   import Meeseeks.CSS
 
-  iex> css("a[href^=\"https://\"]")
+  iex> css("a[href^=\\"https://\\"]")
   %Meeseeks.Selector.Element{
     combinator: nil,
     selectors: [

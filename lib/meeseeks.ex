@@ -99,7 +99,7 @@ defmodule Meeseeks do
            String.contains?(node.content, selector.value)
          end
 
-         def match(_selector, _node, _document) do
+         def match?(_selector, _node, _document) do
            false
          end
        end
