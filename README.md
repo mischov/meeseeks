@@ -128,7 +128,7 @@ By submitting a patch, you agree to license your work under the license of this 
 
 ```
 $ git clone https://github.com/mischov/meeseeks.git
-$ cd ecto
+$ cd meeseeks
 $ mix deps.get
 $ mix test
 ```
