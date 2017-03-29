@@ -109,4 +109,11 @@ defmodule Meeseeks.SelectTest do
       %Result{id: 17, document: @document}]
     assert Select.all(@document, selector) == expected
   end
+
+  test "select with string instead of selector" do
+    selector = "#first-p ~ *"
+    assert_raise RuntimeError, ~r/^Received string/, fn ->
+      Select.all(@document, selector)
+    end
+  end
 end

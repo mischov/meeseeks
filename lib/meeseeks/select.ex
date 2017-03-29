@@ -9,6 +9,11 @@ defmodule Meeseeks.Select do
   # All
 
   @spec all(queryable, selectors) :: [Result.t]
+  def all(queryable, selectors)
+
+  def all(_queryable, string) when is_binary(string) do
+    raise "Received string when expecting selectors; did you mean to wrap \"#{string}\" in the css macro?"
+  end
 
   def all(queryable, selectors) do
     walk(queryable, selectors, %Accumulator.All{})
@@ -17,6 +22,11 @@ defmodule Meeseeks.Select do
   # One
 
   @spec one(queryable, selectors) :: Result.t
+  def one(queryable, selectors)
+
+  def one(_queryable, string) when is_binary(string) do
+    raise "Received string when expecting selectors; did you mean to wrap \"#{string}\" in the css macro?"
+  end
 
   def one(queryable, selectors) do
     walk(queryable, selectors, %Accumulator.One{})
