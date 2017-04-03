@@ -70,7 +70,7 @@ defmodule Meeseeks do
   Retrieve information from the result with an extraction function.
 
   The `Meeseeks.Result` extraction functions are `attr`, `attrs`, `data`,
-  `html`, `own_text`, `tag`, `text`, `tree`.
+  `dataset`, `html`, `own_text`, `tag`, `text`, `tree`.
 
   ```elixir
   iex> Meeseeks.tag(result)
@@ -249,6 +249,29 @@ defmodule Meeseeks do
   @spec data(Result.t) :: String.t
   def data(result) do
     Result.data(result)
+  end
+
+  @doc """
+  Returns a map of result's data attributes, or nil if result represents a
+  node without attributes.
+
+  Behaves like HTMLElement.dataset; only valid data attributes are included,
+  and attribute names have "data-" removed and are converted to camelCase.
+
+  See: https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dataset
+
+  ## Examples
+
+  ```elixir
+  iex> result = Meeseeks.one("<div id=example data-x-val=1 data-y-val=2></div>", css("#example"))
+  %Meeseeks.Result{ "<div id=\"example\" data-x-val=\"1\" data-y-val=\"2\"></div>" }
+  iex> Meeseeks.dataset(result)
+  %{"xVal" => "1", "yVal" => "2"}
+  ```
+  """
+  @spec dataset(Result.t) :: %{optional(String.t) => String.t} | nil
+  def dataset(result) do
+    Result.dataset(result)
   end
 
   @doc """

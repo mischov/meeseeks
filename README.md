@@ -70,7 +70,7 @@ iex> result = Meeseeks.one(document, css("#main p"))
 
 Retrieve information from the result with an extraction function.
 
-The [`Meeseeks.Result`](https://hexdocs.pm/meeseeks/Meeseeks.Result.html) extraction functions are `attr`, `attrs`, `data`, `html`, `own_text`, `tag`, `text`, `tree`.
+The [`Meeseeks.Result`](https://hexdocs.pm/meeseeks/Meeseeks.Result.html) extraction functions are `attr`, `attrs`, `data`, `dataset`, `html`, `own_text`, `tag`, `text`, `tree`.
 
 ```elixir
 iex> Meeseeks.tag(result)

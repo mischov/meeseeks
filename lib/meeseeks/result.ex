@@ -76,6 +76,39 @@ defmodule Meeseeks.Result do
   end
 
   @doc """
+  Returns a map of result's data attributes, or nil if result represents a
+  node without attributes.
+
+  Behaves like HTMLElement.dataset; only valid data attributes are included,
+  and attribute names have "data-" removed and are converted to camelCase.
+
+  See: https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dataset
+  """
+  @spec dataset(Result.t) :: %{optional(String.t) => String.t} | nil
+  def dataset(result) do
+    case attrs(result) do
+      nil -> nil
+      [] -> %{}
+      attributes -> attributes_to_dataset(attributes)
+    end
+  end
+
+  defp attributes_to_dataset(attributes) do
+    Enum.reduce(attributes, %{}, fn({attribute, value}, dataset) ->
+      case Regex.run(~r/^data-([a-z0-9\-\.\:\_]+)$/, attribute) do
+        [_, raw_name] -> Map.put(dataset, dataset_name(raw_name), value)
+        _ -> dataset
+      end
+    end)
+  end
+
+  defp dataset_name(raw_name) do
+    Regex.replace(~r/\-([a-z])/, raw_name, fn(_, c) ->
+      String.upcase(c)
+    end)
+  end
+
+  @doc """
   Returns the combined HTML of result and its descendants.
   """
   @spec html(Result.t) :: String.t

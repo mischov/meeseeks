@@ -11,7 +11,7 @@ defmodule Meeseeks.ResultTest do
         <div class="main">
           0
           <p id="first-p">1</p>
-          <p data-id="second-p">2</p>
+          <p data-id="second-p" data-other-val="42">2</p>
           <script>3</script>
         </div>
       </body>
@@ -42,9 +42,15 @@ defmodule Meeseeks.ResultTest do
     assert Result.data(result) == expected
   end
 
+  test "get result's dataset" do
+    result = %Result{id: 11, document: @document}
+    expected = %{"id" => "second-p", "otherVal" => "42"}
+    assert Result.dataset(result) == expected
+  end
+
   test "get result's html (including descendants and preserving whitespace)" do
     result = %Result{id: 6, document: @document}
-    expected = "<div class=\"main\">\n      0\n      <p id=\"first-p\">1</p>\n      <p data-id=\"second-p\">2</p>\n      <script>3</script>\n    </div>"
+    expected = "<div class=\"main\">\n      0\n      <p id=\"first-p\">1</p>\n      <p data-id=\"second-p\" data-other-val=\"42\">2</p>\n      <script>3</script>\n    </div>"
     assert Result.html(result) == expected
   end
 
