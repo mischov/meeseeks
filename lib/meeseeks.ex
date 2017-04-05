@@ -21,7 +21,7 @@ defmodule Meeseeks do
   ## Dependencies
 
   Meeseeks depends on [html5ever](https://github.com/servo/html5ever) via
-  the [html5ever NIF](https://github.com/hansihe/html5ever_elixir).
+  [meeseeks_html5ever](https://github.com/mischov/meeseeks_html5ever).
 
   Because html5ever is a Rust library, you will need to have the Rust
   compiler [installed](https://www.rust-lang.org/en-US/install.html).

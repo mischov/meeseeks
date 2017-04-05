@@ -12,8 +12,8 @@ defmodule Meeseeks.Parser do
   @spec parse(source) :: Document.t | error
 
   def parse(html_string) when is_binary(html_string) do
-    case Html5ever.parse(html_string) do
-      {:ok, tuple_tree} -> parse_tuple_tree(tuple_tree)
+    case MeeseeksHtml5ever.parse(html_string) do
+      {:ok, document} -> document
       {:error, error} -> {:error, error}
     end
   end

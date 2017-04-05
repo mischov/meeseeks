@@ -6,4 +6,5 @@
   "hoedown": {:git, "https://github.com/hoedown/hoedown.git", "980b9c549b4348d50b683ecee6abee470b98acda", []},
   "html5ever": {:hex, :html5ever, "0.3.0", "54fcb8331290363fd0e85301675e6079daf1524aef436104ed0bf485bc0757cd", [:mix], [{:rustler, "~> 0.9", [hex: :rustler, optional: false]}]},
   "markdown": {:git, "https://github.com/devinus/markdown.git", "d065dbcc4e242a85ca2516fdadd0082712871fd8", []},
+  "meeseeks_html5ever": {:hex, :meeseeks_html5ever, "0.4.1", "6361dcf1da4c2575d81f038b516164bbab9c57159d39017c37755d6fa812cfc5", [:mix], [{:rustler, "~> 0.9", [hex: :rustler, optional: false]}]},
   "rustler": {:hex, :rustler, "0.9.0", "6fa87ac78f48f70aa8ecfb6e16b8af41c398989d33de41d292b5581d6a2eeb5a", [:mix], []}}
