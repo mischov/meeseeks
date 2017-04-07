@@ -57,7 +57,7 @@ defmodule Meeseeks.Selector.PseudoTest do
   test "first span is not(p)" do
     selector = %PseudoClass.Not{
       args: [
-        %Element{selectors: [%Element.Tag{value: "p"}]}]}
+        [%Element{selectors: [%Element.Tag{value: "p"}]}]]}
     element = Document.get_node(@test_document, 15)
     assert Selector.match?(selector, element, @test_document)
   end
@@ -65,7 +65,7 @@ defmodule Meeseeks.Selector.PseudoTest do
   test "first p is not not(p)" do
     selector = %PseudoClass.Not{
       args: [
-        %Element{selectors: [%Element.Tag{value: "p"}]}]}
+        [%Element{selectors: [%Element.Tag{value: "p"}]}]]}
     element = Document.get_node(@test_document, 6)
     refute Selector.match?(selector, element, @test_document)
   end
@@ -73,8 +73,17 @@ defmodule Meeseeks.Selector.PseudoTest do
   test "first p is not(p:nth-child(even))" do
     selector = %PseudoClass.Not{
       args: [
-        %Element{selectors: [%PseudoClass.NthChild{args: ["even"]}]}]}
+        [%Element{selectors: [%PseudoClass.NthChild{args: ["even"]}]}]]}
     element = Document.get_node(@test_document, 6)
+    assert Selector.match?(selector, element, @test_document)
+  end
+
+  test "third p is not(p:nth-child(1), p:nth-child(2))" do
+    selector = %PseudoClass.Not{
+      args: [
+        [%Element{selectors: [%PseudoClass.NthChild{args: [1]}]},
+         %Element{selectors: [%PseudoClass.NthChild{args: [2]}]}]]}
+    element = Document.get_node(@test_document, 12)
     assert Selector.match?(selector, element, @test_document)
   end
 

@@ -11,87 +11,124 @@ defmodule Meeseeks.Selector.CSS.Parser do
     defexception [:message]
   end
 
+  # Parse Elements
+
+  def parse_elements(toks) do
+    parse_elements(toks, [])
+  end
+
+  defp parse_elements([], elements) do
+    Enum.reverse(elements)
+  end
+
+  defp parse_elements(toks, elements) do
+    {element, toks} = parse_element(toks)
+    parse_elements(toks, [element | elements])
+  end
+
   # Parse Element
 
-  def parse_element(toks) do
+  defp parse_element(toks) do
     parse_element(toks, %Element{})
   end
 
   defp parse_element([], element) do
-    %{element | selectors: Enum.reverse(element.selectors)}
+    element = %{element | selectors: Enum.reverse(element.selectors)}
+    {element, []}
+  end
+
+  defp parse_element([',' | toks], element) do
+    element = %{element | selectors: Enum.reverse(element.selectors)}
+    {element, toks}
   end
 
   defp parse_element([{:ident, namespace}, '|' | toks], element) do
     selector = %Namespace{value: List.to_string(namespace)}
-    parse_element(toks, %{element | selectors: [selector|element.selectors]})
+    element = %{element | selectors: [selector|element.selectors]}
+    parse_element(toks, element)
   end
 
   defp parse_element(['*', '|' | toks], element) do
     selector = %Namespace{value: "*"}
-    parse_element(toks, %{element | selectors: [selector|element.selectors]})
+    element = %{element | selectors: [selector|element.selectors]}
+    parse_element(toks, element)
   end
 
   defp parse_element([{:ident, tag} | toks], element) do
     selector = %Tag{value: List.to_string(tag)}
-    parse_element(toks, %{element | selectors: [selector|element.selectors]})
+    element = %{element | selectors: [selector|element.selectors]}
+    parse_element(toks, element)
   end
 
   defp parse_element(['*' | toks], element) do
     selector = %Tag{value: "*"}
-    parse_element(toks, %{element | selectors: [selector|element.selectors]})
+    element = %{element | selectors: [selector|element.selectors]}
+    parse_element(toks, element)
   end
 
   defp parse_element([{:id, id} | toks], element) do
     selector = %Attribute.Value{
       attribute: "id",
       value: List.to_string(id)}
-    parse_element(toks, %{element | selectors: [selector|element.selectors]})
+    element = %{element | selectors: [selector|element.selectors]}
+    parse_element(toks, element)
   end
 
   defp parse_element([{:class, class} | toks], element) do
     selector = %Attribute.ValueIncludes{
       attribute: "class",
       value: List.to_string(class)}
-    parse_element(toks, %{element | selectors: [selector|element.selectors]})
+    element = %{element | selectors: [selector|element.selectors]}
+    parse_element(toks, element)
   end
 
   defp parse_element(['[' | toks], element) do
     {selector, toks} = parse_attribute(toks)
-    parse_element(toks, %{element | selectors: [selector|element.selectors]})
+    element = %{element | selectors: [selector|element.selectors]}
+    parse_element(toks, element)
   end
 
   defp parse_element([':' | toks], element) do
     {selector, toks} = parse_pseudo_class(toks)
     Selector.validate!(selector)
-    parse_element(toks, %{element | selectors: [selector|element.selectors]})
+    element = %{element | selectors: [selector|element.selectors]}
+    parse_element(toks, element)
   end
 
   defp parse_element(['>' | toks], element) do
+    {combinator_selector, toks} = parse_element(toks)
     combinator = %Combinator.ChildElements{
-      selector: parse_element(toks)
+      selector: combinator_selector
     }
-    (parse_element [], %{element | combinator: combinator})
+    element = %{element | combinator: combinator}
+    parse_element([',' | toks], element)
   end
 
   defp parse_element([:space | toks], element) do
+    {combinator_selector, toks} = parse_element(toks)
     combinator = %Combinator.DescendantElements{
-      selector: parse_element(toks)
+      selector: combinator_selector
     }
-    (parse_element [], %{element | combinator: combinator})
+    element = %{element | combinator: combinator}
+    parse_element([',' | toks], element)
   end
 
   defp parse_element(['+' | toks], element) do
+    {combinator_selector, toks} = parse_element(toks)
     combinator = %Combinator.NextSiblingElement{
-      selector: parse_element(toks)
+      selector: combinator_selector
     }
-    (parse_element [], %{element | combinator: combinator})
+    element = %{element | combinator: combinator}
+    parse_element([',' | toks], element)
   end
 
   defp parse_element(['~' | toks], element) do
+    {combinator_selector, toks} = parse_element(toks)
     combinator = %Combinator.NextSiblingElements{
-      selector: parse_element(toks)
+      selector: combinator_selector
     }
-    (parse_element [], %{element | combinator: combinator})
+    element = %{element | combinator: combinator}
+    parse_element([',' | toks], element)
   end
 
   # Parse Attribute
@@ -210,8 +247,8 @@ defmodule Meeseeks.Selector.CSS.Parser do
 
   defp parse_not_args([')' | toks], 0, acc) do
     tokens = Enum.reverse(acc)
-    selector = parse_element(tokens)
-    {[selector], toks}
+    selectors = parse_elements(tokens)
+    {[selectors], toks}
   end
 
   defp parse_not_args([')' | toks], depth, acc) do

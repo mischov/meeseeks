@@ -42,6 +42,7 @@ Rules.
 {W}~{W} : {token, "~"}.
 {W}\|{W} : {token, "|"}.
 {W}\:{W} : {token, ":"}.
+{W}\,{W} : {token, ","}.
 [\s\f]+ : {token, space}.
 
 Erlang code.

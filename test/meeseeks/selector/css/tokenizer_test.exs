@@ -3,6 +3,12 @@ defmodule Meeseeks.Selector.CSS.TokenizerTest do
 
   alias Meeseeks.Selector.CSS.Tokenizer
 
+  test "multiple selectors" do
+    selector = "tag1, tag2"
+    tokens = [{:ident, 'tag1'}, ',', {:ident, 'tag2'}]
+    assert Tokenizer.tokenize(selector) == tokens
+  end
+
   test "start with namespaced tag" do
     selector = "namespace|tag.class"
     tokens = [{:ident, 'namespace'}, '|', {:ident, 'tag'}, {:class, 'class'}]
@@ -60,6 +66,18 @@ defmodule Meeseeks.Selector.CSS.TokenizerTest do
   test "pseudo function with formula" do
     selector = "tag:nth-child( n+ 3)"
     tokens = [{:ident, 'tag'}, ':', {:function, 'nth-child'}, {:ab_formula, ' n+ 3'}, ')']
+    assert Tokenizer.tokenize(selector) == tokens
+  end
+
+  test "pseudo not with pseudo" do
+    selector = "tag:not(:nth-child(1))"
+    tokens = [{:ident, 'tag'}, ':', {:function, 'not'}, ':', {:function, 'nth-child'}, {:int, '1'}, ')', ')']
+    assert Tokenizer.tokenize(selector) == tokens
+  end
+
+  test "pseudo not with multiple" do
+    selector = "tag:not(.class, #id)"
+    tokens = [{:ident, 'tag'}, ':', {:function, 'not'}, {:class, 'class'}, ',', {:id, 'id'}, ')']
     assert Tokenizer.tokenize(selector) == tokens
   end
 

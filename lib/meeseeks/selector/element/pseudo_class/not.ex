@@ -10,7 +10,11 @@ defmodule Meeseeks.Selector.Element.PseudoClass.Not do
 
   def match?(selector, %Document.Element{} = element, document) do
     case selector.args do
-      [%Element{} = sel] -> !Selector.match?(sel, element, document)
+      [[sel]] -> !Selector.match?(sel, element, document)
+
+      [selectors] when is_list(selectors) ->
+        !Enum.any?(selectors, &Selector.match?(&1, element, document))
+
       _ -> false
     end
   end
@@ -21,17 +25,22 @@ defmodule Meeseeks.Selector.Element.PseudoClass.Not do
 
   def validate(selector) do
     case selector.args do
-      [%Element{} = sel] ->
-        cond do
-           combinator?(sel) ->
-            {:error, ":not doesn't allow selectors containing combinators"}
-
-          contains_not_selector?(sel) ->
-            {:error, ":not doesn't allow selectors containing :not selectors"}
-          true -> {:ok, selector}
-        end
+      [selectors] when is_list(selectors) ->
+        Enum.reduce_while(selectors, {:ok, selector}, &validate_selector/2)
 
       _ -> {:error, ":not has invalid arguments"}
+    end
+  end
+
+  defp validate_selector(%Element{} = selector, ok) do
+    cond do
+      combinator?(selector) ->
+        {:halt, {:error, ":not doesn't allow selectors containing combinators"}}
+
+      contains_not_selector?(selector) ->
+        {:halt, {:error, ":not doesn't allow selectors containing :not selectors"}}
+
+      true -> {:cont, ok}
     end
   end
 

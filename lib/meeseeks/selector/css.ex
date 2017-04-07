@@ -5,10 +5,8 @@ defmodule Meeseeks.Selector.CSS do
 
   def compile_selectors(selectors_string) do
     selectors_string
-    |> String.split(", ")
-    |> Enum.map(fn(selector_string) ->
-      Tokenizer.tokenize(selector_string) |> Parser.parse_element()
-    end)
+    |> Tokenizer.tokenize()
+    |> Parser.parse_elements()
     |> unwrap_single_selector()
   end
 
