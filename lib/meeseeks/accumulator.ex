@@ -20,6 +20,12 @@ defmodule Meeseeks.Accumulator do
   @spec return(One.t) :: Result.t | nil
   @spec return(All.t) :: [Result.t]
 
-  def return(%One{value: value}), do: value
-  def return(%All{values: values}), do: Map.values(values)
+  def return(%One{value: value}) do
+    value
+  end
+
+  def return(%All{values: values}) do
+    Map.values(values)
+    |> Enum.sort(&(&1.id <= &2.id))
+  end
 end

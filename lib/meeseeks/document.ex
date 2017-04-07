@@ -283,8 +283,10 @@ defmodule Meeseeks.Document do
   Returns nodes in depth-first order.
   """
   @spec get_nodes(Document.t) :: [node_t]
-  def get_nodes(%Document{nodes: nodes}) do
-    Map.values(nodes)
+  def get_nodes(%Document{id_counter: id_counter, nodes: nodes}) do
+    for id <- 1..id_counter do
+      Map.get(nodes, id, nil)
+    end
   end
 
   @doc """
