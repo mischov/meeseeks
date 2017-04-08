@@ -7,7 +7,7 @@ defmodule Meeseeks.Document.Element do
   alias Meeseeks.Document.Helpers
 
   @enforce_keys [:id]
-  defstruct parent: nil, id: nil, namespace: nil, tag: "", attributes: [], children: []
+  defstruct parent: nil, id: nil, namespace: "", tag: "", attributes: [], children: []
 
   @self_closing_tags ["area", "base", "br", "col", "command", "embed", "hr",
                       "img", "input", "keygen", "link", "meta", "param",

@@ -3,7 +3,7 @@ defmodule Meeseeks.DocumentTest do
 
   alias Meeseeks.Document
 
-  @document Document.new(
+  @document Meeseeks.Parser.parse(
     {"html", [], [
         {"head", [], []},
         {"body", [], [

@@ -16,11 +16,11 @@ defmodule Meeseeks.Mixfile do
   end
 
   def application do
-    [applications: [:html5ever, :logger, :rustler]]
+    [applications: [:meeseeks_html5ever, :logger, :rustler]]
   end
 
   defp deps do
-    [{:html5ever, "~> 0.3.0"},
+    [{:meeseeks_html5ever, "~> 0.4.1"},
 
      # dev
      {:credo, "~> 0.6.1", only: :dev},
