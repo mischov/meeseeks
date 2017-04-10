@@ -1,5 +1,7 @@
 # Meeseeks
 
+[![Build Status](https://travis-ci.org/mischov/meeseeks.svg?branch=master)](https://travis-ci.org/mischov/meeseeks)
+
 Meeseeks is an Elixir library for extracting data from HTML.
 
 ```elixir
