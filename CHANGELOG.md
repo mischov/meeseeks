@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.4.1 (2017-04-10)
+
+### Enhancements
+
+  * [Meta] Add CI via Travis CI
+
+### Fixes
+
+  * [Parse] Update to `meeseeks_html5ever v0.4.4`, which permits Elixir 1.3
+  * [Select] Fix CSS tokenization bug involving wildcard or pseudo-class descendants
+
 ## v0.4.0 (2017-04-08)
 
 ### Enhancements
