@@ -147,4 +147,43 @@ defmodule Meeseeks.Selector.CSS.TokenizerTest do
     assert Tokenizer.tokenize(selector) == tokens
   end
 
+  # Since the descendant combinator is signaled by a space, any following
+  # token needs to avoid being whitespace greedy in a way that will eat
+  # the space.
+
+  test "descendant wildcard" do
+    selector = "tag *"
+    tokens = [{:ident, 'tag'}, :space, '*']
+    assert Tokenizer.tokenize(selector) == tokens
+  end
+
+  test "descendant tag" do
+    selector = "tag tag2"
+    tokens = [{:ident, 'tag'}, :space, {:ident, 'tag2'}]
+    assert Tokenizer.tokenize(selector) == tokens
+  end
+
+  test "descendant id" do
+    selector = "tag #id"
+    tokens = [{:ident, 'tag'}, :space, {:id, 'id'}]
+    assert Tokenizer.tokenize(selector) == tokens
+  end
+
+  test "descendant class" do
+    selector = "tag .class"
+    tokens = [{:ident, 'tag'}, :space, {:class, 'class'}]
+    assert Tokenizer.tokenize(selector) == tokens
+  end
+
+  test "descendant attribute" do
+    selector = "tag [attr=val]"
+    tokens = [{:ident, 'tag'}, :space, '[', {:ident, 'attr'}, :value, {:ident, 'val'}, ']']
+    assert Tokenizer.tokenize(selector) == tokens
+  end
+
+  test "descendant pseudo" do
+    selector = "tag :nth-child(1)"
+    tokens = [{:ident, 'tag'}, :space, ':', {:function, 'nth-child'}, {:int, '1'}, ')']
+    assert Tokenizer.tokenize(selector) == tokens
+  end
 end

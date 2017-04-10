@@ -35,14 +35,17 @@ Rules.
 \.{IDENT} : {token, {class, drop_first(TokenChars)}}.
 #{NAME} : {token, {id, drop_first(TokenChars)}}.
 
-{W}>{W} : {token, ">"}.
-{W}\*{W} : {token, "*"}.
+
+\:{W} : {token, ":"}.
+\*{W} : {token, "*"}.
+
 {W}\^{W} : {token, "^"}.
-{W}\+{W} : {token, "+"}.
-{W}~{W} : {token, "~"}.
 {W}\|{W} : {token, "|"}.
-{W}\:{W} : {token, ":"}.
 {W}\,{W} : {token, ","}.
+
+{W}>{W} : {token, ">"}.
+{W}~{W} : {token, "~"}.
+{W}\+{W} : {token, "+"}.
 [\s\f]+ : {token, space}.
 
 Erlang code.
