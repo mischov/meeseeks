@@ -9,51 +9,51 @@ defmodule Meeseeks.Document do
   ## Examples
 
   The actual contents of a document become quickly unwieldly in iex, so
-  the inspect value of a document is always `%Meeseeks.Document{...}`
+  the inspect value of a document is always `#Meeseeks.Document<{...}>`
   regardless of the content. The example below ignores this fact for
   educational purposes.
 
   ```elixir
-  iex> tuple_tree = {"html", [],
-                     [{"head", [], []},
-                      {"body", [],
-                       [{"h1", [{"id", "greeting"}], ["Hello, World!"]},
-                        {"div", [], [
-                            {"p", [], ["1"]},
-                            {"p", [], ["2"]},
-                            {"p", [], ["3"]}]}]}]}
-  {...}
+  tuple_tree = {"html", [],
+                 [{"head", [], []},
+                  {"body", [],
+                   [{"h1", [{"id", "greeting"}], ["Hello, World!"]},
+                    {"div", [], [
+                        {"p", [], ["1"]},
+                        {"p", [], ["2"]},
+                        {"p", [], ["3"]}]}]}]}
 
-  iex> document = Meeseeks.Parser.parse(tuple_tree)
-  %Meeseeks.Document{
-    id_counter: 12,
-    roots: [1],
-    nodes: %{1 => %Meeseeks.Document.Element{attributes: [], children: [3, 2],
-       id: 1, namespace: nil, parent: nil, tag: "html"},
-      2 => %Meeseeks.Document.Element{attributes: [], children: [], id: 2,
-       namespace: nil, parent: 1, tag: "head"},
-      3 => %Meeseeks.Document.Element{attributes: [], children: [6, 4], id: 3,
-       namespace: nil, parent: 1, tag: "body"},
-      4 => %Meeseeks.Document.Element{attributes: [{"id", "greeting"}],
-       children: [5], id: 4, namespace: nil, parent: 3, tag: "h1"},
-      5 => %Meeseeks.Document.Text{content: "Hello, World!", id: 5, parent: 4},
-      6 => %Meeseeks.Document.Element{attributes: [], children: [7, 9, 11],
-       id: 6, namespace: nil, parent: 3, tag: "div"},
-      7 => %Meeseeks.Document.Element{attributes: [], children: [8], id: 7,
-       namespace: nil, parent: 6, tag: "p"},
-      8 => %Meeseeks.Document.Text{content: "1", id: 8, parent: 7},
-      9 => %Meeseeks.Document.Element{attributes: [], children: [10], id: 9,
-       namespace: nil, parent: 6, tag: "p"},
-      10 => %Meeseeks.Document.Text{content: "2", id: 10, parent: 9},
-      11 => %Meeseeks.Document.Element{attributes: [], children: [12], id: 11,
-       namespace: nil, parent: 6, tag: "p"},
-      12 => %Meeseeks.Document.Text{content: "3", id: 12, parent: 11}}}
+  document = Meeseeks.Parser.parse(tuple_tree)
+  #=> %Meeseeks.Document{
+  #      id_counter: 12,
+  #      roots: [1],
+  #      nodes: %{
+  #        1 => %Meeseeks.Document.Element{attributes: [], children: [3, 2],
+  #         id: 1, namespace: nil, parent: nil, tag: "html"},
+  #        2 => %Meeseeks.Document.Element{attributes: [], children: [], id: 2,
+  #         namespace: nil, parent: 1, tag: "head"},
+  #        3 => %Meeseeks.Document.Element{attributes: [], children: [6, 4], id: 3,
+  #         namespace: nil, parent: 1, tag: "body"},
+  #        4 => %Meeseeks.Document.Element{attributes: [{"id", "greeting"}],
+  #         children: [5], id: 4, namespace: nil, parent: 3, tag: "h1"},
+  #        5 => %Meeseeks.Document.Text{content: "Hello, World!", id: 5, parent: 4},
+  #        6 => %Meeseeks.Document.Element{attributes: [], children: [7, 9, 11],
+  #         id: 6, namespace: nil, parent: 3, tag: "div"},
+  #        7 => %Meeseeks.Document.Element{attributes: [], children: [8], id: 7,
+  #         namespace: nil, parent: 6, tag: "p"},
+  #        8 => %Meeseeks.Document.Text{content: "1", id: 8, parent: 7},
+  #        9 => %Meeseeks.Document.Element{attributes: [], children: [10], id: 9,
+  #         namespace: nil, parent: 6, tag: "p"},
+  #        10 => %Meeseeks.Document.Text{content: "2", id: 10, parent: 9},
+  #        11 => %Meeseeks.Document.Element{attributes: [], children: [12], id: 11,
+  #         namespace: nil, parent: 6, tag: "p"},
+  #        12 => %Meeseeks.Document.Text{content: "3", id: 12, parent: 11}}}
 
-  iex> Meeseeks.Document.children(document, 6)
-  [7, 9, 11]
+  Meeseeks.Document.children(document, 6)
+  #=> [7, 9, 11]
 
-  iex> Meeseeks.Document.descendants(document, 6)
-  [7, 8, 9, 10, 11, 12]
+  Meeseeks.Document.descendants(document, 6)
+  #=> [7, 8, 9, 10, 11, 12]
   ```
   """
 
@@ -182,6 +182,6 @@ defimpl Inspect, for: Meeseeks.Document do
   @moduledoc false
 
   def inspect(_document, _opts) do
-    "%Meeseeks.Document{...}"
+    "#Meeseeks.Document<{...}>"
   end
 end

@@ -41,26 +41,22 @@ defmodule Meeseeks.CSS do
 
   ## Examples
 
-  ```elixir
-  import Meeseeks.CSS
-
-  iex> css("a[href^=\\"https://\\"]")
-  %Meeseeks.Selector.Element{
-    combinator: nil,
-    selectors: [
-      %Meeseeks.Selector.Element.Tag{value: "a"},
-      %Meeseeks.Selector.Element.Attribute.ValuePrefix{
-        attribute: "href",
-        value: "https://"}]}
-
-  iex> css("ul, ol")
-  [%Meeseeks.Selector.Element{
-      combinator: nil,
-      selectors: [%Meeseeks.Selector.Element.Tag{value: "ul"}]},
-   %Meeseeks.Selector.Element{
-     combinator: nil,
-     selectors: [%Meeseeks.Selector.Element.Tag{value: "ol"}]}]
-  ```
+      iex> import Meeseeks.CSS
+      iex> css("a[href^=\\"https://\\"]")
+      %Meeseeks.Selector.Element{
+        combinator: nil,
+        selectors: [
+          %Meeseeks.Selector.Element.Tag{value: "a"},
+          %Meeseeks.Selector.Element.Attribute.ValuePrefix{
+            attribute: "href",
+            value: "https://"}]}
+      iex> css("ul, ol")
+      [%Meeseeks.Selector.Element{
+          combinator: nil,
+          selectors: [%Meeseeks.Selector.Element.Tag{value: "ul"}]},
+       %Meeseeks.Selector.Element{
+         combinator: nil,
+         selectors: [%Meeseeks.Selector.Element.Tag{value: "ol"}]}]
   """
 
   alias Meeseeks.Selector.CSS

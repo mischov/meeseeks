@@ -11,22 +11,15 @@ defmodule Meeseeks.Result do
 
   ## Examples
 
-  ```elixir
-  iex> import Meeseeks.CSS
-  Meeseeks.CSS
-
-  iex> document = Meeseeks.parse("<div><ul><li>1</li><li>2</li></ul></div>")
-  %Document{...}
-
-  iex> ul = Meeseeks.one(document, css("ul"))
-  %Meeseeks.Result{ "<ul><li>1</li><li>2</li></ul>" }
-
-  iex> Meeseeks.tag(ul)
-  "ul"
-
-  iex> Meeseeks.all(ul, css("li"))
-  [%Meeseeks.Result{ "<li>1</li>" }, %Meeseeks.Result{ "<li>2</li>" }]
-  ```
+      iex> import Meeseeks.CSS
+      iex> document = Meeseeks.parse("<div><ul><li>1</li><li>2</li></ul></div>")
+      #Meeseeks.Document<{...}>
+      iex> ul = Meeseeks.one(document, css("ul"))
+      #Meeseeks.Result<{ <ul><li>1</li><li>2</li></ul> }>
+      iex> Meeseeks.tag(ul)
+      "ul"
+      iex> Meeseeks.all(ul, css("li")) |> List.last()
+      #Meeseeks.Result<{ <li>2</li> }>
   """
 
   alias Meeseeks.Document
@@ -177,7 +170,6 @@ defimpl Inspect, for: Meeseeks.Result do
   def inspect(result, _opts) do
     result_html = Result.html(result)
     |> String.replace(~r/[\s]+/, " ")
-    |> String.replace(~s("), ~s(\\"))
-    "%Meeseeks.Result{ \"#{result_html}\" }"
+    "#Meeseeks.Result<{ #{result_html} }>"
   end
 end

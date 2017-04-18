@@ -2,19 +2,19 @@
 
 [![Build Status](https://travis-ci.org/mischov/meeseeks.svg?branch=master)](https://travis-ci.org/mischov/meeseeks)
 
-Meeseeks is an Elixir library for extracting data from HTML.
+Meeseeks is an Elixir library for parsing and extracting data from HTML.
 
 ```elixir
-iex> import Meeseeks.CSS
-Meeseeks.CSS
-iex> html = Tesla.get("https://news.ycombinator.com/").body
-"..."
-iex> for story <- Meeseeks.all(html, css("tr.athing")) do
-       title = Meeseeks.one(story, css(".title a"))
-       %{title: Meeseeks.text(title),
-         url: Meeseeks.attr(title, "href")}
-     end
-[%{title: "...", url: "..."}, %{title: "...", url: "..."}, ...]
+import Meeseeks.CSS
+
+html = Tesla.get("https://news.ycombinator.com/").body
+
+for story <- Meeseeks.all(html, css("tr.athing")) do
+  title = Meeseeks.one(story, css(".title a"))
+  %{title: Meeseeks.text(title),
+    url: Meeseeks.attr(title, "href")}
+end
+#=> [%{title: "...", url: "..."}, %{title: "...", url: "..."}, ...]
 ```
 [API documentation](https://hexdocs.pm/meeseeks/Meeseeks.html) is available.
 
@@ -47,8 +47,8 @@ This dependency is necessary because there are no HTML5 spec compliant parsers w
 Start by parsing a source (HTML string or [`Meeseeks.TupleTree`](https://hexdocs.pm/meeseeks/Meeseeks.TupleTree.html)) into a [`Meeseeks.Document`](https://hexdocs.pm/meeseeks/Meeseeks.Document.html) so that it can be queried.
 
 ```elixir
-iex> document = Meeseeks.parse("<div id=main><p>1</p><p>2</p><p>3</p></div>")
-%Meeseeks.Document{...}
+document = Meeseeks.parse("<div id=main><p>1</p><p>2</p><p>3</p></div>")
+#=> #Meeseeks.Document<{...}>
 ```
 
 The selection functions accept an unparsed source, but parsing is expensive, so parse ahead of time when running multiple selections on the same document.
@@ -62,10 +62,9 @@ Next, use one of Meeseeks's two selection functions, `all` or `one`, to search f
 Use the `css` macro provided by [`Meeseeks.CSS`](https://hexdocs.pm/meeseeks/Meeseeks.CSS.html) to generate selectors.
 
 ```elixir
-iex> import Meeseeks.CSS
-Meeseeks.CSS
-iex> result = Meeseeks.one(document, css("#main p"))
-%Meeseeks.Result{ "<p>1</p>" }
+import Meeseeks.CSS
+result = Meeseeks.one(document, css("#main p"))
+#=> #Meeseeks.Result<{ <p>1</p> }>
 ```
 
 ### Extract
@@ -75,12 +74,12 @@ Retrieve information from the result with an extraction function.
 The [`Meeseeks.Result`](https://hexdocs.pm/meeseeks/Meeseeks.Result.html) extraction functions are `attr`, `attrs`, `data`, `dataset`, `html`, `own_text`, `tag`, `text`, `tree`.
 
 ```elixir
-iex> Meeseeks.tag(result)
-"p"
-iex> Meeseeks.text(result)
-"1"
-iex> Meeseeks.tree(result)
-{"p", [], ["1"]}
+Meeseeks.tag(result)
+#=> "p"
+Meeseeks.text(result)
+#=> "1"
+Meeseeks.tree(result)
+#=> {"p", [], ["1"]}
 ```
 
 ## Custom Selectors
@@ -88,26 +87,26 @@ iex> Meeseeks.tree(result)
 Meeseeks is designed to have extremely extensible selectors, and creating a custom selector is as easy as defining a struct that implements the [`Meeseeks.Selector`](https://hexdocs.pm/meeseeks/Meeseeks.Selector.html) behaviour.
 
 ```elixir
-iex> defmodule CommentContainsSelector do
-       use Meeseeks.Selector
+defmodule CommentContainsSelector do
+  use Meeseeks.Selector
 
-       alias Meeseeks.Document
+  alias Meeseeks.Document
 
-       defstruct value: ""
+  defstruct value: ""
 
-       def match?(selector, %Document.Comment{} = node, _document) do
-         String.contains?(node.content, selector.value)
-       end
+  def match?(selector, %Document.Comment{} = node, _document) do
+    String.contains?(node.content, selector.value)
+  end
 
-       def match?(_selector, _node, _document) do
-         false
-       end
-     end
-{:module, ...}
-iex> selector = %CommentContainsSelector{value: "TODO"}
-%CommentContainsSelector{value: "TODO"}
-iex> Meeseeks.one("<!-- TODO: Close vuln! -->", selector)
-%Meeseeks.Result{ "<!-- TODO: Close vuln! -->" }
+  def match?(_selector, _node, _document) do
+    false
+  end
+end
+
+selector = %CommentContainsSelector{value: "TODO"}
+
+Meeseeks.one("<!-- TODO: Close vuln! -->", selector)
+#=> #Meeseeks.Result<{ <!-- TODO: Close vuln! --> }>
 ```
 
 To learn more, check the documentation for [`Meeseeks.Selector`](https://hexdocs.pm/meeseeks/Meeseeks.Selector.html) and [`Meeseeks.Selector.Combinator`](https://hexdocs.pm/meeseeks/Meeseeks.Selector.Combinator.html)

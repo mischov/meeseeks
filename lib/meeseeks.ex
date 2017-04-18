@@ -6,16 +6,16 @@ defmodule Meeseeks do
   Meeseeks is an Elixir library for extracting data from HTML.
 
   ```elixir
-  iex> import Meeseeks.CSS
-  Meeseeks.CSS
-  iex> html = Tesla.get("https://news.ycombinator.com/").body
-  "..."
-  iex> for story <- Meeseeks.all(html, css("tr.athing")) do
-         title = Meeseeks.one(story, css(".title a"))
-         %{title: Meeseeks.text(title),
-           url: Meeseeks.attr(title, "href")}
-       end
-  [%{title: "...", url: "..."}, %{title: "...", url: "..."}, ...]
+  import Meeseeks.CSS
+
+  html = Tesla.get("https://news.ycombinator.com/").body
+
+  for story <- Meeseeks.all(html, css("tr.athing")) do
+    title = Meeseeks.one(story, css(".title a"))
+    %{title: Meeseeks.text(title),
+      url: Meeseeks.attr(title, "href")}
+  end
+  #=> [%{title: "...", url: "..."}, %{title: "...", url: "..."}, ...]
   ```
 
   ## Dependencies
@@ -37,8 +37,8 @@ defmodule Meeseeks do
   `Meeseeks.Document` so that it can be queried.
 
   ```elixir
-  iex> document = Meeseeks.parse("<div id=main><p>1</p><p>2</p><p>3</p></div>")
-  %Meeseeks.Document{...}
+  document = Meeseeks.parse("<div id=main><p>1</p><p>2</p><p>3</p></div>")
+  #=> Meeseeks.Document<{...}>
   ```
 
   The selection functions accept an unparsed source, but parsing is
@@ -59,10 +59,9 @@ defmodule Meeseeks do
   Use the `css` macro provided by `Meeseeks.CSS` to generate selectors.
 
   ```elixir
-  iex> import Meeseeks.CSS
-  Meeseeks.CSS
-  iex> result = Meeseeks.one(document, css("#main p"))
-  %Meeseeks.Result{ "<p>1</p>" }
+  import Meeseeks.CSS
+  result = Meeseeks.one(document, css("#main p"))
+  #=> #Meeseeks.Result<{ <p>1</p> }>
   ```
 
   ### Extract
@@ -73,12 +72,12 @@ defmodule Meeseeks do
   `dataset`, `html`, `own_text`, `tag`, `text`, `tree`.
 
   ```elixir
-  iex> Meeseeks.tag(result)
-  "p"
-  iex> Meeseeks.text(result)
-  "1"
-  iex> Meeseeks.tree(result)
-  {"p", [], ["1"]}
+  Meeseeks.tag(result)
+  #=> "p"
+  Meeseeks.text(result)
+  #=> "1"
+  Meeseeks.tree(result)
+  #=> {"p", [], ["1"]}
   ```
 
   ## Custom Selectors
@@ -88,26 +87,26 @@ defmodule Meeseeks do
   `Meeseeks.Selector` behaviour.
 
   ```elixir
-  iex> defmodule CommentContainsSelector do
-         use Meeseeks.Selector
+  defmodule CommentContainsSelector do
+    use Meeseeks.Selector
 
-         alias Meeseeks.Document
+    alias Meeseeks.Document
 
-         defstruct value: ""
+    defstruct value: ""
 
-         def match?(selector, %Document.Comment{} = node, _document) do
-           String.contains?(node.content, selector.value)
-         end
+    def match?(selector, %Document.Comment{} = node, _document) do
+      String.contains?(node.content, selector.value)
+    end
 
-         def match?(_selector, _node, _document) do
-           false
-         end
-       end
-  {:module, ...}
-  iex> selector = %CommentContainsSelector{value: "TODO"}
-  %CommentContainsSelector{value: "TODO"}
-  iex> Meeseeks.one("<!-- TODO: Close vuln! -->", selector)
-  %Meeseeks.Result{ "<!-- TODO: Close vuln! -->" }
+    def match?(_selector, _node, _document) do
+      false
+    end
+  end
+
+  selector = %CommentContainsSelector{value: "TODO"}
+
+  Meeseeks.one("<!-- TODO: Close vuln! -->", selector)
+  #=> #Meeseeks.Result<{ <!-- TODO: Close vuln! --> }>
   ```
 
   To learn more, check the documentation for `Meeseeks.Selector` and
@@ -125,13 +124,11 @@ defmodule Meeseeks do
 
   ## Examples
 
-  ```elixir
-  iex> Meeseeks.parse("<div id=main><p>Hello, Meeseeks!</p></div>")
-  %Meeseeks.Document{...}
+      iex> Meeseeks.parse("<div id=main><p>Hello, Meeseeks!</p></div>")
+      #Meeseeks.Document<{...}>
 
-  iex> Meeseeks.parse({"div", [{"id", "main"}], [{"p", [], ["Hello, Meeseeks!"]}]})
-  %Meeseeks.Document{...}
-  ```
+      iex> Meeseeks.parse({"div", [{"id", "main"}], [{"p", [], ["Hello, Meeseeks!"]}]})
+      #Meeseeks.Document<{...}>
   """
   @spec parse(source) :: Document.t
   def parse(source) do
@@ -145,11 +142,9 @@ defmodule Meeseeks do
 
   ## Examples
 
-  ```elixir
-  iex> Meeseeks.all("<div id=main><p>1</p><p>2</p><p>3</p></div>", css("#main p"))
-  [%Meeseeks.Result{ "<p>1</p>" }, %Meeseeks.Result{ "<p>2</p>" },
-   %Meeseeks.Result{ "<p>3</p>" }]
-  ```
+      iex> import Meeseeks.CSS
+      iex> Meeseeks.all("<div id=main><p>1</p><p>2</p><p>3</p></div>", css("#main p")) |> List.first()
+      #Meeseeks.Result<{ <p>1</p> }>
   """
   @spec all(queryable, selectors) :: [Result.t]
   def all(%Document{} = queryable, selectors) do
@@ -171,10 +166,9 @@ defmodule Meeseeks do
 
   ## Examples
 
-  ```elixir
-  iex> Meeseeks.one("<div id=main><p>1</p><p>2</p><p>3</p></div>", css("#main p"))
-  %Meeseeks.Result{ "<p>1</p>" }
-  ```
+      iex> import Meeseeks.CSS
+      iex> Meeseeks.one("<div id=main><p>1</p><p>2</p><p>3</p></div>", css("#main p"))
+      #Meeseeks.Result<{ <p>1</p> }>
   """
   @spec one(queryable, selectors) :: Result.t
   def one(%Document{} = queryable, selectors) do
@@ -198,12 +192,11 @@ defmodule Meeseeks do
 
   ## Examples
 
-  ```elixir
-  iex> result = Meeseeks.one("<div id=example>Hi</div>", css("#example"))
-  %Meeseeks.Result{ "<div id=\\"example\\">Hi</div>" }
-  iex> Meeseeks.attr(result, "id")
-  "example"
-  ```
+      iex> import Meeseeks.CSS
+      iex> result = Meeseeks.one("<div id=example>Hi</div>", css("#example"))
+      #Meeseeks.Result<{ <div id="example">Hi</div> }>
+      iex> Meeseeks.attr(result, "id")
+      "example"
   """
   @spec attr(Result.t, String.t) :: String.t | nil
   def attr(result, attribute) do
@@ -216,12 +209,11 @@ defmodule Meeseeks do
 
   ## Examples
 
-  ```elixir
-  iex> result = Meeseeks.one("<div id=example>Hi</div>", css("#example"))
-  %Meeseeks.Result{ "<div id=\\"example\\">Hi</div>" }
-  iex> Meeseeks.attrs(result)
-  [{"id", "example"}]
-  ```
+      iex> import Meeseeks.CSS
+      iex> result = Meeseeks.one("<div id=example>Hi</div>", css("#example"))
+      #Meeseeks.Result<{ <div id="example">Hi</div> }>
+      iex> Meeseeks.attrs(result)
+      [{"id", "example"}]
   """
   @spec attrs(Result.t) :: [{String.t, String.t}] | nil
   def attrs(result) do
@@ -234,17 +226,15 @@ defmodule Meeseeks do
 
   ## Examples
 
-  ```elixir
-  iex> result1 = Meeseeks.one("<div id=example>Hi</div>", css("#example"))
-  %Meeseeks.Result{ "<div id=\\"example\\">Hi</div>" }
-  iex> Meeseeks.data(result1)
-  ""
-
-  iex> result2 = Meeseeks.one("<script id=example>Hi</script>", css("#example"))
-  %Meeseeks.Result{ "<script id=\\"example\\">Hi</script>" }
-  iex> Meeseeks.data(result2)
-  "Hi"
-  ```
+      iex> import Meeseeks.CSS
+      iex> result1 = Meeseeks.one("<div id=example>Hi</div>", css("#example"))
+      #Meeseeks.Result<{ <div id="example">Hi</div> }>
+      iex> Meeseeks.data(result1)
+      ""
+      iex> result2 = Meeseeks.one("<script id=example>Hi</script>", css("#example"))
+      #Meeseeks.Result<{ <script id="example">Hi</script> }>
+      iex> Meeseeks.data(result2)
+      "Hi"
   """
   @spec data(Result.t) :: String.t
   def data(result) do
@@ -262,12 +252,11 @@ defmodule Meeseeks do
 
   ## Examples
 
-  ```elixir
-  iex> result = Meeseeks.one("<div id=example data-x-val=1 data-y-val=2></div>", css("#example"))
-  %Meeseeks.Result{ "<div id=\"example\" data-x-val=\"1\" data-y-val=\"2\"></div>" }
-  iex> Meeseeks.dataset(result)
-  %{"xVal" => "1", "yVal" => "2"}
-  ```
+      iex> import Meeseeks.CSS
+      iex> result = Meeseeks.one("<div id=example data-x-val=1 data-y-val=2></div>", css("#example"))
+      #Meeseeks.Result<{ <div id="example" data-x-val="1" data-y-val="2"></div> }>
+      iex> Meeseeks.dataset(result)
+      %{"xVal" => "1", "yVal" => "2"}
   """
   @spec dataset(Result.t) :: %{optional(String.t) => String.t} | nil
   def dataset(result) do
@@ -279,12 +268,11 @@ defmodule Meeseeks do
 
   ## Examples
 
-  ```elixir
-  iex> result = Meeseeks.one("<div id=example>Hi</div>", css("#example"))
-  %Meeseeks.Result{ "<div id=\\"example\\">Hi</div>" }
-  iex> Meeseeks.html(result)
-  "<div id=\\"example\\">Hi</div>"
-  ```
+      iex> import Meeseeks.CSS
+      iex> result = Meeseeks.one("<div id=example>Hi</div>", css("#example"))
+      #Meeseeks.Result<{ <div id="example">Hi</div> }>
+      iex> Meeseeks.html(result)
+      "<div id=\\"example\\">Hi</div>"
   """
   @spec html(Result.t) :: String.t
   def html(result) do
@@ -297,12 +285,11 @@ defmodule Meeseeks do
 
   ## Examples
 
-  ```elixir
-  iex> result = Meeseeks.one("<div>Hello, <b>World!</b></div>", css("div"))
-  %Meeseeks.Result{ "<div>Hello, <b>World!</b></div>" }
-  iex> Meeseeks.own_text(result)
-  "Hello,"
-  ```
+      iex> import Meeseeks.CSS
+      iex> result = Meeseeks.one("<div>Hello, <b>World!</b></div>", css("div"))
+      #Meeseeks.Result<{ <div>Hello, <b>World!</b></div> }>
+      iex> Meeseeks.own_text(result)
+      "Hello,"
   """
   @spec own_text(Result.t) :: String.t
   def own_text(result) do
@@ -314,12 +301,11 @@ defmodule Meeseeks do
 
   ## Examples
 
-  ```elixir
-  iex> result = Meeseeks.one("<div id=example>Hi</div>", css("#example"))
-  %Meeseeks.Result{ "<div id=\\"example\\">Hi</div>" }
-  iex> Meeseeks.tag(result)
-  "div"
-  ```
+      iex> import Meeseeks.CSS
+      iex> result = Meeseeks.one("<div id=example>Hi</div>", css("#example"))
+      #Meeseeks.Result<{ <div id="example">Hi</div> }>
+      iex> Meeseeks.tag(result)
+      "div"
   """
   @spec tag(Result.t) :: String.t | nil
   def tag(result) do
@@ -332,12 +318,11 @@ defmodule Meeseeks do
 
   ## Examples
 
-  ```elixir
-  iex> result = Meeseeks.one("<div>Hello, <b>World!</b></div>", css("div"))
-  %Meeseeks.Result{ "<div>Hello, <b>World!</b></div>" }
-  iex> Meeseeks.own_text(result)
-  "Hello, World!"
-  ```
+      iex> import Meeseeks.CSS
+      iex> result = Meeseeks.one("<div>Hello, <b>World!</b></div>", css("div"))
+      #Meeseeks.Result<{ <div>Hello, <b>World!</b></div> }>
+      iex> Meeseeks.text(result)
+      "Hello, World!"
   """
   @spec text(Result.t) :: String.t
   def text(result) do
@@ -349,12 +334,11 @@ defmodule Meeseeks do
 
   ## Examples
 
-  ```elixir
-  iex> result = Meeseeks.one("<div id=example>Hi</div>", css("#example"))
-  %Meeseeks.Result{ "<div id=\\"example\\">Hi</div>" }
-  iex> Meeseeks.tree(result)
-  {"div", [{"id", "example"}], ["Hi"]}
-  ```
+      iex> import Meeseeks.CSS
+      iex> result = Meeseeks.one("<div id=example>Hi</div>", css("#example"))
+      #Meeseeks.Result<{ <div id="example">Hi</div> }>
+      iex> Meeseeks.tree(result)
+      {"div", [{"id", "example"}], ["Hi"]}
   """
   @spec tree(Result.t) :: TupleTree.node_t
   def tree(result) do

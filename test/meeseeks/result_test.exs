@@ -1,5 +1,6 @@
 defmodule Meeseeks.ResultTest do
   use ExUnit.Case
+  doctest Meeseeks.Result
 
   alias Meeseeks.Result
 
