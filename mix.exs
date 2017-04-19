@@ -5,12 +5,16 @@ defmodule Meeseeks.Mixfile do
 
   def project do
     [app: :meeseeks,
-     name: "Meeseeks",
      version: @version,
-     description: description(),
      elixir: "~> 1.3",
-     package: package(),
      deps: deps(),
+
+     # Hex
+     package: package(),
+     description: description(),
+
+     # HexDocs
+     name: "Meeseeks",
      source_url: "https://github.com/mischov/meeseeks",
      docs: [main: "Meeseeks"]]
   end
@@ -33,7 +37,7 @@ defmodule Meeseeks.Mixfile do
 
   defp description do
     """
-    Meeseeks is a library for extracting data from HTML.
+    Meeseeks is a library for parsing and extracting data from HTML.
     """
   end
 
@@ -41,7 +45,6 @@ defmodule Meeseeks.Mixfile do
     [maintainers: ["Mischov"],
      licenses: ["MIT"],
      files: ["lib", "src/*.xrl", "mix.exs", "README.md", "LICENSE"],
-     links: %{"Github" => "https://github.com/mischov/meeseeks",
-              "Docs" => "https://hexdocs.pm/meeseeks"}]
+     links: %{"Github" => "https://github.com/mischov/meeseeks"}]
   end
 end
