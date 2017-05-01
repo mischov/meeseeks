@@ -1,12 +1,19 @@
 defmodule Meeseeks.Accumulator.One do
   @moduledoc false
 
-  alias Meeseeks.Accumulator.One
-  alias Meeseeks.Result
+  use Meeseeks.Accumulator
 
-  defstruct(
-    value: nil
-  )
+  alias Meeseeks.{Accumulator, Result}
 
-  @type t :: %One{value: Result.t | nil}
+  defstruct value: nil
+
+  def add(%Accumulator.One{value: nil} = acc, document, id) do
+    result = %Result{document: document, id: id}
+    %{acc | value: result}
+  end
+
+  def complete?(%Accumulator.One{value: nil}), do: false
+  def complete?(%Accumulator.One{value: _some}), do: true
+
+  def return(%Accumulator.One{value: value}), do: value
 end
