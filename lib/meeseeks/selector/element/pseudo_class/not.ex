@@ -8,18 +8,18 @@ defmodule Meeseeks.Selector.Element.PseudoClass.Not do
 
   defstruct args: []
 
-  def match?(selector, %Document.Element{} = element, document) do
+  def match(selector, %Document.Element{} = element, document, context) do
     case selector.args do
-      [[sel]] -> !Selector.match?(sel, element, document)
+      [[sel]] -> !Selector.match(sel, element, document, context)
 
       [selectors] when is_list(selectors) ->
-        !Enum.any?(selectors, &Selector.match?(&1, element, document))
+        !Enum.any?(selectors, &Selector.match(&1, element, document, context))
 
       _ -> false
     end
   end
 
-  def match?(_selector, _node, _document) do
+  def match(_selector, _node, _document, _context) do
     false
   end
 

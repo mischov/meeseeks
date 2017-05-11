@@ -1,8 +1,9 @@
 defmodule Meeseeks.Selector do
   @moduledoc """
   Selector structs package some method of checking if a node matches some
-  condition with an (optional) `Meeseeks.Selector.Combinator` and an
-  (optional) method of validating the Selector.
+  condition with an optional `Meeseeks.Selector.Combinator`, an optional
+  list of filter selectors, and an optional method of validating the
+  Selector.
 
   For instance, the css selector `ul > li` contains a selector `ul` and the
   associated combinator `> li`.
@@ -33,18 +34,18 @@ defmodule Meeseeks.Selector do
 
     defstruct value: ""
 
-    def match?(selector, %Document.Text{} = text, _document) do
+    def match(selector, %Document.Text{} = text, _document, _context) do
       String.contains?(text.content, selector.value)
     end
 
-    def match?(_selector, _node, _document) do
+    def match(_selector, _node, _document, _context) do
       false
     end
   end
   ```
   """
 
-  alias Meeseeks.{Document, Selector}
+  alias Meeseeks.{Context, Document, Selector}
 
   defmodule InvalidSelectorError do
     @moduledoc false
@@ -56,15 +57,27 @@ defmodule Meeseeks.Selector do
 
   @doc """
   Invoked in order to check if the selector matches the node in the context
-  of the document.
+  of the document. Can return a boolean or a tuple of a boolean and a
+  context.
   """
-  @callback match?(selector :: t, node :: Document.node_t, document :: Document.t) :: boolean
+  @callback match(selector :: t, node :: Document.node_t, document :: Document.t, context :: Context.t) ::
+  boolean | {boolean, Context.t}
 
   @doc """
   Invoked to return the selector's combinator, or `nil` if it does not have
   one.
   """
   @callback combinator(selector :: t) :: Selector.Combinator.t | nil
+
+  @doc """
+  Invoked to return the selector's filter selectors, which may be an empty
+  list, or `nil` if it does not have any.
+
+  Filters are selectors that are applied to a list of any nodes that match
+  the selector before they are further walked with the selector's combinator
+  if it has one, or accumulated if it does not.
+  """
+  @callback filters(selector :: t) :: [t] | nil
 
   @doc """
   Invoked to validate a selector, returning `{:ok, selector}` if the selector
@@ -80,14 +93,15 @@ defmodule Meeseeks.Selector do
   """
   @callback validate(selector :: t) :: {:ok, t} | {:error, String.t}
 
-  # match?
+  # match
 
   @doc """
-  Checks if the selector matches the node in the context of the document.
+  Checks if the selector matches the node in the context of the document. Can
+  return a boolean or a tuple of a boolean and a context.
   """
-  @spec match?(t, Document.node_t, Document.t) :: boolean
-  def match?(%{__struct__: struct} = selector, node, document) do
-    struct.match?(selector, node, document)
+  @spec match(t, Document.node_t, Document.t, Context.t) :: boolean | {boolean, Context.t}
+  def match(%{__struct__: struct} = selector, node, document, context) do
+    struct.match(selector, node, document, context)
   end
 
   # combinator
@@ -98,6 +112,17 @@ defmodule Meeseeks.Selector do
   @spec combinator(t) :: Selector.Combinator.t | nil
   def combinator(%{__struct__: struct} = selector) do
     struct.combinator(selector)
+  end
+
+  # filters
+
+  @doc """
+  Returns the selector's filter selectors, which may be an empty list, or
+  `nil` if it does not have any.
+  """
+  @spec filters(t) :: [t] | nil
+  def filters(%{__struct__: struct} = selector) do
+    struct.filters(selector)
   end
 
   # validate
@@ -130,10 +155,11 @@ defmodule Meeseeks.Selector do
   defmacro __using__(_) do
     quote do
       @behaviour Selector
-      def match?(_, _, _), do: raise "match?/3 not implemented"
+      def match(_, _, _, _), do: raise "match/4 not implemented"
       def combinator(_), do: nil
+      def filters(_), do: nil
       def validate(selector), do: {:ok, selector}
-      defoverridable match?: 3, combinator: 1, validate: 1
+      defoverridable match: 4, combinator: 1, filters: 1, validate: 1
     end
   end
 end

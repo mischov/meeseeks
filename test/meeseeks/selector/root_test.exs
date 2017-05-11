@@ -11,7 +11,7 @@ defmodule Meeseeks.Selector.RootTest do
       namespace: "root",
       tag: "element"}
     selector = %Root{}
-    assert Selector.match?(selector, element, nil)
+    assert Selector.match(selector, element, nil, %{})
   end
 
   test "not root doesn't match" do
@@ -20,7 +20,7 @@ defmodule Meeseeks.Selector.RootTest do
       id: 2,
       tag: "tag"}
     selector = %Root{}
-    refute Selector.match?(selector, element, nil)
+    refute Selector.match(selector, element, nil, %{})
   end
 
   test "root with selector matches" do
@@ -31,7 +31,7 @@ defmodule Meeseeks.Selector.RootTest do
     selector = %Root{
       selectors: [
         %Element.Namespace{value: "root"}]}
-    assert Selector.match?(selector, element, nil)
+    assert Selector.match(selector, element, nil, %{})
   end
 
   test "not root with selector doesn't match" do
@@ -42,7 +42,7 @@ defmodule Meeseeks.Selector.RootTest do
     selector = %Root{
       selectors: [
         %Element.Namespace{value: "root"}]}
-    refute Selector.match?(selector, element, nil)
+    refute Selector.match(selector, element, nil, %{})
   end
 
   test "root with selector doesn't match" do
@@ -53,6 +53,6 @@ defmodule Meeseeks.Selector.RootTest do
     selector = %Root{
       selectors: [
         %Element.Namespace{value: "not-root"}]}
-    refute Selector.match?(selector, element, nil)
+    refute Selector.match(selector, element, nil, %{})
   end
 end

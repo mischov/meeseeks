@@ -55,7 +55,7 @@ The selection functions accept an unparsed source, but parsing is expensive, so 
 
 ### Select
 
-Next, use one of Meeseeks's two selection functions, `all` or `one`, to search for nodes. Both functions accept a queryable (a source, a document, or a [`Meeseeks.Result`](https://hexdocs.pm/meeseeks/Meeseeks.Result.html)) and one or more [`Meeseeks.Selector`](https://hexdocs.pm/meeseeks/Meeseeks.Selector.html)s.
+Next, use one of Meeseeks's two selection functions, `all` or `one`, to search for nodes. Both functions accept a queryable (a source, a document, or a [`Meeseeks.Result`](https://hexdocs.pm/meeseeks/Meeseeks.Result.html)), one or more [`Meeseeks.Selector`](https://hexdocs.pm/meeseeks/Meeseeks.Selector.html)s, and optionally an initial context.
 
 `all` returns a list of results representing every node matching one of the provided selectors, while `one` returns a result representing the first node to match a selector (depth-first).
 
@@ -94,11 +94,11 @@ defmodule CommentContainsSelector do
 
   defstruct value: ""
 
-  def match?(selector, %Document.Comment{} = node, _document) do
+  def match(selector, %Document.Comment{} = node, _document, _context) do
     String.contains?(node.content, selector.value)
   end
 
-  def match?(_selector, _node, _document) do
+  def match(_selector, _node, _document, _context) do
     false
   end
 end

@@ -13,7 +13,7 @@ defmodule Meeseeks.Selector.ElementTest do
     selector = %Element{
       selectors: [
         %Element.Namespace{value: "namespaced"}]}
-    assert Selector.match?(selector, element, nil)
+    assert Selector.match(selector, element, nil, %{})
   end
 
   test "namespace and tag matches" do
@@ -25,7 +25,7 @@ defmodule Meeseeks.Selector.ElementTest do
       selectors: [
         %Element.Namespace{value: "namespaced"},
         %Element.Tag{value: "tag"}]}
-    assert Selector.match?(selector, element, nil)
+    assert Selector.match(selector, element, nil, %{})
   end
 
   test "tag matches namespaced tag" do
@@ -36,7 +36,7 @@ defmodule Meeseeks.Selector.ElementTest do
     selector = %Element{
       selectors: [
         %Element.Tag{value: "tag"}]}
-    assert Selector.match?(selector, element, nil)
+    assert Selector.match(selector, element, nil, %{})
   end
 
   test "tag matches unnamespaced tag" do
@@ -46,7 +46,7 @@ defmodule Meeseeks.Selector.ElementTest do
     selector = %Element{
       selectors: [
         %Element.Tag{value: "tag"}]}
-    assert Selector.match?(selector, element, nil)
+    assert Selector.match(selector, element, nil, %{})
   end
 
   test "tag doesn't match" do
@@ -56,7 +56,7 @@ defmodule Meeseeks.Selector.ElementTest do
     selector = %Element{
       selectors: [
         %Element.Tag{value: "tag"}]}
-    refute Selector.match?(selector, element, nil)
+    refute Selector.match(selector, element, nil, %{})
   end
 
   test "namespace, tag, id, and class matches" do
@@ -71,6 +71,6 @@ defmodule Meeseeks.Selector.ElementTest do
         %Element.Tag{value: "tag"},
         %Element.Attribute.Value{attribute: "id", value: "valid"},
         %Element.Attribute.ValueIncludes{attribute: "class", value: "match"}]}
-    assert Selector.match?(selector, element, nil)
+    assert Selector.match(selector, element, nil, %{})
   end
 end
