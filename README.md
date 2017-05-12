@@ -59,11 +59,15 @@ Next, use one of Meeseeks's two selection functions, `all` or `one`, to search f
 
 `all` returns a list of results representing every node matching one of the provided selectors, while `one` returns a result representing the first node to match a selector (depth-first).
 
-Use the `css` macro provided by [`Meeseeks.CSS`](https://hexdocs.pm/meeseeks/Meeseeks.CSS.html) to generate selectors.
+Use the `css` macro provided by [`Meeseeks.CSS`](https://hexdocs.pm/meeseeks/Meeseeks.CSS.html) or the `xpath` macro provided by [`Meeseeks.XPath`](https://hexdocs.pm/meeseeks/Meeseeks.XPath.html) to generate selectors.
 
 ```elixir
 import Meeseeks.CSS
 result = Meeseeks.one(document, css("#main p"))
+#=> #Meeseeks.Result<{ <p>1</p> }>
+
+import Meeseeks.XPath
+result = Meeseeks.one(document, xpath("//*[@id='main']//p"))
 #=> #Meeseeks.Result<{ <p>1</p> }>
 ```
 

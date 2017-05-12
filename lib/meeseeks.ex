@@ -56,11 +56,16 @@ defmodule Meeseeks do
   the provided selectors, while `one` returns a result representing the
   first node to match a selector (depth-first).
 
-  Use the `css` macro provided by `Meeseeks.CSS` to generate selectors.
+  Use the `css` macro provided by `Meeseeks.CSS` or the `xpath` macro
+  provided by `Meeseeks.XPath` to generate selectors.
 
   ```elixir
   import Meeseeks.CSS
   result = Meeseeks.one(document, css("#main p"))
+  #=> #Meeseeks.Result<{ <p>1</p> }>
+
+  import Meeseeks.XPath
+  result = Meeseeks.one(document, xpath("//*[@id='main']//p"))
   #=> #Meeseeks.Result<{ <p>1</p> }>
   ```
 
