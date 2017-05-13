@@ -1,31 +1,75 @@
 defmodule Meeseeks.Accumulator do
-  @moduledoc false
+  @moduledoc """
+  Accumulator structs package some means of storing nodes selected during
+  the selection process along with a method for checking if the selection
+  should be terminated early and a method for returning the stored nodes.
 
-  alias Meeseeks.{Document, Result}
-  alias Meeseeks.Accumulator.{All, One}
+  Users will not typically need to define, or even know about, accumulators,
+  but for users trying to do things like return selected nodes as Document
+  nodes (or even tuple-tree nodes) instead of as Results, a custom accumulator
+  will provide the solution.
+  """
 
-  @spec add(One.t, Document.t, Document.node_id) :: One.t
-  @spec add(All.t, Document.t, Document.node_id) :: All.t
+  alias Meeseeks.{Accumulator, Document}
 
-  def add(%One{value: nil} = acc, document, id) do
-    result = %Result{document: document, id: id}
-    %{acc | value: result}
+  @type t :: struct
+
+  @doc """
+  Invoked to add a selected node to the accumulator.
+  """
+  @callback add(accumulator :: t, document :: Document.t, id :: Document.node_id) :: t
+
+  @doc """
+  Invoked to determine if the accumulator is satisfied.
+  """
+  @callback complete?(accumulator :: t) :: boolean
+
+  @doc """
+  Invoked to return the accumulation.
+  """
+  @callback return(accumulator :: t) :: any
+
+  # add
+
+  @doc """
+  Provided a document and a node id, returns an updated accumulator.
+  """
+  @spec add(t, Document.t, Document.node_id) :: t
+  def add(%{__struct__: struct} = accumulator, document, id) do
+    struct.add(accumulator, document, id)
   end
 
-  def add(%All{values: values} = acc, document, id) do
-    result = %Result{document: document, id: id}
-    %{acc | values: Map.put(values, id, result)}
+  # complete?
+
+  @doc """
+  Checks if an accumulator has reached an arbitrary state of completion and
+  no longer wishes to be added to.
+  """
+  @spec complete?(t) :: boolean
+  def complete?(%{__struct__: struct} = accumulator) do
+    struct.complete?(accumulator)
   end
 
-  @spec return(One.t) :: Result.t | nil
-  @spec return(All.t) :: [Result.t]
+  # return
 
-  def return(%One{value: value}) do
-    value
+  @doc """
+  Returns the values accumulated by the accumulator.
+  """
+  @spec return(t) :: any
+  def return(%{__struct__: struct} = accumulator) do
+    struct.return(accumulator)
   end
 
-  def return(%All{values: values}) do
-    Map.values(values)
-    |> Enum.sort(&(&1.id <= &2.id))
+  # __using__
+
+  @doc false
+  defmacro __using__(_) do
+    quote do
+      @behaviour Accumulator
+      def add(_, _, _), do: raise "add/3 not implemented"
+      def complete?(_), do: false
+      def return(_), do: raise "return/1 not implemented"
+      defoverridable add: 3, complete?: 1, return: 1
+    end
   end
 end

@@ -55,15 +55,19 @@ The selection functions accept an unparsed source, but parsing is expensive, so 
 
 ### Select
 
-Next, use one of Meeseeks's two selection functions, `all` or `one`, to search for nodes. Both functions accept a queryable (a source, a document, or a [`Meeseeks.Result`](https://hexdocs.pm/meeseeks/Meeseeks.Result.html)) and one or more [`Meeseeks.Selector`](https://hexdocs.pm/meeseeks/Meeseeks.Selector.html)s.
+Next, use one of Meeseeks's two selection functions, `all` or `one`, to search for nodes. Both functions accept a queryable (a source, a document, or a [`Meeseeks.Result`](https://hexdocs.pm/meeseeks/Meeseeks.Result.html)), one or more [`Meeseeks.Selector`](https://hexdocs.pm/meeseeks/Meeseeks.Selector.html)s, and optionally an initial context.
 
 `all` returns a list of results representing every node matching one of the provided selectors, while `one` returns a result representing the first node to match a selector (depth-first).
 
-Use the `css` macro provided by [`Meeseeks.CSS`](https://hexdocs.pm/meeseeks/Meeseeks.CSS.html) to generate selectors.
+Use the `css` macro provided by [`Meeseeks.CSS`](https://hexdocs.pm/meeseeks/Meeseeks.CSS.html) or the `xpath` macro provided by [`Meeseeks.XPath`](https://hexdocs.pm/meeseeks/Meeseeks.XPath.html) to generate selectors.
 
 ```elixir
 import Meeseeks.CSS
 result = Meeseeks.one(document, css("#main p"))
+#=> #Meeseeks.Result<{ <p>1</p> }>
+
+import Meeseeks.XPath
+result = Meeseeks.one(document, xpath("//*[@id='main']//p"))
 #=> #Meeseeks.Result<{ <p>1</p> }>
 ```
 
@@ -94,11 +98,11 @@ defmodule CommentContainsSelector do
 
   defstruct value: ""
 
-  def match?(selector, %Document.Comment{} = node, _document) do
+  def match(selector, %Document.Comment{} = node, _document, _context) do
     String.contains?(node.content, selector.value)
   end
 
-  def match?(_selector, _node, _document) do
+  def match(_selector, _node, _document, _context) do
     false
   end
 end

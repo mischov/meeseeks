@@ -8,11 +8,11 @@ defmodule Meeseeks.Selector.Element.PseudoClass.NthOfType do
 
   defstruct args: []
 
-  def match?(_selector, %Document.Element{parent: nil}, _document) do
+  def match(_selector, %Document.Element{parent: nil}, _document, _context) do
     false
   end
 
-  def match?(selector, %Document.Element{} = element, document) do
+  def match(selector, %Document.Element{} = element, document, _context) do
     case selector.args do
       ["even"] ->
         index = Helpers.index_of_type(element, document)
@@ -34,7 +34,7 @@ defmodule Meeseeks.Selector.Element.PseudoClass.NthOfType do
     end
   end
 
-  def match?(_selector, _node, _document) do
+  def match(_selector, _node, _document, _context) do
     false
   end
 

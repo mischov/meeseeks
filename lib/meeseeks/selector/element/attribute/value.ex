@@ -8,12 +8,12 @@ defmodule Meeseeks.Selector.Element.Attribute.Value do
 
   defstruct attribute: nil, value: nil
 
-  def match?(selector, %Document.Element{} = element, _document) do
+  def match(selector, %Document.Element{} = element, _document, _context) do
     value = Helpers.get(element.attributes, selector.attribute)
     value == selector.value
   end
 
-  def match?(_selector, _node, _document) do
+  def match(_selector, _node, _document, _context) do
     false
   end
 end

@@ -83,6 +83,31 @@ defmodule Meeseeks.Document do
   end
 
   @doc """
+  Returns the node id of node_id's parent in the context of the document, or
+  nil if node_id does not have a parent.
+  """
+  @spec parent(Document.t, node_id) :: node_id | nil
+  def parent(document, node_id) do
+    case get_node(document, node_id) do
+      %{parent: nil} -> nil
+      %{parent: parent} -> parent
+    end
+  end
+
+  @doc """
+  Returns the node ids of node_id's ancestors in the context of the document.
+
+  Returns the ancestors in reverse order: `[parent, grandparent, ...]`
+  """
+  @spec ancestors(Document.t, node_id) :: [node_id]
+  def ancestors(document, node_id) do
+    case parent(document, node_id) do
+      nil -> []
+      parent_id -> [parent_id | ancestors(document, parent_id)]
+    end
+  end
+
+  @doc """
   Returns the node ids of node_id's children in the context of the document.
 
   Returns *all* children, not just those that are `Meeseeks.Document.Element`s.
@@ -132,10 +157,26 @@ defmodule Meeseeks.Document do
   end
 
   @doc """
+  Returns the node ids of the siblings that come before node_id in the
+  context of the document.
+
+  Returns *all* of these siblings, not just those that are `Meeseeks.Document.Element`s.
+
+  Returns siblings in depth-first order.
+  """
+  @spec previous_siblings(Document.t, node_id) :: [node_id]
+  def previous_siblings(document, node_id) do
+    document
+    |> siblings(node_id)
+    |> Enum.take_while(fn(id) -> id != node_id end)
+  end
+
+  @doc """
   Returns the node ids of the siblings that come after node_id in the context
   of the document.
 
-  Returns *all* of these siblings, not just those that are `Meeseeks.Document.Element`s
+  Returns *all* of these siblings, not just those that are
+  `Meeseeks.Document.Element`s.
 
   Returns siblings in depth-first order.
   """

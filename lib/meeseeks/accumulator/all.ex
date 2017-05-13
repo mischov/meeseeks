@@ -1,12 +1,19 @@
 defmodule Meeseeks.Accumulator.All do
   @moduledoc false
 
-  alias Meeseeks.Accumulator.All
-  alias Meeseeks.{Document, Result}
+  use Meeseeks.Accumulator
 
-  defstruct(
-    values: %{}
-  )
+  alias Meeseeks.{Accumulator, Result}
 
-  @type t :: %All{values: %{optional(Document.node_id) => Result.t}}
+  defstruct values: %{}
+
+  def add(%Accumulator.All{values: values} = acc, document, id) do
+    result = %Result{document: document, id: id}
+    %{acc | values: Map.put(values, id, result)}
+  end
+
+  def return(%Accumulator.All{values: values}) do
+    Map.values(values)
+    |> Enum.sort(&(&1.id <= &2.id))
+  end
 end

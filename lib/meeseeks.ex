@@ -1,6 +1,6 @@
 defmodule Meeseeks do
 
-  alias Meeseeks.{Document, Parser, Result, Select, Selector, TupleTree}
+  alias Meeseeks.{Context, Document, Parser, Result, Select, Selector, TupleTree}
 
   @moduledoc """
   Meeseeks is an Elixir library for extracting data from HTML.
@@ -49,18 +49,23 @@ defmodule Meeseeks do
 
   Next, use one of Meeseeks's two selection functions, `all` or `one`, to
   search for nodes. Both functions accept a queryable (a source, a
-  document, or a `Meeseeks.Result`) and one or more
-  `Meeseeks.Selector`s.
+  document, or a `Meeseeks.Result`), one or more `Meeseeks.Selector`s, and
+  optionally an initial context.
 
   `all` returns a list of results representing every node matching one of
   the provided selectors, while `one` returns a result representing the
   first node to match a selector (depth-first).
 
-  Use the `css` macro provided by `Meeseeks.CSS` to generate selectors.
+  Use the `css` macro provided by `Meeseeks.CSS` or the `xpath` macro
+  provided by `Meeseeks.XPath` to generate selectors.
 
   ```elixir
   import Meeseeks.CSS
   result = Meeseeks.one(document, css("#main p"))
+  #=> #Meeseeks.Result<{ <p>1</p> }>
+
+  import Meeseeks.XPath
+  result = Meeseeks.one(document, xpath("//*[@id='main']//p"))
   #=> #Meeseeks.Result<{ <p>1</p> }>
   ```
 
@@ -94,11 +99,11 @@ defmodule Meeseeks do
 
     defstruct value: ""
 
-    def match?(selector, %Document.Comment{} = node, _document) do
+    def match(selector, %Document.Comment{} = node, _document, _context) do
       String.contains?(node.content, selector.value)
     end
 
-    def match?(_selector, _node, _document) do
+    def match(_selector, _node, _document, _context) do
       false
     end
   end
@@ -140,6 +145,9 @@ defmodule Meeseeks do
   @doc """
   Returns a `Result` for each node in the queryable matching a selector.
 
+  Optionally accepts an initial_context map that will be used to create the
+  context available to selectors.
+
   ## Examples
 
       iex> import Meeseeks.CSS
@@ -147,22 +155,31 @@ defmodule Meeseeks do
       #Meeseeks.Result<{ <p>1</p> }>
   """
   @spec all(queryable, selectors) :: [Result.t]
-  def all(%Document{} = queryable, selectors) do
-    Select.all(queryable, selectors)
+  def all(queryable, selectors) do
+    all(queryable, selectors, %{})
   end
 
-  def all(%Result{} = queryable, selectors) do
-    Select.all(queryable, selectors)
+  @spec all(queryable, selectors, Context.t) :: [Result.t]
+  def all(%Document{} = queryable, selectors, initial_context) do
+    Select.all(queryable, selectors, initial_context)
   end
 
-  def all(source, selectors) do
+  def all(%Result{} = queryable, selectors, initial_context) do
+    Select.all(queryable, selectors, initial_context)
+  end
+
+  def all(source, selectors, initial_context) do
     source
     |> parse()
-    |> Select.all(selectors)
+    |> Select.all(selectors, initial_context)
   end
 
   @doc """
-  Returns a `Result` for the first node in the queryable (depth-first) matching a selector.
+  Returns a `Result` for the first node in the queryable (depth-first)
+  matching a selector.
+
+  Optionally accepts an initial_context map that will be used to create the
+  context available to selectors.
 
   ## Examples
 
@@ -171,18 +188,23 @@ defmodule Meeseeks do
       #Meeseeks.Result<{ <p>1</p> }>
   """
   @spec one(queryable, selectors) :: Result.t
-  def one(%Document{} = queryable, selectors) do
-    Select.one(queryable, selectors)
+  def one(queryable, selectors) do
+    one(queryable, selectors, %{})
   end
 
-  def one(%Result{} = queryable, selectors) do
-    Select.one(queryable, selectors)
+  @spec one(queryable, selectors, Context.t) :: Result.t
+  def one(%Document{} = queryable, selectors, initial_context) do
+    Select.one(queryable, selectors, initial_context)
   end
 
-  def one(source, selectors) do
+  def one(%Result{} = queryable, selectors, initial_context) do
+    Select.one(queryable, selectors, initial_context)
+  end
+
+  def one(source, selectors, initial_context) do
     source
     |> parse()
-    |> Select.one(selectors)
+    |> Select.one(selectors, initial_context)
   end
 
   # Extract

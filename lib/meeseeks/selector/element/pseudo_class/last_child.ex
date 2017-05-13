@@ -8,16 +8,16 @@ defmodule Meeseeks.Selector.Element.PseudoClass.LastChild do
 
   defstruct args: []
 
-  def match?(_selector, %Document.Element{parent: nil}, _document) do
+  def match(_selector, %Document.Element{parent: nil}, _document, _context) do
     false
   end
 
-  def match?(_selector, %Document.Element{} = element, document) do
+  def match(_selector, %Document.Element{} = element, document, _context) do
     last_sibling = Helpers.siblings(element, document) |> List.last()
     element.id == last_sibling
   end
 
-  def match?(_selector, _node, _document) do
+  def match(_selector, _node, _document, _context) do
     false
   end
 
