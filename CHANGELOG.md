@@ -1,5 +1,27 @@
 # Changelog
 
+## v0.5.0 (2017-05-12)
+
+### Breaking
+
+  * [Select] Change the `Selector.match?/3` callback to `Selector.match/4`, which now takes a context and can return a `{boolean, context}` tuple in addition to returning a boolean.
+
+### Enhancements
+
+  * [Select] Add XPath selector support (see `Meeseeks.XPath`)
+  * [Select] Add `Selector.filters/1` callback to the `Selector` behaviour and update selection to allow for filtering matches before proceeding
+  * [Select] Add `Meeseeks.Context` to allow selectors and the selection process to store state
+  * [Select] Add `Meeseeks.Accumulator` behaviour and update `Accumulator.{All, One}` to use it
+  * [Select] Add `Node` and `Root` selectors
+  * [Select] Add `Ancestors`, `AncestorsOrSelf`, `Children`, `Descendants`, `DescendantsOrSelf`, `NextSiblings`, `Parent`, `PreviousSiblings`, and `Self` selector combinators
+  * [Select] Add `parent`, `ancestors`, and `previous_siblings` queries to `Document`
+
+### Fixes
+
+  * [Parse] Update to `meeseeks_html5ever v0.4.6`, which correctly parses namespaced elements and doesn't try to bring in `html5ever 0.16.0`
+  * [Extract] Fix `html` extractor to add namespaces to elements
+  * [Usability] Improve `Document` and `Result` opaque inspected values
+
 ## v0.4.1 (2017-04-10)
 
 ### Enhancements
