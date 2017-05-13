@@ -16,7 +16,7 @@ defmodule Meeseeks.XPath_Test do
         <div id="main">
 	 <p id="first-p">1</p>
 	 <p data-id="second-p">2</p>
-	 <p class="a b">3</p>
+	 <special:p class="a b">3</special:p>
          <div class="secondary">
            <p>4</p>
            <p class="b c">5</p>
@@ -195,6 +195,18 @@ defmodule Meeseeks.XPath_Test do
   test "parent of the first following p sibling of #first-p" do
     selector = xpath("//p[@id='first-p']/following-sibling::p[1]/..")
     expected = [%Result{id: 9, document: @document}]
+    assert Meeseeks.all(@document, selector) == expected
+  end
+
+  test "elements with 'special' namespace via path" do
+    selector = xpath("*[namespace::special]")
+    expected = [%Result{id: 17, document: @document}]
+    assert Meeseeks.all(@document, selector) == expected
+  end
+
+  test "elements with 'special' namespace via namespace-uri()" do
+    selector = xpath("*[namespace-uri()='special']")
+    expected = [%Result{id: 17, document: @document}]
     assert Meeseeks.all(@document, selector) == expected
   end
 

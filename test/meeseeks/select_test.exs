@@ -13,7 +13,7 @@ defmodule Meeseeks.SelectTest do
         <div class="main">
 	 <p id="first-p">1</p>
 	 <p data-id="second-p">2</p>
-	 <p>3</p>
+	 <special:p>3</special:p>
          <div class="secondary">
            <p>4</p>
            <p>5</p>
@@ -85,6 +85,12 @@ defmodule Meeseeks.SelectTest do
     assert Select.one(@document, selector, %{}) == expected
   end
 
+  test "select all with namespace 'special'" do
+    selector = css("special|*")
+    expected = [%Result{id: 14, document: @document}]
+    assert Select.all(@document, selector, %{}) == expected
+  end
+
   @result %Result{id: 17, document: @document}
 
   test "select all paragraphs from result" do
@@ -97,7 +103,7 @@ defmodule Meeseeks.SelectTest do
 
   test "select next sibling p of first p from result" do
     selector = css("#first-p + p")
-    expected = [%Result{id: 11, document: @document},]
+    expected = [%Result{id: 11, document: @document}]
     assert Select.all(@document, selector, %{}) == expected
   end
 
