@@ -64,11 +64,15 @@ defmodule Meeseeks.Document.Element do
   # Helpers
 
   defp self_closing_tag(node) do
-    "<#{node.tag}#{join_attributes node.attributes} />"
+    tag = full_tag(node.namespace, node.tag)
+    attributes = join_attributes(node.attributes)
+    "<#{tag}#{attributes} />"
   end
 
   defp opening_tag(node) do
-    "<#{node.tag}#{join_attributes node.attributes}>"
+    tag = full_tag(node.namespace, node.tag)
+    attributes = join_attributes(node.attributes)
+    "<#{tag}#{attributes}>"
   end
 
   defp child_html(node, document) do
@@ -77,8 +81,12 @@ defmodule Meeseeks.Document.Element do
   end
 
   defp closing_tag(node) do
-    "</#{node.tag}>"
+    tag = full_tag(node.namespace, node.tag)
+    "</#{tag}>"
   end
+
+  defp full_tag("", tag), do: tag
+  defp full_tag(ns, tag), do: ns <> ":" <> tag
 
   defp child_nodes(document, node) do
     children = Document.children(document, node.id)
