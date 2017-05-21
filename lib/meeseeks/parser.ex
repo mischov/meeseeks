@@ -2,7 +2,7 @@ defmodule Meeseeks.Parser do
   @moduledoc false
 
   alias Meeseeks.{Document, TupleTree}
-  alias Meeseeks.Document.{Comment, Data, Doctype, Element, Text}
+  alias Meeseeks.Document.{Comment, Data, Doctype, Element, ProcessingInstruction, Text}
 
   @type source :: String.t | TupleTree.t
   @type error :: {:error, String.t}
@@ -36,6 +36,38 @@ defmodule Meeseeks.Parser do
 
   defp add_root_nodes(document, roots) do
     Enum.reduce(roots, document, &(add_root_node &2, &1))
+  end
+
+  # :mochiweb_html parses <?php ...?> to {:pi, "php ..."}
+  defp add_root_node(document, {:pi, php_string}) do
+    id = next_id(document.id_counter)
+    [_, data] = String.split(php_string, "php ")
+    data = String.trim(data)
+    node = %ProcessingInstruction{id: id, target: "php", data: data}
+    %{document |
+      id_counter: id,
+      roots: document.roots ++ [id],
+      nodes: insert_node(document.nodes, node)}
+  end
+
+  # `:mochiweb_html` parses `<?target data ?>` into `{:pi, "target", [{"data", "data"}]}`
+  defp add_root_node(document, {:pi, target, attributes}) when is_list(attributes) do
+    id = next_id(document.id_counter)
+    data = join_pi(attributes)
+    node = %ProcessingInstruction{id: id, target: target, data: data}
+    %{document |
+      id_counter: id,
+      roots: document.roots ++ [id],
+      nodes: insert_node(document.nodes, node)}
+  end
+
+  defp add_root_node(document, {:pi, target, data})  do
+    id = next_id(document.id_counter)
+    node = %ProcessingInstruction{id: id, target: target, data: data}
+    %{document |
+      id_counter: id,
+      roots: document.roots ++ [id],
+      nodes: insert_node(document.nodes, node)}
   end
 
   defp add_root_node(document, {tag, attributes, children}) do
@@ -76,6 +108,44 @@ defmodule Meeseeks.Parser do
 
   defp add_child_nodes(document, parent_id, children) do
     Enum.reduce(children, document, &(add_child_node &2, parent_id, &1))
+  end
+
+  # :mochiweb_html parses <?php ... ?> to {:pi, "php ..."}
+  defp add_child_node(document, parent, {:pi, php_string}) do
+    id = next_id(document.id_counter)
+    [_, data] = String.split(php_string, "php ")
+    data = String.trim(data)
+    node = %ProcessingInstruction{parent: parent,
+                                  id: id,
+                                  target: "php",
+                                  data: data}
+    %{document |
+      id_counter: id,
+      nodes: insert_node(document.nodes, node)}
+  end
+
+  # `:mochiweb_html` parses `<?target data ?>` into `{:pi, "target", [{"data", "data"}]}`
+  defp add_child_node(document, parent, {:pi, target, attributes}) when is_list(attributes) do
+    id = next_id(document.id_counter)
+    data = join_pi(attributes)
+    node = %ProcessingInstruction{parent: parent,
+                                  id: id,
+                                  target: target,
+                                  data: data}
+    %{document |
+      id_counter: id,
+      nodes: insert_node(document.nodes, node)}
+  end
+
+  defp add_child_node(document, parent, {:pi, target, data})  do
+    id = next_id(document.id_counter)
+    node = %ProcessingInstruction{parent: parent,
+                                  id: id,
+                                  target: target,
+                                  data: data}
+    %{document |
+      id_counter: id,
+      nodes: insert_node(document.nodes, node)}
   end
 
   defp add_child_node(document, parent, {tag, attributes, children}) do
@@ -122,6 +192,26 @@ defmodule Meeseeks.Parser do
 
   defp next_id(nil), do: 1
   defp next_id(n), do: n + 1
+
+  # Attempting to handle `:mochiweb_html`'s absurdly bad parsing
+  # of processing instruction data into `[{attribute, value}]`
+  defp join_pi([]) do
+    ""
+  end
+
+  defp join_pi(attributes) do
+    attributes
+    |> Enum.reduce("", &join_pi(&1, &2))
+    |> String.trim()
+  end
+
+  defp join_pi({a, v}, acc) when a == v do
+    "#{acc} #{a}"
+  end
+
+  defp join_pi({a, v}, acc) do
+    "#{acc} #{a}=\"#{v}\""
+  end
 
   defp split_namespace_from_tag(maybe_namespaced_tag) do
     case :binary.split(maybe_namespaced_tag, ":", []) do
