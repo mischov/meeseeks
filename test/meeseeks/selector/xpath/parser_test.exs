@@ -218,7 +218,8 @@ defmodule Meeseeks.Selector.XPath.ParserTest do
     expression = %Expr.Path{
       steps: [
         %Expr.Step{combinator: %Combinator.Self{selector: nil},
-                   predicates: [%Expr.ProcessingInstruction{name: 'xml-spreadsheet'}]}],
+                   predicates: [
+                     %Expr.ProcessingInstruction{target: 'xml-spreadsheet'}]}],
       type: :abs}
     assert Parser.parse_expression(tokens) == expression
   end

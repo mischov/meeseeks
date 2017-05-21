@@ -406,9 +406,9 @@ node_type({_Token, _Line, Type}) ->
           type => Type}.
 
 %% processing_instruction
-processing_instruction({_Token, _Line, Name}) ->
+processing_instruction({_Token, _Line, Target}) ->
         #{'__struct__' => 'Elixir.Meeseeks.Selector.XPath.Expr.ProcessingInstruction',
-          name => Name}.
+          target => Target}.
 
 %% union_expr
 union_expr(E1, E2) ->

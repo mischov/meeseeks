@@ -16,8 +16,8 @@ defmodule Meeseeks.Selector.XPath.Expr.NodeType do
     true
   end
 
-  def eval(%NodeType{type: :"processing-instruction"}, _node, _document, _context) do
-    false # currently not supported because html5ever will parse as comments
+  def eval(%NodeType{type: :"processing-instruction"}, %Document.ProcessingInstruction{}, _document, _context) do
+    true
   end
 
   def eval(%NodeType{type: :text}, %Document.Data{}, _document, _context) do
