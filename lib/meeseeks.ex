@@ -47,8 +47,8 @@ defmodule Meeseeks do
 
   ### Select
 
-  Next, use one of Meeseeks's two selection functions, `all` or `one`, to
-  search for nodes. Both functions accept a queryable (a source, a
+  Next, use one of Meeseeks's two main selection functions, `all` or `one`,
+  to search for nodes. Both functions accept a queryable (a source, a
   document, or a `Meeseeks.Result`), one or more `Meeseeks.Selector`s, and
   optionally an initial context.
 
@@ -145,8 +145,11 @@ defmodule Meeseeks do
   @doc """
   Returns a `Result` for each node in the queryable matching a selector.
 
-  Optionally accepts an initial_context map that will be used to create the
-  context available to selectors.
+  Optionally accepts a `Meeseeks.Context` map.
+
+  Parses the source if it is not a `Meeseeks.Document` or `Meeseeks.Result`.
+  If multiple selections are being ran on the same unparsed source, parse
+  first to avoid unnecessary computation.
 
   ## Examples
 
@@ -160,26 +163,29 @@ defmodule Meeseeks do
   end
 
   @spec all(queryable, selectors, Context.t) :: [Result.t]
-  def all(%Document{} = queryable, selectors, initial_context) do
-    Select.all(queryable, selectors, initial_context)
+  def all(%Document{} = queryable, selectors, context) do
+    Select.all(queryable, selectors, context)
   end
 
-  def all(%Result{} = queryable, selectors, initial_context) do
-    Select.all(queryable, selectors, initial_context)
+  def all(%Result{} = queryable, selectors, context) do
+    Select.all(queryable, selectors, context)
   end
 
-  def all(source, selectors, initial_context) do
+  def all(source, selectors, context) do
     source
     |> parse()
-    |> Select.all(selectors, initial_context)
+    |> Select.all(selectors, context)
   end
 
   @doc """
   Returns a `Result` for the first node in the queryable (depth-first)
   matching a selector.
 
-  Optionally accepts an initial_context map that will be used to create the
-  context available to selectors.
+  Optionally accepts a `Meeseeks.Context` map.
+
+  Parses the source if it is not a `Meeseeks.Document` or `Meeseeks.Result`.
+  If multiple selections are being ran on the same unparsed source, parse
+  first to avoid unnecessary computation.
 
   ## Examples
 
@@ -193,18 +199,53 @@ defmodule Meeseeks do
   end
 
   @spec one(queryable, selectors, Context.t) :: Result.t
-  def one(%Document{} = queryable, selectors, initial_context) do
-    Select.one(queryable, selectors, initial_context)
+  def one(%Document{} = queryable, selectors, context) do
+    Select.one(queryable, selectors, context)
   end
 
-  def one(%Result{} = queryable, selectors, initial_context) do
-    Select.one(queryable, selectors, initial_context)
+  def one(%Result{} = queryable, selectors, context) do
+    Select.one(queryable, selectors, context)
   end
 
-  def one(source, selectors, initial_context) do
+  def one(source, selectors, context) do
     source
     |> parse()
-    |> Select.one(selectors, initial_context)
+    |> Select.one(selectors, context)
+  end
+
+  @doc """
+  Returns the accumulated result of walking the queryable, accumulating nodes
+  that match a selector. Prefer `all` or `one`- `select` should only be used
+  when a custom accumulator is required.
+
+  Requires that a `Meeseeks.Accumulator` has been added to the context via
+  `Meeseeks.Context.add_accumulator/2`, and will raise an error if it hasn't.
+
+  Parses the source if it is not a `Meeseeks.Document` or `Meeseeks.Result`.
+  If multiple selections are being ran on the same unparsed source, parse
+  first to avoid unnecessary computation.
+
+  ## Examples
+
+      iex> import Meeseeks.CSS
+      iex> accumulator = %Meeseeks.Accumulator.One{}
+      iex> context = Meeseeks.Context.add_accumulator(%{}, accumulator)
+      iex> Meeseeks.select("<div id=main><p>1</p><p>2</p><p>3</p></div>", css("#main p"), context)
+      #Meeseeks.Result<{ <p>1</p> }>
+  """
+  @spec select(queryable, selectors, Context.t) :: any
+  def select(%Document{} = queryable, selectors, context) do
+    Select.select(queryable, selectors, context)
+  end
+
+  def select(%Result{} = queryable, selectors, context) do
+    Select.select(queryable, selectors, context)
+  end
+
+  def select(source, selectors, context) do
+    source
+    |> parse()
+    |> Select.select(selectors, context)
   end
 
   # Extract

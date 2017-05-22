@@ -20,22 +20,36 @@ defmodule Meeseeks.Context do
   @type t :: %{optional(any) => any}
 
   @doc """
-  Creates a new context from an initial_context map.
+  Adds keys required by selection process to the context.
+
+  Used internally by Meeseeks.Select- users should have no reason to call.
   """
-  @spec new(t) :: t
-  def new(initial_context) do
-    initial_context
+  @spec prepare_for_selection(t) :: t
+  def prepare_for_selection(context) do
+    context
     |> Map.put(@return?, false)
     |> Map.put(@matches, %{})
   end
 
   @doc """
-  Adds an accumulator to context, overriding any accumulator provided in the
-  initial context.
+  Adds an accumulator to context, overriding any existing accumulator in
+  context.
   """
-  @spec with_accumulator(t, Accumulator.t) :: t
-  def with_accumulator(context, acc) do
+  @spec add_accumulator(t, Accumulator.t) :: t
+  def add_accumulator(context, acc) do
     Map.put(context, @accumulator, acc)
+  end
+
+  @doc """
+  Ensures that context contains an accumulator, returning context if it does,
+  or raising an error if it does not.
+  """
+  @spec ensure_accumulator!(t) :: t
+  def ensure_accumulator!(context) do
+    case Map.fetch(context, @accumulator) do
+      {:ok, _} -> context
+      :error -> raise "No accumulator in context"
+    end
   end
 
   @doc """

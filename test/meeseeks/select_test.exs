@@ -3,7 +3,7 @@ defmodule Meeseeks.SelectTest do
 
   import Meeseeks.CSS
 
-  alias Meeseeks.{Result, Select}
+  alias Meeseeks.{Accumulator, Context, Result, Select}
 
   @document Meeseeks.Parser.parse(
     """
@@ -43,9 +43,10 @@ defmodule Meeseeks.SelectTest do
 
   test "select all with class 'main'" do
     selector = css(".main")
+    context = Context.add_accumulator(%{}, %Accumulator.All{})
     expected = [
       %Result{id: 6, document: @document}]
-    assert Select.all(@document, selector, %{}) == expected
+    assert Select.select(@document, selector, context) == expected
   end
 
   test "select first with id 'first-p'" do
@@ -63,8 +64,9 @@ defmodule Meeseeks.SelectTest do
 
   test "select third paragraph" do
     selector = css("p:nth-child(3)")
+    context = Context.add_accumulator(%{}, %Accumulator.One{})
     expected = %Result{id: 14, document: @document}
-    assert Select.one(@document, selector, %{}) == expected
+    assert Select.select(@document, selector, context) == expected
   end
 
   test "select second-of-type that does not have [data-id=second-p]" do
@@ -118,8 +120,16 @@ defmodule Meeseeks.SelectTest do
 
   test "select with string instead of selector" do
     selector = "#first-p ~ *"
-    assert_raise RuntimeError, ~r/^Received string/, fn ->
+    assert_raise RuntimeError, ~r/^Expected selectors/, fn ->
       Select.all(@document, selector, %{})
+    end
+  end
+
+  test "select without an accumulator" do
+    selector = css("#first-p ~ *")
+    context = %{}
+    assert_raise RuntimeError, ~r/^No accumulator/, fn ->
+      Select.select(@document, selector, context)
     end
   end
 end

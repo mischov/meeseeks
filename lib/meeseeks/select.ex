@@ -13,30 +13,32 @@ defmodule Meeseeks.Select do
   # All
 
   @spec all(queryable, selectors, Context.t) :: [Result.t]
-  def all(queryable, selectors, initial_context)
-
-  def all(_queryable, string, _initial_context) when is_binary(string) do
-    raise "Received string when expecting selectors; did you mean to wrap \"#{string}\" in the css macro?"
-  end
-
-  def all(queryable, selectors, initial_context) do
-    context = Context.new(initial_context)
-    |> Context.with_accumulator(%Accumulator.All{})
-    walk(queryable, selectors, context)
+  def all(queryable, selectors, context) do
+    context = Context.add_accumulator(context, %Accumulator.All{})
+    select(queryable, selectors, context)
   end
 
   # One
 
   @spec one(queryable, selectors, Context.t) :: Result.t
-  def one(queryable, selectors, initial_context)
-
-  def one(_queryable, string, _initial_context) when is_binary(string) do
-    raise "Received string when expecting selectors; did you mean to wrap \"#{string}\" in the css macro?"
+  def one(queryable, selectors, context) do
+    context = Context.add_accumulator(context, %Accumulator.One{})
+    select(queryable, selectors, context)
   end
 
-  def one(queryable, selectors, initial_context) do
-    context = Context.new(initial_context)
-    |> Context.with_accumulator(%Accumulator.One{})
+  # Select
+
+  @spec select(queryable, selectors, Context.t) :: any
+  def select(queryable, selectors, context)
+
+  def select(_queryable, string, _context) when is_binary(string) do
+    raise "Expected selectors, received string- did you mean to wrap \"#{string}\" in the css or xpath macro?"
+  end
+
+  def select(queryable, selectors, context) do
+    context = context
+    |> Context.prepare_for_selection()
+    |> Context.ensure_accumulator!()
     walk(queryable, selectors, context)
   end
 
