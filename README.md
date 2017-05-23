@@ -25,7 +25,7 @@ Add Meeseeks to your `mix.exs`:
 ```elixir
 defp deps do
   [
-    {:meeseeks, "~> 0.5.0"}
+    {:meeseeks, "~> 0.6.0"}
   ]
 end
 ```

@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.6.0 (2017-05-23)
+
+### Breaking
+
+  * [Select] Rename `Context.new/1` to `Context.prepare_for_selection/1`
+  * [Select] Rename `Context.with_accumulator/2` to `Context.add_accumulator/2`
+
+### Enhancements
+
+  * [Parse] Update to `meeseeks_html5ever v0.5.0`
+  * [Parse] Parse `Document.ProcessingInstruction` nodes from tuple-trees
+  * [Select] Support `processing-instruction` functionality in `Meeseeks.XPath` (when possible)
+  * [Select] Add a `Document.ProcessingInstruction` node type
+  * [Select] Add `Select.select/3` and `Meeseeks.select/3`
+  * [Select] Add `Context.ensure_accumulator!/1`
+
 ## v0.5.0 (2017-05-12)
 
 ### Breaking
