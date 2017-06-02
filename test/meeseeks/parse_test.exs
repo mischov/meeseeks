@@ -4,6 +4,8 @@ defmodule Meeseeks.ParseTest do
   alias Meeseeks.Document
   alias Meeseeks.Parser
 
+  # HTML Parsing
+
   test "comment can exist at root" do
     document = Parser.parse("<!-- Hi --><html></html>")
     nodes = document.nodes |> Map.values()
@@ -11,7 +13,7 @@ defmodule Meeseeks.ParseTest do
   end
 
   test "comment can exist as child" do
-    document = Parser.parse("<div><!-- Hi --></div>")
+    document = Parser.parse("<div><!-- Hi --></div>", :html)
     nodes = document.nodes |> Map.values()
     assert Enum.any?(nodes, &comment_node?/1)
   end
@@ -23,7 +25,7 @@ defmodule Meeseeks.ParseTest do
   end
 
   test "doctype can exist at root" do
-    document = Parser.parse("<!DOCTYPE html><html></html>")
+    document = Parser.parse("<!DOCTYPE html><html></html>", :html)
     nodes = document.nodes |> Map.values()
     assert Enum.any?(nodes, &doctype_node?/1)
   end
@@ -35,7 +37,7 @@ defmodule Meeseeks.ParseTest do
   end
 
   test "element can exist at root" do
-    document = Parser.parse("<html></html>")
+    document = Parser.parse("<html></html>", :html)
     nodes = document.nodes |> Map.values()
     assert Enum.any?(nodes, &element_node?/1)
   end
@@ -52,6 +54,22 @@ defmodule Meeseeks.ParseTest do
     assert Enum.any?(nodes, &text_node?/1)
   end
 
+  # XML Parsing
+
+  test "cdata parses as text" do
+    document = Parser.parse("<node><![CDATA[Am Text]]></node>", :xml)
+    nodes = document.nodes |> Map.values()
+    assert Enum.any?(nodes, &text_node?/1)
+  end
+
+  test "processing instructions can exist" do
+    document = Parser.parse("<?xml-stylesheet type='text/xsl' href='style.xsl'?>", :xml)
+    nodes = document.nodes |> Map.values()
+    assert Enum.any?(nodes, &pi_node?/1)
+  end
+
+  # Helpers
+
   defp comment_node?(%Document.Comment{}), do: true
   defp comment_node?(_), do: false
 
@@ -63,6 +81,9 @@ defmodule Meeseeks.ParseTest do
 
   defp element_node?(%Document.Element{}), do: true
   defp element_node?(_), do: false
+
+  defp pi_node?(%Document.ProcessingInstruction{}), do: true
+  defp pi_node?(_), do: false
 
   defp text_node?(%Document.Text{}), do: true
   defp text_node?(_), do: false
