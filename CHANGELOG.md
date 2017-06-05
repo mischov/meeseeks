@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.7.0 (2017-06-05)
+
+### Enhancements
+
+  * [Parse] Update to `meeseeks_html5ever v0.6.0`, which supports parsing XML
+  * [Parse] Add `Meeseeks.parse/2` which takes either `:html` or `:xml` as the second argument to specify how the source gets parsed
+  * [Extract] Update `Meeseeks.data/1` to handle CDATA when parsing HTML
+
 ## v0.6.0 (2017-05-23)
 
 ### Breaking
