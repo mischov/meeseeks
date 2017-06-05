@@ -304,6 +304,11 @@ defmodule Meeseeks do
   Returns the combined data of result or result's children, which may be an
   empty string.
 
+  Data is the content of `<script>` or `<style>` tags, or the content of
+  comments starting with "[CDATA[" and ending with "]]". The latter behavior
+  is to support the extraction of CDATA from HTML, since HTML5 parsers parse
+  CDATA as comments.
+
   ## Examples
 
       iex> import Meeseeks.CSS

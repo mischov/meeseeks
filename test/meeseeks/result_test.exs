@@ -14,6 +14,7 @@ defmodule Meeseeks.ResultTest do
           <special:p id="first-p">1</special:p>
           <p data-id="second-p" data-other-val="42">2</p>
           <script>3</script>
+          <p><![CDATA[4]]></p>
         </div>
       </body>
     </html>
@@ -31,9 +32,15 @@ defmodule Meeseeks.ResultTest do
     assert Result.attrs(result) == expected
   end
 
-  test "get result's data" do
+  test "get result's data when script" do
     result = %Result{id: 14, document: @document}
     expected = "3"
+    assert Result.data(result) == expected
+  end
+
+  test "get result's data when CDATA" do
+    result = %Result{id: 17, document: @document}
+    expected = "4"
     assert Result.data(result) == expected
   end
 
@@ -51,7 +58,7 @@ defmodule Meeseeks.ResultTest do
 
   test "get result's html (including descendants and preserving whitespace)" do
     result = %Result{id: 6, document: @document}
-    expected = "<div class=\"main\">\n      0\n      <special:p id=\"first-p\">1</special:p>\n      <p data-id=\"second-p\" data-other-val=\"42\">2</p>\n      <script>3</script>\n    </div>"
+    expected = "<div class=\"main\">\n      0\n      <special:p id=\"first-p\">1</special:p>\n      <p data-id=\"second-p\" data-other-val=\"42\">2</p>\n      <script>3</script>\n      <p><![CDATA[4]]></p>\n    </div>"
     assert Result.html(result) == expected
   end
 
