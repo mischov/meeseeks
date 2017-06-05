@@ -7,7 +7,7 @@ Meeseeks is an Elixir library for parsing and extracting data from HTML.
 ```elixir
 import Meeseeks.CSS
 
-html = Tesla.get("https://news.ycombinator.com/").body
+html = HTTPoison.get!("https://news.ycombinator.com/").body
 
 for story <- Meeseeks.all(html, css("tr.athing")) do
   title = Meeseeks.one(story, css(".title a"))
@@ -44,14 +44,16 @@ This dependency is necessary because there are no HTML5 spec compliant parsers w
 
 ### Parse
 
-Start by parsing a source (HTML string or [`Meeseeks.TupleTree`](https://hexdocs.pm/meeseeks/Meeseeks.TupleTree.html)) into a [`Meeseeks.Document`](https://hexdocs.pm/meeseeks/Meeseeks.Document.html) so that it can be queried.
+Start by parsing a source (HTML/XML string or [`Meeseeks.TupleTree`](https://hexdocs.pm/meeseeks/Meeseeks.TupleTree.html)) into a [`Meeseeks.Document`](https://hexdocs.pm/meeseeks/Meeseeks.Document.html) so that it can be queried.
+
+`Meeseeks.parse/1` parses the source as HTML, but `Meeseeks.parse/2` accepts a second argument of either `:html` or `:xml` that specifies how the source is parsed.
 
 ```elixir
 document = Meeseeks.parse("<div id=main><p>1</p><p>2</p><p>3</p></div>")
 #=> #Meeseeks.Document<{...}>
 ```
 
-The selection functions accept an unparsed source, but parsing is expensive, so parse ahead of time when running multiple selections on the same document.
+The selection functions accept an unparsed source, parsing it as HTML, but parsing is expensive so parse ahead of time when running multiple selections on the same document.
 
 ### Select
 

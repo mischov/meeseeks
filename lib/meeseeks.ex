@@ -33,17 +33,21 @@ defmodule Meeseeks do
 
   ### Parse
 
-  Start by parsing a source (HTML string or `Meeseeks.TupleTree`) into a
-  `Meeseeks.Document` so that it can be queried.
+  Start by parsing a source (HTML/XML string or `Meeseeks.TupleTree`) into
+  a `Meeseeks.Document` so that it can be queried.
+
+  `Meeseeks.parse/1` parses the source as HTML, but `Meeseeks.parse/2`
+  accepts a second argument of either `:html` or `:xml` that specifies how
+  the source is parsed.
 
   ```elixir
   document = Meeseeks.parse("<div id=main><p>1</p><p>2</p><p>3</p></div>")
   #=> Meeseeks.Document<{...}>
   ```
 
-  The selection functions accept an unparsed source, but parsing is
-  expensive, so parse ahead of time when running multiple selections on
-  the same document.
+  The selection functions accept an unparsed source, parsing it as HTML, but
+  parsing is expensive so parse ahead of time when running multiple
+  selections on the same document.
 
   ### Select
 
@@ -118,14 +122,16 @@ defmodule Meeseeks do
   `Meeseeks.Selector.Combinator`
   """
 
-  @type source :: String.t | TupleTree.t
-  @type queryable :: source | Document.t | Result.t
+  @type queryable :: Parser.source | Document.t | Result.t
   @type selectors :: Selector.t | [Selector.t]
 
   # Parse
 
   @doc """
-  Parses an HTML string or `Meeseeks.TupleTree` into a `Meeseeks.Document`.
+  Parses a string or `Meeseeks.TupleTree` into a `Meeseeks.Document`.
+
+  `parse/1` parses as HTML, while `parse/2` accepts a second argument of
+  either `:html` or `:xml` that specifies how the source is parsed.
 
   ## Examples
 
@@ -134,10 +140,18 @@ defmodule Meeseeks do
 
       iex> Meeseeks.parse({"div", [{"id", "main"}], [{"p", [], ["Hello, Meeseeks!"]}]})
       #Meeseeks.Document<{...}>
+
+      iex> Meeseeks.parse("<book><author>GGK</author></book>", :xml)
+      #Meeseeks.Document<{...}>
   """
-  @spec parse(source) :: Document.t
+  @spec parse(Parser.source) :: Document.t | Parser.error
   def parse(source) do
     Parser.parse(source)
+  end
+
+  @spec parse(Parser.source, Parser.type) :: Document.t | Parser.error
+  def parse(source, parser) do
+    Parser.parse(source, parser)
   end
 
   # Select
@@ -157,12 +171,12 @@ defmodule Meeseeks do
       iex> Meeseeks.all("<div id=main><p>1</p><p>2</p><p>3</p></div>", css("#main p")) |> List.first()
       #Meeseeks.Result<{ <p>1</p> }>
   """
-  @spec all(queryable, selectors) :: [Result.t]
+  @spec all(queryable, selectors) :: [Result.t] | Parser.error
   def all(queryable, selectors) do
     all(queryable, selectors, %{})
   end
 
-  @spec all(queryable, selectors, Context.t) :: [Result.t]
+  @spec all(queryable, selectors, Context.t) :: [Result.t] | Parser.error
   def all(%Document{} = queryable, selectors, context) do
     Select.all(queryable, selectors, context)
   end
@@ -172,9 +186,10 @@ defmodule Meeseeks do
   end
 
   def all(source, selectors, context) do
-    source
-    |> parse()
-    |> Select.all(selectors, context)
+    case parse(source) do
+      {:error, reason} -> {:error, reason}
+      document -> Select.all(document, selectors, context)
+    end
   end
 
   @doc """
@@ -193,12 +208,12 @@ defmodule Meeseeks do
       iex> Meeseeks.one("<div id=main><p>1</p><p>2</p><p>3</p></div>", css("#main p"))
       #Meeseeks.Result<{ <p>1</p> }>
   """
-  @spec one(queryable, selectors) :: Result.t
+  @spec one(queryable, selectors) :: Result.t | Parser.error
   def one(queryable, selectors) do
     one(queryable, selectors, %{})
   end
 
-  @spec one(queryable, selectors, Context.t) :: Result.t
+  @spec one(queryable, selectors, Context.t) :: Result.t | Parser.error
   def one(%Document{} = queryable, selectors, context) do
     Select.one(queryable, selectors, context)
   end
@@ -208,9 +223,10 @@ defmodule Meeseeks do
   end
 
   def one(source, selectors, context) do
-    source
-    |> parse()
-    |> Select.one(selectors, context)
+    case parse(source) do
+      {:error, reason} -> {:error, reason}
+      document -> Select.one(document, selectors, context)
+    end
   end
 
   @doc """
@@ -233,7 +249,7 @@ defmodule Meeseeks do
       iex> Meeseeks.select("<div id=main><p>1</p><p>2</p><p>3</p></div>", css("#main p"), context)
       #Meeseeks.Result<{ <p>1</p> }>
   """
-  @spec select(queryable, selectors, Context.t) :: any
+  @spec select(queryable, selectors, Context.t) :: any | Parser.error
   def select(%Document{} = queryable, selectors, context) do
     Select.select(queryable, selectors, context)
   end
@@ -243,9 +259,10 @@ defmodule Meeseeks do
   end
 
   def select(source, selectors, context) do
-    source
-    |> parse()
-    |> Select.select(selectors, context)
+    case parse(source) do
+      {:error, reason} -> {:error, reason}
+      document -> Select.select(document, selectors, context)
+    end
   end
 
   # Extract

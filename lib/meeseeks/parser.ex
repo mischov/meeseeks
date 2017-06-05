@@ -6,13 +6,14 @@ defmodule Meeseeks.Parser do
 
   @type source :: String.t | TupleTree.t
   @type error :: {:error, String.t}
+  @type type :: :html | :xml
 
   # Parse
 
   @spec parse(source) :: Document.t | error
 
-  def parse(html_string) when is_binary(html_string) do
-    case MeeseeksHtml5ever.parse(html_string) do
+  def parse(string) when is_binary(string) do
+    case MeeseeksHtml5ever.parse_html(string) do
       {:ok, document} -> document
       {:error, error} -> {:error, error}
     end
@@ -22,9 +23,30 @@ defmodule Meeseeks.Parser do
     parse_tuple_tree(tuple_tree)
   end
 
+  @spec parse(source, type) :: Document.t | error
+
+  def parse(string, :html) when is_binary(string) do
+    case MeeseeksHtml5ever.parse_html(string) do
+      {:ok, document} -> document
+      {:error, error} -> {:error, error}
+    end
+  end
+
+   def parse(string, :xml) when is_binary(string) do
+    case MeeseeksHtml5ever.parse_xml(string) do
+      {:ok, document} -> document
+      {:error, error} -> {:error, error}
+    end
+  end
+
+  def parse(tuple_tree, _) do
+    parse_tuple_tree(tuple_tree)
+  end
+
   # Parse TupleTree
 
-  @spec parse_tuple_tree(TupleTree.t) :: Document.t
+  # Can't return error, only Document, just surpressing dialyzer error
+  @spec parse_tuple_tree(TupleTree.t) :: Document.t | error
 
   defp parse_tuple_tree(tuple_tree) when is_list(tuple_tree) do
     add_root_nodes(%Document{}, tuple_tree)
