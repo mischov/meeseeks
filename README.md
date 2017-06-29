@@ -1,8 +1,9 @@
 # Meeseeks
 
 [![Build Status](https://travis-ci.org/mischov/meeseeks.svg?branch=master)](https://travis-ci.org/mischov/meeseeks)
+[![Meeseeks version](https://img.shields.io/hexpm/v/meeseeks.svg)](https://hex.pm/packages/meeseeks)
 
-Meeseeks is an Elixir library for parsing and extracting data from HTML.
+Meeseeks is an Elixir library for parsing and extracting data from HTML and XML with CSS or XPath selectors.
 
 ```elixir
 import Meeseeks.CSS
