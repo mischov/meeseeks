@@ -1,7 +1,7 @@
 defmodule Meeseeks.Mixfile do
   use Mix.Project
 
-  @version "0.7.0"
+  @version "0.7.1"
 
   def project do
     [app: :meeseeks,
@@ -37,7 +37,7 @@ defmodule Meeseeks.Mixfile do
 
   defp description do
     """
-    Meeseeks is a library for parsing and extracting data from HTML.
+    Meeseeks is a library for parsing and extracting data from HTML and XML with CSS or XPath selectors.
     """
   end
 

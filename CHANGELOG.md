@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.7.1 (2017-06-29)
+
+### Fixes
+
+  * [Parse] Update to `meeseeks_html5ever v0.6.1`, which supports OTP 20
+
 ## v0.7.0 (2017-06-05)
 
 ### Enhancements
