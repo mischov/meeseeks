@@ -4,14 +4,14 @@ defmodule Meeseeks.Document.Doctype do
   use Meeseeks.Document.Node
 
   @enforce_keys [:id]
-  defstruct parent: nil, id: nil, type: "", public: "", system: ""
+  defstruct parent: nil, id: nil, name: "", public: "", system: ""
 
   def html(node, _document) do
-    "<!DOCTYPE #{node.type}#{format_legacy node.public, node.system}>"
+    "<!DOCTYPE #{node.name}#{format_legacy node.public, node.system}>"
   end
 
   def tree(node, _document) do
-    {:doctype, node.type, node.public, node.system}
+    {:doctype, node.name, node.public, node.system}
   end
 
   defp format_legacy("", ""), do: ""

@@ -115,9 +115,9 @@ defmodule Meeseeks.Parser do
       nodes: insert_node(document.nodes, node)}
   end
 
-  defp add_root_node(document, {:doctype, type, public, system}) do
+  defp add_root_node(document, {:doctype, name, public, system}) do
     id = next_id(document.id_counter)
-    node = %Doctype{id: id, type: type, public: public, system: system}
+    node = %Doctype{id: id, name: name, public: public, system: system}
     %{document |
       id_counter: id,
       roots: document.roots ++ [id],

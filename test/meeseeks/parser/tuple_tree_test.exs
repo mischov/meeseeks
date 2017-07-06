@@ -3,18 +3,20 @@ defmodule Meeseeks.Parser.TupleTreeTest do
 
   alias Meeseeks.Parser
 
-  @tuple_tree {"html", [], [
-                  {"head", [], []},
-                  {"body", [], [
-                      {"div", [], [
-                          {"p", [], []},
-                          {"p", [], []},
-                          {"div", [], [
-                              {"p", [], []},
-                              {"p", [], []}]},
-                          {"p", [], []}]}]}]}
+  @tuple_tree [
+    {:doctype, "html", "", ""},
+    {"html", [], [
+        {"head", [], []},
+        {"body", [], [
+            {"div", [], [
+                {"p", [], []},
+                {"p", [], []},
+                {"div", [], [
+                    {"p", [], []},
+                    {"p", [], []}]},
+                {"p", [], []}]}]}]}]
 
-  @string "<html><head></head><body><div><p></p><p></p><div><p></p><p></p></div><p></p></div></body></html>"
+  @string "<!DOCTYPE html><html><head></head><body><div><p></p><p></p><div><p></p><p></p></div><p></p></div></body></html>"
 
   test "tuple tree parser makes same document as string parser" do
     assert Parser.parse(@tuple_tree) == Parser.parse(@string)
