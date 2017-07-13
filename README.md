@@ -76,9 +76,9 @@ result = Meeseeks.one(document, xpath("//*[@id='main']//p"))
 
 ### Extract
 
-Retrieve information from the result with an extraction function.
+Retrieve information from the [`Meeseeks.Result`](https://hexdocs.pm/meeseeks/Meeseeks.Result.html) with an extraction function.
 
-The [`Meeseeks.Result`](https://hexdocs.pm/meeseeks/Meeseeks.Result.html) extraction functions are `attr`, `attrs`, `data`, `dataset`, `html`, `own_text`, `tag`, `text`, `tree`.
+The extraction functions are `attr`, `attrs`, `data`, `dataset`, `html`, `own_text`, `tag`, `text`, `tree`.
 
 ```elixir
 Meeseeks.tag(result)
@@ -87,6 +87,13 @@ Meeseeks.text(result)
 #=> "1"
 Meeseeks.tree(result)
 #=> {"p", [], ["1"]}
+```
+
+The extraction functions `html` and `tree` work on [`Meeseeks.Document`](https://hexdocs.pm/meeseeks/Meeseeks.Document.html)s in addition to [`Meeseeks.Result`](https://hexdocs.pm/meeseeks/Meeseeks.Result.html)s.
+
+```elixir
+Meeseeks.html(document)
+#=> "<html><head></head><body><div id=\"main\"><p>1</p><p>2</p><p>3</p></div></body></html>"
 ```
 
 ## Custom Selectors

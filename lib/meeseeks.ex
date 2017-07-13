@@ -3,12 +3,13 @@ defmodule Meeseeks do
   alias Meeseeks.{Context, Document, Parser, Result, Select, Selector, TupleTree}
 
   @moduledoc """
-  Meeseeks is an Elixir library for extracting data from HTML.
+  Meeseeks is an Elixir library for parsing and extracting data from HTML and
+  XML with CSS or XPath selectors.
 
   ```elixir
   import Meeseeks.CSS
 
-  html = Tesla.get("https://news.ycombinator.com/").body
+  html = HTTPoison.get!("https://news.ycombinator.com/").body
 
   for story <- Meeseeks.all(html, css("tr.athing")) do
     title = Meeseeks.one(story, css(".title a"))
@@ -75,10 +76,11 @@ defmodule Meeseeks do
 
   ### Extract
 
-  Retrieve information from the result with an extraction function.
+  Retrieve information from the `Meeseeks.Result` with an extraction
+  function.
 
-  The `Meeseeks.Result` extraction functions are `attr`, `attrs`, `data`,
-  `dataset`, `html`, `own_text`, `tag`, `text`, `tree`.
+  The extraction functions are `attr`, `attrs`, `data`, `dataset`, `html`,
+  `own_text`, `tag`, `text`, `tree`.
 
   ```elixir
   Meeseeks.tag(result)
@@ -87,6 +89,14 @@ defmodule Meeseeks do
   #=> "1"
   Meeseeks.tree(result)
   #=> {"p", [], ["1"]}
+  ```
+
+  The extraction functions `html` and `tree` work on `Meeseeks.Document`s in
+  addition to `Meeseeks.Result`s.
+
+  ```elixir
+  Meeseeks.html(document)
+  #=> "<html><head></head><body><div id=\\"main\\"><p>1</p><p>2</p><p>3</p></div></body></html>"
   ```
 
   ## Custom Selectors
@@ -123,6 +133,7 @@ defmodule Meeseeks do
   """
 
   @type queryable :: Parser.source | Document.t | Result.t
+  @type extractable :: Document.t | Result.t
   @type selectors :: Selector.t | [Selector.t]
 
   # Parse
@@ -268,7 +279,7 @@ defmodule Meeseeks do
   # Extract
 
   @doc """
-  Returns the value for attribute in result, or nil if there isn't one.
+  Returns the value of an attribute in a result, or nil if there isn't one.
 
   ## Examples
 
@@ -278,13 +289,13 @@ defmodule Meeseeks do
       iex> Meeseeks.attr(result, "id")
       "example"
   """
-  @spec attr(Result.t, String.t) :: String.t | nil
-  def attr(result, attribute) do
-    Result.attr(result, attribute)
-  end
+  @spec attr(extractable, String.t) :: String.t | nil
+  def attr(extractable, attribute)
+  def attr(%Result{} = result, attribute), do: Result.attr(result, attribute)
+  def attr(x, _attribute), do: raise_cannot_extract(x, "attr/2")
 
   @doc """
-  Returns the result's attributes list, which may be empty, or nil if
+  Returns a result's attributes list, which may be empty, or nil if the
   result represents a node without attributes.
 
   ## Examples
@@ -295,14 +306,14 @@ defmodule Meeseeks do
       iex> Meeseeks.attrs(result)
       [{"id", "example"}]
   """
-  @spec attrs(Result.t) :: [{String.t, String.t}] | nil
-  def attrs(result) do
-    Result.attrs(result)
-  end
+  @spec attrs(extractable) :: [{String.t, String.t}] | nil
+  def attrs(extractable)
+  def attrs(%Result{} = result), do: Result.attrs(result)
+  def attrs(x), do: raise_cannot_extract(x, "attrs/1")
 
   @doc """
-  Returns the combined data of result or result's children, which may be an
-  empty string.
+  Returns the combined data of a result or the result's children, which may
+  be an empty string.
 
   Data is the content of `<script>` or `<style>` tags, or the content of
   comments starting with "[CDATA[" and ending with "]]". The latter behavior
@@ -321,14 +332,14 @@ defmodule Meeseeks do
       iex> Meeseeks.data(result2)
       "Hi"
   """
-  @spec data(Result.t) :: String.t
-  def data(result) do
-    Result.data(result)
-  end
+  @spec data(extractable) :: String.t
+  def data(extractable)
+  def data(%Result{} = result), do: Result.data(result)
+  def data(x), do: raise_cannot_extract(x, "data/1")
 
   @doc """
-  Returns a map of result's data attributes, or nil if result represents a
-  node without attributes.
+  Returns a map of a result's data attributes, or nil if the result
+  represents a node without attributes.
 
   Behaves like HTMLElement.dataset; only valid data attributes are included,
   and attribute names have "data-" removed and are converted to camelCase.
@@ -343,30 +354,34 @@ defmodule Meeseeks do
       iex> Meeseeks.dataset(result)
       %{"xVal" => "1", "yVal" => "2"}
   """
-  @spec dataset(Result.t) :: %{optional(String.t) => String.t} | nil
-  def dataset(result) do
-    Result.dataset(result)
-  end
+  @spec dataset(extractable) :: %{optional(String.t) => String.t} | nil
+  def dataset(extractable)
+  def dataset(%Result{} = result), do: Result.dataset(result)
+  def dataset(x), do: raise_cannot_extract(x, "dataset/1")
 
   @doc """
-  Returns the combined HTML of result and its descendants.
+  Returns the combined HTML of a document or a result and its descendants.
 
   ## Examples
 
       iex> import Meeseeks.CSS
-      iex> result = Meeseeks.one("<div id=example>Hi</div>", css("#example"))
+      iex> document = Meeseeks.parse("<div id=example>Hi</div>")
+      iex> Meeseeks.html(document)
+      "<html><head></head><body><div id=\\"example\\">Hi</div></body></html>"
+      iex> result = Meeseeks.one(document, css("#example"))
       #Meeseeks.Result<{ <div id="example">Hi</div> }>
       iex> Meeseeks.html(result)
       "<div id=\\"example\\">Hi</div>"
   """
-  @spec html(Result.t) :: String.t
-  def html(result) do
-    Result.html(result)
-  end
+  @spec html(extractable) :: String.t
+  def html(extractable)
+  def html(%Document{} = document), do: Document.html(document)
+  def html(%Result{} = result), do: Result.html(result)
+  def html(x), do: raise_cannot_extract(x, "html/1")
 
   @doc """
-  Returns the combined text of result or result's children, which may be an
-  empty string.
+  Returns the combined text of a result or the result's children, which may
+  be an empty string.
 
   ## Examples
 
@@ -376,13 +391,14 @@ defmodule Meeseeks do
       iex> Meeseeks.own_text(result)
       "Hello,"
   """
-  @spec own_text(Result.t) :: String.t
-  def own_text(result) do
-    Result.own_text(result)
-  end
+  @spec own_text(extractable) :: String.t
+  def own_text(extractable)
+  def own_text(%Result{} = result), do: Result.own_text(result)
+  def own_text(x), do: raise_cannot_extract(x, "own_text/1")
 
   @doc """
-  Returns result's tag, or nil if result represents a node without a tag.
+  Returns a result's tag, or nil if the result represents a node without a
+  tag.
 
   ## Examples
 
@@ -392,14 +408,14 @@ defmodule Meeseeks do
       iex> Meeseeks.tag(result)
       "div"
   """
-  @spec tag(Result.t) :: String.t | nil
-  def tag(result) do
-    Result.tag(result)
-  end
+  @spec tag(extractable) :: String.t | nil
+  def tag(extractable)
+  def tag(%Result{} = result), do: Result.tag(result)
+  def tag(x), do: raise_cannot_extract(x, "tag/1")
 
   @doc """
-  Returns the combined text of result or result's descendants, which may be
-  an empty string.
+  Returns the combined text of a result or the result's descendants, which
+  may be an empty string.
 
   ## Examples
 
@@ -409,24 +425,35 @@ defmodule Meeseeks do
       iex> Meeseeks.text(result)
       "Hello, World!"
   """
-  @spec text(Result.t) :: String.t
-  def text(result) do
-    Result.text(result)
-  end
+  @spec text(extractable) :: String.t
+  def text(extractable)
+  def text(%Result{} = result), do: Result.text(result)
+  def text(x), do: raise_cannot_extract(x, "text/1")
 
   @doc """
-  Returns a `Meeseeks.TupleTree` of result and its descendants.
+  Returns the `Meeseeks.TupleTree` of a document or a result and its
+  descendants.
 
   ## Examples
 
       iex> import Meeseeks.CSS
-      iex> result = Meeseeks.one("<div id=example>Hi</div>", css("#example"))
+      iex> document = Meeseeks.parse("<div id=example>Hi</div>")
+      iex> Meeseeks.tree(document)
+      [{"html", [],
+        [{"head", [], []},
+         {"body", [], [{"div", [{"id", "example"}], ["Hi"]}]}]}]
+      iex> result = Meeseeks.one(document, css("#example"))
       #Meeseeks.Result<{ <div id="example">Hi</div> }>
       iex> Meeseeks.tree(result)
       {"div", [{"id", "example"}], ["Hi"]}
   """
-  @spec tree(Result.t) :: TupleTree.node_t
-  def tree(result) do
-    Result.tree(result)
+  @spec tree(extractable) :: TupleTree.t
+  def tree(extractable)
+  def tree(%Document{} = document), do: Document.tree(document)
+  def tree(%Result{} = result), do: Result.tree(result)
+  def tree(x), do: raise_cannot_extract(x, "tree/1")
+
+  defp raise_cannot_extract(target, extractor) do
+    raise "Cannot run Meeseeks.#{extractor} on #{inspect target}"
   end
 end
