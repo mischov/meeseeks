@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.7.2 (2017-07-13)
+
+### Enhancements
+
+  * [Extract] Add `Document.html/1` and `Document.tree/1` extractors
+  * [Extract] Update `Meeseeks.html/1` and `Meeseeks.tree/1` to accept a `Document`
+  * [Extract] Update the extraction functions to return a better error when provided with invalid input
+
+### Fixes
+
+  * [Parse] Fix doctype parsing
+
 ## v0.7.1 (2017-06-29)
 
 ### Fixes
