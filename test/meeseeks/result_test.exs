@@ -63,13 +63,6 @@ defmodule Meeseeks.ResultTest do
     assert Result.html(result) == expected
   end
 
-  test "get html of whole document" do
-    results = [%Result{id: 1, document: @document},
-               %Result{id: 2, document: @document}]
-    expected = "<!DOCTYPE html> <html><head></head>\n  <body>\n    <div class=\"main\">\n      0\n      <special:p id=\"first-p\">1</special:p>\n      <p data-id=\"second-p\" data-other-val=\"42\">2</p>\n      <script>3</script>\n      <p><![CDATA[4]]></p>\n    </div>\n  \n\n</body></html>"
-    assert Enum.map(results, &Result.html/1) |> Enum.join(" ") == expected
-  end
-
   test "get text of result's children only" do
     result = %Result{id: 7, document: @document}
     expected = "0"
@@ -98,23 +91,5 @@ defmodule Meeseeks.ResultTest do
     result = %Result{id: 9, document: @document}
     expected = {"p", [{"id", "first-p"}], ["1"]}
     assert Result.tree(result) == expected
-  end
-
-  test "get tree of whole document" do
-    results = [%Result{id: 1, document: @document},
-               %Result{id: 2, document: @document}]
-    expected = [
-      {:doctype, "html", "", ""},
-      {"html", [],
-       [{"head", [], []}, "\n  ",
-        {"body", [],
-         ["\n    ",
-          {"div", [{"class", "main"}],
-           ["\n      0\n      ", {"p", [{"id", "first-p"}], ["1"]},
-            "\n      ",
-            {"p", [{"data-id", "second-p"}, {"data-other-val", "42"}],
-             ["2"]}, "\n      ", {"script", [], ["3"]}, "\n      ",
-            {"p", [], ["4"]}, "\n    "]}, "\n  \n\n"]}]}]
-    assert Enum.map(results, &Result.tree/1) == expected
   end
 end

@@ -68,6 +68,26 @@ defmodule Meeseeks.Document do
                        roots: [node_id],
                        nodes: %{optional(node_id) => node_t}}
 
+  @doc """
+  Returns the HTML of the document.
+  """
+  def html(document) do
+    document
+    |> get_root_nodes()
+    |> Enum.reduce("", fn(root_node, acc) ->
+      acc <> Node.html(root_node, document)
+    end)
+  end
+
+  @doc """
+  Returns the `Meeseeks.TupleTree` of the document.
+  """
+  def tree(document) do
+    document
+    |> get_root_nodes()
+    |> Enum.map(&Node.tree(&1, document))
+  end
+
   # Query
 
   @doc """
@@ -189,6 +209,16 @@ defmodule Meeseeks.Document do
   end
 
   @doc """
+  Returns all of the document's root nodes.
+
+  Returns nodes in depth-first order.
+  """
+  @spec get_root_nodes(Document.t) :: [node_t]
+  def get_root_nodes(%Document{roots: roots} = document) do
+    get_nodes(document, Enum.sort(roots))
+  end
+
+  @doc """
   Returns all of the document's nodes.
 
   Returns nodes in depth-first order.
@@ -217,12 +247,12 @@ defmodule Meeseeks.Document do
   def get_node(%Document{nodes: nodes}, node_id) do
     Map.get(nodes, node_id, nil)
   end
-end
 
-defimpl Inspect, for: Meeseeks.Document do
-  @moduledoc false
+  # Inspect
 
-  def inspect(_document, _opts) do
-    "#Meeseeks.Document<{...}>"
+  defimpl Inspect do
+    def inspect(_document, _opts) do
+      "#Meeseeks.Document<{...}>"
+    end
   end
 end
