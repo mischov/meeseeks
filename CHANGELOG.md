@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.7.3 (2017-08-29)
+
+### Fixes
+
+  * [Select] Fix Elixir 1.5 related warnings
+
 ## v0.7.2 (2017-07-13)
 
 ### Enhancements
