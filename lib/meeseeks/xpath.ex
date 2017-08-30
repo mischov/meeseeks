@@ -46,16 +46,17 @@ defmodule Meeseeks.XPath do
 
   ### HTML5 doesn't support processing instructions
 
-  Because html5ever (and HTML5 in general) parses processing instructions as
-  comments, trying to select a processing instruction will not work as
-  expected if you are using meeseeks_html5ever to parse html. To select a
-  processing instruction when parsing with meeseeks_html5ever, search for
-  comment nodes.
+  Because in HTML5 processing instructions as are parsed as comments, trying
+  to select a processing instruction will not work as expected if you are
+  using `meeseeks_html5ever`'s html parser. To select a processing
+  instruction when parsing with `meeseeks_html5ever`'s html parser, search
+  for comment nodes.
 
-  If you've parsed a tuple-tree that had a {:pi, _} or {:pi, _, _} node,
+  If you've parsed a tuple-tree that had a `{:pi, _}` or `{:pi, _, _}` node,
   selecting processing instructions should work as expected, though if
   the tuple-tree is the result of parsing with `:mochiweb_html`, the data
-  might be slightly mangled due to `:mochiweb_html`'s rather suspect decision  to parse the data of all processing instructions except <?php .. ?> as
+  might be slightly mangled due to `:mochiweb_html`'s rather suspect decision
+  to parse the data of all processing instructions except `<?php .. ?>` as
   attributes.
 
   ## Examples

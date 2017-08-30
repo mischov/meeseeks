@@ -31,7 +31,7 @@ defp deps do
 end
 ```
 
-Then run `mix get.deps`.
+Then run `mix deps.get`.
 
 ## Dependencies
 
