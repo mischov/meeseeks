@@ -10,7 +10,7 @@ NAME = {NMCHAR}+
 INT = [0-9]+
 STRING = {STRING1}|{STRING2}
 W = [\s\t\r\n\f]*
-AB_FORMULA = {W}[\+\-]?{W}{INT}?[nN]{W}([\+\-]{W}{INT})?
+AB_FORMULA = ([\+\-]{W})?{INT}?[nN]({W}[\+\-]{W}{INT})?
 
 Rules.
 
@@ -25,7 +25,7 @@ Rules.
 \*= : {token, value_contains}.
 = : {token, value}.
 
-{IDENT}\( : {token, {function, drop_last(TokenChars)}}.
+{IDENT}\({W} : {token, {function, trim_and_drop_last(TokenChars)}}.
 {AB_FORMULA} : {token, {ab_formula, TokenChars}}.
 \+{INT} : {token, {int, drop_first(TokenChars)}}.
 {INT} : {token, {int, TokenChars}}.
@@ -53,9 +53,10 @@ Erlang code.
 drop_first([_|Rest]) ->
     Rest.
 
-drop_last(Chars) ->
-    Len = string:len(Chars),
-    string:substr(Chars, 1, Len - 1).
+trim_and_drop_last(Chars) ->
+    Trimmed = string:strip(Chars),
+    Len = string:len(Trimmed),
+    string:substr(Trimmed, 1, Len - 1).
 
 remove_quotes(Chars) ->
     Len = string:len(Chars),

@@ -65,7 +65,7 @@ defmodule Meeseeks.Selector.CSS.TokenizerTest do
 
   test "pseudo function with formula" do
     selector = "tag:nth-child( n+ 3)"
-    tokens = [{:ident, 'tag'}, ':', {:function, 'nth-child'}, {:ab_formula, ' n+ 3'}, ')']
+    tokens = [{:ident, 'tag'}, ':', {:function, 'nth-child'}, {:ab_formula, 'n+ 3'}, ')']
     assert Tokenizer.tokenize(selector) == tokens
   end
 
@@ -129,6 +129,12 @@ defmodule Meeseeks.Selector.CSS.TokenizerTest do
     assert Tokenizer.tokenize(selector) == tokens
   end
 
+  test "descendant starting with n (because of ab formulas)" do
+    selector = "author name"
+    tokens = [{:ident, 'author'}, :space, {:ident, 'name'}]
+    assert Tokenizer.tokenize(selector) == tokens
+  end
+
   test "child" do
     selector = "tag.class > tag#id"
     tokens = [{:ident, 'tag'}, {:class, 'class'}, '>', {:ident, 'tag'}, {:id, 'id'}]
@@ -138,6 +144,12 @@ defmodule Meeseeks.Selector.CSS.TokenizerTest do
   test "next sibling" do
     selector = "tag.class + tag#id"
     tokens = [{:ident, 'tag'}, {:class, 'class'}, '+', {:ident, 'tag'}, {:id, 'id'}]
+    assert Tokenizer.tokenize(selector) == tokens
+  end
+
+  test "next sibling starting with n (because of ab formulas)" do
+    selector = "author + name"
+    tokens = [{:ident, 'author'}, '+', {:ident, 'name'}]
     assert Tokenizer.tokenize(selector) == tokens
   end
 
