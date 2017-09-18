@@ -281,6 +281,8 @@ defmodule Meeseeks do
   @doc """
   Returns the value of an attribute in a result, or nil if there isn't one.
 
+  Nil input returns `nil`.
+
   ## Examples
 
       iex> import Meeseeks.CSS
@@ -291,12 +293,15 @@ defmodule Meeseeks do
   """
   @spec attr(extractable, String.t) :: String.t | nil
   def attr(extractable, attribute)
+  def attr(nil, _), do: nil
   def attr(%Result{} = result, attribute), do: Result.attr(result, attribute)
   def attr(x, _attribute), do: raise_cannot_extract(x, "attr/2")
 
   @doc """
   Returns a result's attributes list, which may be empty, or nil if the
   result represents a node without attributes.
+
+  Nil input returns `nil`.
 
   ## Examples
 
@@ -308,6 +313,7 @@ defmodule Meeseeks do
   """
   @spec attrs(extractable) :: [{String.t, String.t}] | nil
   def attrs(extractable)
+  def attrs(nil), do: nil
   def attrs(%Result{} = result), do: Result.attrs(result)
   def attrs(x), do: raise_cannot_extract(x, "attrs/1")
 
@@ -319,6 +325,8 @@ defmodule Meeseeks do
   comments starting with "[CDATA[" and ending with "]]". The latter behavior
   is to support the extraction of CDATA from HTML, since HTML5 parsers parse
   CDATA as comments.
+
+  Nil input returns `nil`.
 
   ## Examples
 
@@ -332,8 +340,9 @@ defmodule Meeseeks do
       iex> Meeseeks.data(result2)
       "Hi"
   """
-  @spec data(extractable) :: String.t
+  @spec data(extractable) :: String.t | nil
   def data(extractable)
+  def data(nil), do: nil
   def data(%Result{} = result), do: Result.data(result)
   def data(x), do: raise_cannot_extract(x, "data/1")
 
@@ -346,6 +355,8 @@ defmodule Meeseeks do
 
   See: https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dataset
 
+  Nil input returns `nil`.
+
   ## Examples
 
       iex> import Meeseeks.CSS
@@ -356,11 +367,15 @@ defmodule Meeseeks do
   """
   @spec dataset(extractable) :: %{optional(String.t) => String.t} | nil
   def dataset(extractable)
+  def dataset(nil), do: nil
   def dataset(%Result{} = result), do: Result.dataset(result)
   def dataset(x), do: raise_cannot_extract(x, "dataset/1")
 
   @doc """
-  Returns the combined HTML of a document or a result and its descendants.
+  Returns a string representing the combined HTML of a document or result
+  and its descendants.
+
+  Nil input returns `nil`.
 
   ## Examples
 
@@ -373,8 +388,9 @@ defmodule Meeseeks do
       iex> Meeseeks.html(result)
       "<div id=\\"example\\">Hi</div>"
   """
-  @spec html(extractable) :: String.t
+  @spec html(extractable) :: String.t | nil
   def html(extractable)
+  def html(nil), do: nil
   def html(%Document{} = document), do: Document.html(document)
   def html(%Result{} = result), do: Result.html(result)
   def html(x), do: raise_cannot_extract(x, "html/1")
@@ -382,6 +398,8 @@ defmodule Meeseeks do
   @doc """
   Returns the combined text of a result or the result's children, which may
   be an empty string.
+
+  Nil input returns `nil`.
 
   ## Examples
 
@@ -391,14 +409,17 @@ defmodule Meeseeks do
       iex> Meeseeks.own_text(result)
       "Hello,"
   """
-  @spec own_text(extractable) :: String.t
+  @spec own_text(extractable) :: String.t | nil
   def own_text(extractable)
+  def own_text(nil), do: nil
   def own_text(%Result{} = result), do: Result.own_text(result)
   def own_text(x), do: raise_cannot_extract(x, "own_text/1")
 
   @doc """
-  Returns a result's tag, or nil if the result represents a node without a
+  Returns a result's tag, or `nil` if the result represents a node without a
   tag.
+
+  Nil input returns `nil`.
 
   ## Examples
 
@@ -410,12 +431,15 @@ defmodule Meeseeks do
   """
   @spec tag(extractable) :: String.t | nil
   def tag(extractable)
+  def tag(nil), do: nil
   def tag(%Result{} = result), do: Result.tag(result)
   def tag(x), do: raise_cannot_extract(x, "tag/1")
 
   @doc """
   Returns the combined text of a result or the result's descendants, which
   may be an empty string.
+
+  Nil input returns `nil`.
 
   ## Examples
 
@@ -425,14 +449,17 @@ defmodule Meeseeks do
       iex> Meeseeks.text(result)
       "Hello, World!"
   """
-  @spec text(extractable) :: String.t
+  @spec text(extractable) :: String.t | nil
   def text(extractable)
+  def text(nil), do: nil
   def text(%Result{} = result), do: Result.text(result)
   def text(x), do: raise_cannot_extract(x, "text/1")
 
   @doc """
-  Returns the `Meeseeks.TupleTree` of a document or a result and its
+  Returns the `Meeseeks.TupleTree` of a document or result and its
   descendants.
+
+  Nil input returns `nil`.
 
   ## Examples
 
@@ -447,8 +474,9 @@ defmodule Meeseeks do
       iex> Meeseeks.tree(result)
       {"div", [{"id", "example"}], ["Hi"]}
   """
-  @spec tree(extractable) :: TupleTree.t
+  @spec tree(extractable) :: TupleTree.t | nil
   def tree(extractable)
+  def tree(nil), do: nil
   def tree(%Document{} = document), do: Document.tree(document)
   def tree(%Result{} = result), do: Result.tree(result)
   def tree(x), do: raise_cannot_extract(x, "tree/1")
