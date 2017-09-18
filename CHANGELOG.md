@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.7.4 (2017-09-18)
+
+### Enhancements
+
+  * [Extract] Update extractors to propagate nil input
+
+### Fixes
+
+  * [Select] Fix CSS tokenization bug related to ab formulas
+
 ## v0.7.3 (2017-08-29)
 
 ### Fixes
