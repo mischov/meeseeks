@@ -24,7 +24,7 @@ defmodule Meeseeks.Mixfile do
   end
 
   defp deps do
-    [{:meeseeks_html5ever, "~> 0.6.1"},
+    [{:meeseeks_html5ever, "~> 0.7.0"},
 
      # dev
      {:credo, "~> 0.6.1", only: :dev},
