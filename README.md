@@ -17,11 +17,19 @@ for story <- Meeseeks.all(html, css("tr.athing")) do
 end
 #=> [%{title: "...", url: "..."}, %{title: "...", url: "..."}, ...]
 ```
-[API documentation](https://hexdocs.pm/meeseeks/Meeseeks.html) is available.
+See [HexDocs](https://hexdocs.pm/meeseeks/Meeseeks.html) for additional documentation.
+
+## Dependencies
+
+Meeseeks depends on [html5ever](https://github.com/servo/html5ever) via [meeseeks_html5ever](https://github.com/mischov/meeseeks_html5ever).
+
+Because html5ever is a Rust library, you will need to have the Rust compiler [installed](https://www.rust-lang.org/en-US/install.html).
+
+This dependency is necessary because there are no HTML5 spec compliant parsers written in Elixir/Erlang.
 
 ## Installation
 
-Add Meeseeks to your `mix.exs`:
+Ensure Rust is installed, then add Meeseeks to your `mix.exs`:
 
 ```elixir
 defp deps do
@@ -31,15 +39,7 @@ defp deps do
 end
 ```
 
-Then run `mix deps.get`.
-
-## Dependencies
-
-Meeseeks depends on [html5ever](https://github.com/servo/html5ever) via [meeseeks_html5ever](https://github.com/mischov/meeseeks_html5ever).
-
-Because html5ever is a Rust library, you will need to have the Rust compiler [installed](https://www.rust-lang.org/en-US/install.html).
-
-This dependency is necessary because there are no HTML5 spec compliant parsers written in Elixir/Erlang.
+Finally, run `mix deps.get`.
 
 ## Getting Started
 
