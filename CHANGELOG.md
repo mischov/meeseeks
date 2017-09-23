@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.7.5 (2017-09-23)
+
+### Fixes
+
+  * [Parse] Update to `meeseeks_html5ever v0.7.0`, which fixes an erroneous panic related to calling `remove_from_parent` on a node with no parent
+
 ## v0.7.4 (2017-09-18)
 
 ### Enhancements
