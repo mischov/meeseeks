@@ -188,6 +188,10 @@ defmodule Meeseeks do
   end
 
   @spec all(queryable, selectors, Context.t) :: [Result.t] | Parser.error
+  def all(queryable, selectors, context)
+
+  def all({:error, _} = error, _selectors, _context), do: error
+
   def all(%Document{} = queryable, selectors, context) do
     Select.all(queryable, selectors, context)
   end
@@ -225,6 +229,10 @@ defmodule Meeseeks do
   end
 
   @spec one(queryable, selectors, Context.t) :: Result.t | Parser.error
+  def one(queryable, selectors, context)
+
+  def one({:error, _} = error, _selectors, _context), do: error
+
   def one(%Document{} = queryable, selectors, context) do
     Select.one(queryable, selectors, context)
   end
@@ -261,6 +269,10 @@ defmodule Meeseeks do
       #Meeseeks.Result<{ <p>1</p> }>
   """
   @spec select(queryable, selectors, Context.t) :: any | Parser.error
+  def select(queryable, selectors, context)
+
+  def select({:error, _} = error, _selectors, _context), do: error
+
   def select(%Document{} = queryable, selectors, context) do
     Select.select(queryable, selectors, context)
   end
