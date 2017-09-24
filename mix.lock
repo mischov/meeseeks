@@ -5,5 +5,5 @@
   "ex_doc": {:hex, :ex_doc, "0.15.0", "e73333785eef3488cf9144a6e847d3d647e67d02bd6fdac500687854dd5c599f", [:mix], [{:earmark, "~> 1.1", [hex: :earmark, repo: "hexpm", optional: false]}], "hexpm"},
   "hoedown": {:git, "https://github.com/hoedown/hoedown.git", "980b9c549b4348d50b683ecee6abee470b98acda", []},
   "markdown": {:git, "https://github.com/devinus/markdown.git", "d065dbcc4e242a85ca2516fdadd0082712871fd8", []},
-  "meeseeks_html5ever": {:hex, :meeseeks_html5ever, "0.7.0", "6d8e14b7e8610b89d7133217d5e5bc889a1ea40ccb331b65d95bd5eb4b3dbf5d", [:mix], [{:rustler, "~> 0.10.1", [hex: :rustler, repo: "hexpm", optional: false]}], "hexpm"},
+  "meeseeks_html5ever": {:hex, :meeseeks_html5ever, "0.8.0", "ac81ff0cf35206dbb9a9f31d7d67ecc566de8f4c380c5da3cdc5ac63b7bdbc8d", [:mix], [{:rustler, "~> 0.10.1", [hex: :rustler, repo: "hexpm", optional: false]}], "hexpm"},
   "rustler": {:hex, :rustler, "0.10.1", "cedcce8b8960e5a8d528903891e8cc7f2f0306680a1c478455e3d8e572c65cc4", [:mix], [], "hexpm"}}
