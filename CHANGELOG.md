@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.7.6 (2017-09-24)
+
+### Fixes
+
+  * [Parse] Update to `meeseeks_html5ever v0.8.0`, which removes panics related to calling `mark_script_already_started` and `get_template_contents`, and removes synchronous parsing, which did not correctly handle panics and broke the <1ms contract on first call
+  * [Select] Update select functions to propagate parse errors
+
 ## v0.7.5 (2017-09-23)
 
 ### Fixes
