@@ -6,56 +6,40 @@ defmodule Meeseeks.Selector.ElementTest do
   alias Meeseeks.Selector.Element
 
   test "namespace matches" do
-    element = %Document.Element{
-      id: 1,
-      namespace: "namespaced",
-      tag: "tag"}
-    selector = %Element{
-      selectors: [
-        %Element.Namespace{value: "namespaced"}]}
+    element = %Document.Element{id: 1, namespace: "namespaced", tag: "tag"}
+    selector = %Element{selectors: [%Element.Namespace{value: "namespaced"}]}
+
     assert Selector.match(selector, element, nil, %{})
   end
 
   test "namespace and tag matches" do
-    element = %Document.Element{
-      id: 1,
-      namespace: "namespaced",
-      tag: "tag"}
+    element = %Document.Element{id: 1, namespace: "namespaced", tag: "tag"}
+
     selector = %Element{
-      selectors: [
-        %Element.Namespace{value: "namespaced"},
-        %Element.Tag{value: "tag"}]}
+      selectors: [%Element.Namespace{value: "namespaced"}, %Element.Tag{value: "tag"}]
+    }
+
     assert Selector.match(selector, element, nil, %{})
   end
 
   test "tag matches namespaced tag" do
-    element = %Document.Element{
-      id: 1,
-      namespace: "namespaced",
-      tag: "tag"}
-    selector = %Element{
-      selectors: [
-        %Element.Tag{value: "tag"}]}
+    element = %Document.Element{id: 1, namespace: "namespaced", tag: "tag"}
+    selector = %Element{selectors: [%Element.Tag{value: "tag"}]}
+
     assert Selector.match(selector, element, nil, %{})
   end
 
   test "tag matches unnamespaced tag" do
-    element = %Document.Element{
-      id: 1,
-      tag: "tag"}
-    selector = %Element{
-      selectors: [
-        %Element.Tag{value: "tag"}]}
+    element = %Document.Element{id: 1, tag: "tag"}
+    selector = %Element{selectors: [%Element.Tag{value: "tag"}]}
+
     assert Selector.match(selector, element, nil, %{})
   end
 
   test "tag doesn't match" do
-    element = %Document.Element{
-      id: 1,
-      tag: "element"}
-    selector = %Element{
-      selectors: [
-        %Element.Tag{value: "tag"}]}
+    element = %Document.Element{id: 1, tag: "element"}
+    selector = %Element{selectors: [%Element.Tag{value: "tag"}]}
+
     refute Selector.match(selector, element, nil, %{})
   end
 
@@ -64,13 +48,18 @@ defmodule Meeseeks.Selector.ElementTest do
       id: 1,
       namespace: "some",
       tag: "tag",
-      attributes: [{"id", "valid"}, {"class", "match"}]}
+      attributes: [{"id", "valid"}, {"class", "match"}]
+    }
+
     selector = %Element{
       selectors: [
         %Element.Namespace{value: "some"},
         %Element.Tag{value: "tag"},
         %Element.Attribute.Value{attribute: "id", value: "valid"},
-        %Element.Attribute.ValueIncludes{attribute: "class", value: "match"}]}
+        %Element.Attribute.ValueIncludes{attribute: "class", value: "match"}
+      ]
+    }
+
     assert Selector.match(selector, element, nil, %{})
   end
 end
