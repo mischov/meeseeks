@@ -1,10 +1,10 @@
 defmodule Meeseeks.Selector.Combinator.Self do
-  @moduledoc false
-
   use Meeseeks.Selector.Combinator
+  @moduledoc false
 
   defstruct selector: nil
 
+  @impl true
   def next(_combinator, node, _document) do
     node
   end

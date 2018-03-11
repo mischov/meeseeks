@@ -1,12 +1,12 @@
 defmodule Meeseeks.Selector.XPath.Expr.AttributeNameTest do
-  @moduledoc false
-
   use Meeseeks.Selector.XPath.Expr
+  @moduledoc false
 
   alias Meeseeks.Selector.XPath.Expr.AttributeNameTest
 
   defstruct namespace: nil, name: nil
 
+  @impl true
   def eval(%AttributeNameTest{namespace: nil, name: "*"}, {_attr, _val}, _document, _context) do
     true
   end

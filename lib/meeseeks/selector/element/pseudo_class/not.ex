@@ -1,21 +1,23 @@
 defmodule Meeseeks.Selector.Element.PseudoClass.Not do
-  @moduledoc false
-
   use Meeseeks.Selector
+  @moduledoc false
 
   alias Meeseeks.{Document, Selector}
   alias Meeseeks.Selector.Element
 
   defstruct args: []
 
+  @impl true
   def match(selector, %Document.Element{} = element, document, context) do
     case selector.args do
-      [[sel]] -> !Selector.match(sel, element, document, context)
+      [[sel]] ->
+        !Selector.match(sel, element, document, context)
 
       [selectors] when is_list(selectors) ->
         !Enum.any?(selectors, &Selector.match(&1, element, document, context))
 
-      _ -> false
+      _ ->
+        false
     end
   end
 
@@ -23,12 +25,14 @@ defmodule Meeseeks.Selector.Element.PseudoClass.Not do
     false
   end
 
+  @impl true
   def validate(selector) do
     case selector.args do
       [selectors] when is_list(selectors) ->
         Enum.reduce_while(selectors, {:ok, selector}, &validate_selector/2)
 
-      _ -> {:error, ":not has invalid arguments"}
+      _ ->
+        {:error, ":not has invalid arguments"}
     end
   end
 
@@ -40,7 +44,8 @@ defmodule Meeseeks.Selector.Element.PseudoClass.Not do
       contains_not_selector?(selector) ->
         {:halt, {:error, ":not doesn't allow selectors containing :not selectors"}}
 
-      true -> {:cont, ok}
+      true ->
+        {:cont, ok}
     end
   end
 

@@ -1,12 +1,12 @@
 defmodule Meeseeks.Selector.Combinator.Parent do
-  @moduledoc false
-
   use Meeseeks.Selector.Combinator
+  @moduledoc false
 
   alias Meeseeks.Document
 
   defstruct selector: nil
 
+  @impl true
   def next(_combinator, node, document) do
     case Document.parent(document, node.id) do
       nil -> nil

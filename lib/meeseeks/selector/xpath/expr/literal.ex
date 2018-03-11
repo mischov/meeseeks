@@ -1,10 +1,10 @@
 defmodule Meeseeks.Selector.XPath.Expr.Literal do
-  @moduledoc false
-
   use Meeseeks.Selector.XPath.Expr
+  @moduledoc false
 
   defstruct value: ""
 
+  @impl true
   def eval(expr, _node, _document, _context) do
     expr.value
   end

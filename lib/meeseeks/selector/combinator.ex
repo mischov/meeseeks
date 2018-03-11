@@ -48,15 +48,15 @@ defmodule Meeseeks.Selector.Combinator do
   Returns the applicable node or nodes, or `nil` if there are no applicable
   nodes.
   """
-  @callback next(combinator :: t, node :: Document.node_t, document :: Document.t) ::
-  [Document.node_t] |
-  Document.node_t |
-  nil
+  @callback next(combinator :: t, node :: Document.node_t(), document :: Document.t()) ::
+              [Document.node_t()]
+              | Document.node_t()
+              | nil
 
   @doc """
   Invoked to return the combinator's selector.
   """
-  @callback selector(combinator :: t) :: Selector.t
+  @callback selector(combinator :: t) :: Selector.t()
 
   # next
 
@@ -66,7 +66,7 @@ defmodule Meeseeks.Selector.Combinator do
   Returns the applicable node or nodes, or `nil` if there are no applicable
   nodes.
   """
-  @spec next(t, Document.node_t, Document.t) :: [Document.node_t] | Document.node_t | nil
+  @spec next(t, Document.node_t(), Document.t()) :: [Document.node_t()] | Document.node_t() | nil
   def next(%{__struct__: struct} = combinator, node, document) do
     struct.next(combinator, node, document)
   end
@@ -76,7 +76,7 @@ defmodule Meeseeks.Selector.Combinator do
   @doc """
   Returns the combinator's selector.
   """
-  @spec selector(t) :: Selector.t
+  @spec selector(t) :: Selector.t()
   def selector(%{__struct__: struct} = combinator) do
     struct.selector(combinator)
   end
@@ -87,9 +87,14 @@ defmodule Meeseeks.Selector.Combinator do
   defmacro __using__(_) do
     quote do
       @behaviour Selector.Combinator
-      def next(_, _, _), do: raise "next/3 not implemented"
+
+      @impl Selector.Combinator
+      def next(_, _, _), do: raise("next/3 not implemented")
+
+      @impl Selector.Combinator
       def selector(combinator), do: combinator.selector
-      defoverridable next: 3, selector: 1
+
+      defoverridable Selector.Combinator
     end
   end
 end

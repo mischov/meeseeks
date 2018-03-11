@@ -63,10 +63,12 @@ defmodule Meeseeks.Document do
   defstruct id_counter: nil, roots: [], nodes: %{}
 
   @type node_id :: integer
-  @type node_t :: Node.t
-  @type t :: %Document{id_counter: node_id | nil,
-                       roots: [node_id],
-                       nodes: %{optional(node_id) => node_t}}
+  @type node_t :: Node.t()
+  @type t :: %Document{
+          id_counter: node_id | nil,
+          roots: [node_id],
+          nodes: %{optional(node_id) => node_t}
+        }
 
   @doc """
   Returns the HTML of the document.
@@ -74,7 +76,7 @@ defmodule Meeseeks.Document do
   def html(document) do
     document
     |> get_root_nodes()
-    |> Enum.reduce("", fn(root_node, acc) ->
+    |> Enum.reduce("", fn root_node, acc ->
       acc <> Node.html(root_node, document)
     end)
   end
@@ -94,7 +96,7 @@ defmodule Meeseeks.Document do
   Checks if a node_id refers to a `Meeseeks.Document.Element` in the context
   of the document.
   """
-  @spec element?(Document.t, node_id) :: boolean
+  @spec element?(Document.t(), node_id) :: boolean
   def element?(document, node_id) do
     case get_node(document, node_id) do
       %Element{} -> true
@@ -106,7 +108,7 @@ defmodule Meeseeks.Document do
   Returns the node id of node_id's parent in the context of the document, or
   nil if node_id does not have a parent.
   """
-  @spec parent(Document.t, node_id) :: node_id | nil
+  @spec parent(Document.t(), node_id) :: node_id | nil
   def parent(document, node_id) do
     case get_node(document, node_id) do
       %{parent: nil} -> nil
@@ -119,7 +121,7 @@ defmodule Meeseeks.Document do
 
   Returns the ancestors in reverse order: `[parent, grandparent, ...]`
   """
-  @spec ancestors(Document.t, node_id) :: [node_id]
+  @spec ancestors(Document.t(), node_id) :: [node_id]
   def ancestors(document, node_id) do
     case parent(document, node_id) do
       nil -> []
@@ -134,7 +136,7 @@ defmodule Meeseeks.Document do
 
   Returns children in depth-first order.
   """
-  @spec children(Document.t, node_id) :: [node_id]
+  @spec children(Document.t(), node_id) :: [node_id]
   def children(document, node_id) do
     case get_node(document, node_id) do
       %Document.Element{children: children} -> children
@@ -149,12 +151,14 @@ defmodule Meeseeks.Document do
 
   Returns descendants in depth-first order.
   """
-  @spec descendants(Document.t, node_id) :: [node_id]
+  @spec descendants(Document.t(), node_id) :: [node_id]
   def descendants(document, node_id) do
     case get_node(document, node_id) do
       %Element{children: children} ->
         Enum.flat_map(children, &[&1 | descendants(document, &1)])
-      _ -> []
+
+      _ ->
+        []
     end
   end
 
@@ -166,11 +170,14 @@ defmodule Meeseeks.Document do
 
   Returns siblings in depth-first order.
   """
-  @spec siblings(Document.t, node_id) :: [node_id]
+  @spec siblings(Document.t(), node_id) :: [node_id]
   def siblings(document, node_id) do
     nd = get_node(document, node_id)
+
     case nd.parent do
-      nil -> []
+      nil ->
+        []
+
       parent ->
         children(document, parent)
     end
@@ -184,11 +191,11 @@ defmodule Meeseeks.Document do
 
   Returns siblings in depth-first order.
   """
-  @spec previous_siblings(Document.t, node_id) :: [node_id]
+  @spec previous_siblings(Document.t(), node_id) :: [node_id]
   def previous_siblings(document, node_id) do
     document
     |> siblings(node_id)
-    |> Enum.take_while(fn(id) -> id != node_id end)
+    |> Enum.take_while(fn id -> id != node_id end)
   end
 
   @doc """
@@ -200,11 +207,11 @@ defmodule Meeseeks.Document do
 
   Returns siblings in depth-first order.
   """
-  @spec next_siblings(Document.t, node_id) :: [node_id]
+  @spec next_siblings(Document.t(), node_id) :: [node_id]
   def next_siblings(document, node_id) do
     document
     |> siblings(node_id)
-    |> Enum.drop_while(fn(id) -> id != node_id end)
+    |> Enum.drop_while(fn id -> id != node_id end)
     |> Enum.drop(1)
   end
 
@@ -213,7 +220,7 @@ defmodule Meeseeks.Document do
 
   Returns nodes in depth-first order.
   """
-  @spec get_root_nodes(Document.t) :: [node_t]
+  @spec get_root_nodes(Document.t()) :: [node_t]
   def get_root_nodes(%Document{roots: roots} = document) do
     get_nodes(document, Enum.sort(roots))
   end
@@ -223,8 +230,9 @@ defmodule Meeseeks.Document do
 
   Returns nodes in depth-first order.
   """
-  @spec get_nodes(Document.t) :: [node_t]
+  @spec get_nodes(Document.t()) :: [node_t]
   def get_nodes(%Document{id_counter: nil}), do: []
+
   def get_nodes(%Document{id_counter: id_counter, nodes: nodes}) do
     for id <- 1..id_counter do
       Map.get(nodes, id, nil)
@@ -236,15 +244,15 @@ defmodule Meeseeks.Document do
 
   Returns nodes in the order they are provided if node_ids are provided.
   """
-  @spec get_nodes(Document.t, [node_id]) :: [node_t]
+  @spec get_nodes(Document.t(), [node_id]) :: [node_t]
   def get_nodes(%Document{nodes: nodes}, node_ids) do
-    Enum.map(node_ids, fn(node_id) -> Map.get(nodes, node_id, nil) end)
+    Enum.map(node_ids, fn node_id -> Map.get(nodes, node_id, nil) end)
   end
 
   @doc """
   Returns the node referred to by node_id in the context of the document.
   """
-  @spec get_node(Document.t, node_id) :: node_t
+  @spec get_node(Document.t(), node_id) :: node_t
   def get_node(%Document{nodes: nodes}, node_id) do
     Map.get(nodes, node_id, nil)
   end

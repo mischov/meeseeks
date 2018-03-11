@@ -60,14 +60,18 @@ defmodule Meeseeks.Selector do
   of the document. Can return a boolean or a tuple of a boolean and a
   context.
   """
-  @callback match(selector :: t, node :: Document.node_t, document :: Document.t, context :: Context.t) ::
-  boolean | {boolean, Context.t}
+  @callback match(
+              selector :: t,
+              node :: Document.node_t(),
+              document :: Document.t(),
+              context :: Context.t()
+            ) :: boolean | {boolean, Context.t()}
 
   @doc """
   Invoked to return the selector's combinator, or `nil` if it does not have
   one.
   """
-  @callback combinator(selector :: t) :: Selector.Combinator.t | nil
+  @callback combinator(selector :: t) :: Selector.Combinator.t() | nil
 
   @doc """
   Invoked to return the selector's filter selectors, which may be an empty
@@ -91,7 +95,7 @@ defmodule Meeseeks.Selector do
   Meeseek's selection process doesn't call `validate` anywhere, so there is
   no selection-time cost for providing a validator.
   """
-  @callback validate(selector :: t) :: {:ok, t} | {:error, String.t}
+  @callback validate(selector :: t) :: {:ok, t} | {:error, String.t()}
 
   # match
 
@@ -99,7 +103,7 @@ defmodule Meeseeks.Selector do
   Checks if the selector matches the node in the context of the document. Can
   return a boolean or a tuple of a boolean and a context.
   """
-  @spec match(t, Document.node_t, Document.t, Context.t) :: boolean | {boolean, Context.t}
+  @spec match(t, Document.node_t(), Document.t(), Context.t()) :: boolean | {boolean, Context.t()}
   def match(%{__struct__: struct} = selector, node, document, context) do
     struct.match(selector, node, document, context)
   end
@@ -109,7 +113,7 @@ defmodule Meeseeks.Selector do
   @doc """
   Returns the selector's combinator, or `nil` if it does not have one.
   """
-  @spec combinator(t) :: Selector.Combinator.t | nil
+  @spec combinator(t) :: Selector.Combinator.t() | nil
   def combinator(%{__struct__: struct} = selector) do
     struct.combinator(selector)
   end
@@ -131,7 +135,7 @@ defmodule Meeseeks.Selector do
   Validates selector, returning `{:ok, selector}` if the selector is valid or
   `{:error, reason}` if it is not.
   """
-  @spec validate(t) :: {:ok, t} | {:error, String.t}
+  @spec validate(t) :: {:ok, t} | {:error, String.t()}
   def validate(%{__struct__: struct} = selector) do
     struct.validate(selector)
   end
@@ -155,11 +159,19 @@ defmodule Meeseeks.Selector do
   defmacro __using__(_) do
     quote do
       @behaviour Selector
-      def match(_, _, _, _), do: raise "match/4 not implemented"
+      @impl Selector
+      def match(_, _, _, _), do: raise("match/4 not implemented")
+
+      @impl Selector
       def combinator(_), do: nil
+
+      @impl Selector
       def filters(_), do: nil
+
+      @impl Selector
       def validate(selector), do: {:ok, selector}
-      defoverridable match: 4, combinator: 1, filters: 1, validate: 1
+
+      defoverridable Selector
     end
   end
 end

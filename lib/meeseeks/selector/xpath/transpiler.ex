@@ -18,12 +18,18 @@ defmodule Meeseeks.Selector.XPath.Transpiler do
     case combine_steps(Enum.reverse(steps)) do
       %Combinator.Self{selector: %{combinator: c, selectors: s}} ->
         %Selector.Root{combinator: c, selectors: s}
+
       %Combinator.DescendantsOrSelf{
         selector: %Selector.Element{
           combinator: %Combinator.Children{} = c,
           selectors: [],
-          filters: nil}} -> %Selector.Element{combinator: c}
-      c -> %Selector.Root{combinator: c}
+          filters: nil
+        }
+      } ->
+        %Selector.Element{combinator: c}
+
+      c ->
+        %Selector.Root{combinator: c}
     end
   end
 
@@ -39,19 +45,22 @@ defmodule Meeseeks.Selector.XPath.Transpiler do
   # combine_steps
 
   defp combine_steps(steps) do
-    Enum.reduce(steps, nil, fn(step, combinator) ->
+    Enum.reduce(steps, nil, fn step, combinator ->
       selector = combine_predicates(step.predicates, combinator)
+
       %{step.combinator | selector: selector}
     end)
   end
 
   # combine_predicates
 
-  defp combine_predicates([selector_expr|filter_exprs], combinator) do
-    filters = case Enum.map(filter_exprs, &predicate/1) do
-                [] -> nil
-                filters -> filters
-              end
+  defp combine_predicates([selector_expr | filter_exprs], combinator) do
+    filters =
+      case Enum.map(filter_exprs, &predicate/1) do
+        [] -> nil
+        filters -> filters
+      end
+
     selector(selector_expr, combinator, filters)
   end
 
@@ -61,28 +70,28 @@ defmodule Meeseeks.Selector.XPath.Transpiler do
     %Selector.Element{
       selectors: name_test_selectors(expr),
       combinator: combinator,
-      filters: filters}
+      filters: filters
+    }
   end
 
   defp selector(expr, %Combinator.Children{} = combinator, filters) do
     %Selector.Element{
       selectors: selectors_from_expr(expr),
       combinator: combinator,
-      filters: filters}
+      filters: filters
+    }
   end
 
   defp selector(expr, %Combinator.Descendants{} = combinator, filters) do
     %Selector.Element{
       selectors: selectors_from_expr(expr),
       combinator: combinator,
-      filters: filters}
+      filters: filters
+    }
   end
 
   defp selector(expr, combinator, filters) do
-    %Selector.Node{
-      selectors: selectors_from_expr(expr),
-      combinator: combinator,
-      filters: filters}
+    %Selector.Node{selectors: selectors_from_expr(expr), combinator: combinator, filters: filters}
   end
 
   # selectors_from_expr
@@ -110,8 +119,7 @@ defmodule Meeseeks.Selector.XPath.Transpiler do
   end
 
   defp name_test_selectors(%XPath.Expr.NameTest{namespace: ns, tag: tag}) do
-    [%Selector.Element.Namespace{value: ns},
-     %Selector.Element.Tag{value: tag}]
+    [%Selector.Element.Namespace{value: ns}, %Selector.Element.Tag{value: tag}]
   end
 
   # node_type_selectors

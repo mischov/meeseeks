@@ -1,13 +1,13 @@
 defmodule Meeseeks.Selector.Element.PseudoClass.NthLastOfType do
-  @moduledoc false
-
   use Meeseeks.Selector
+  @moduledoc false
 
   alias Meeseeks.Document
   alias Meeseeks.Selector.Element.PseudoClass.Helpers
 
   defstruct args: []
 
+  @impl true
   def match(_selector, %Document.Element{parent: nil}, _document, _context) do
     false
   end
@@ -16,21 +16,26 @@ defmodule Meeseeks.Selector.Element.PseudoClass.NthLastOfType do
     case selector.args do
       ["even"] ->
         index = Helpers.backwards_index_of_type(element, document)
+
         Helpers.nth?(index, 2, 0)
 
       ["odd"] ->
         index = Helpers.backwards_index_of_type(element, document)
+
         Helpers.nth?(index, 2, 1)
 
       [n] when is_integer(n) ->
         index = Helpers.backwards_index_of_type(element, document)
+
         Helpers.nth?(index, 0, n)
 
       [a, b] when is_integer(a) and is_integer(b) ->
         index = Helpers.backwards_index_of_type(element, document)
+
         Helpers.nth?(index, a, b)
 
-      _ -> false
+      _ ->
+        false
     end
   end
 
@@ -38,6 +43,7 @@ defmodule Meeseeks.Selector.Element.PseudoClass.NthLastOfType do
     false
   end
 
+  @impl true
   def validate(selector) do
     case selector.args do
       ["even"] -> {:ok, selector}

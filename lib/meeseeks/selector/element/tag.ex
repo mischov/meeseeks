@@ -1,13 +1,13 @@
 defmodule Meeseeks.Selector.Element.Tag do
-  @moduledoc false
-
   use Meeseeks.Selector
+  @moduledoc false
 
   alias Meeseeks.Document
   alias Meeseeks.Selector.Element
 
   defstruct value: nil
 
+  @impl true
   def match(%Element.Tag{value: "*"}, %Document.Element{}, _document, _context) do
     true
   end

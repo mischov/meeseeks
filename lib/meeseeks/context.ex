@@ -12,10 +12,10 @@ defmodule Meeseeks.Context do
 
   alias Meeseeks.{Accumulator, Document, Selector}
 
-  @accumulator :"__accumulator__"
+  @accumulator :__accumulator__
   @return? :"__return?__"
-  @matches :"__matches__"
-  @nodes :"__nodes__"
+  @matches :__matches__
+  @nodes :__nodes__
 
   @type t :: %{optional(any) => any}
 
@@ -35,7 +35,7 @@ defmodule Meeseeks.Context do
   Adds an accumulator to context, overriding any existing accumulator in
   context.
   """
-  @spec add_accumulator(t, Accumulator.t) :: t
+  @spec add_accumulator(t, Accumulator.t()) :: t
   def add_accumulator(context, acc) do
     Map.put(context, @accumulator, acc)
   end
@@ -58,13 +58,12 @@ defmodule Meeseeks.Context do
   id, and sets return? to the result of calling Accumulator.complete? on the
   updated accumulator if return? was not already true.
   """
-  @spec add_to_accumulator(t, Document.t, Document.node_id) :: t
+  @spec add_to_accumulator(t, Document.t(), Document.node_id()) :: t
   def add_to_accumulator(%{@accumulator => acc, @return? => ret} = context, document, id) do
     acc = Accumulator.add(acc, document, id)
     ret = ret or Accumulator.complete?(acc)
-    %{context |
-      @accumulator => acc,
-      @return? => ret}
+
+    %{context | @accumulator => acc, @return? => ret}
   end
 
   @doc """
@@ -80,10 +79,10 @@ defmodule Meeseeks.Context do
   Adds a node to a list in the context's matches map corresponding to the
   selector that the node matched.
   """
-  @spec add_to_matches(t, Selector.t, Document.node_t) :: t
+  @spec add_to_matches(t, Selector.t(), Document.node_t()) :: t
   def add_to_matches(%{@matches => matches} = context, selector, node) do
     case Map.fetch(matches, selector) do
-      {:ok, nodes} -> put_in(context[@matches][selector], [node|nodes])
+      {:ok, nodes} -> put_in(context[@matches][selector], [node | nodes])
       :error -> put_in(context[@matches][selector], [node])
     end
   end

@@ -1,15 +1,16 @@
 defmodule Meeseeks.Document.Doctype do
-  @moduledoc false
-
   use Meeseeks.Document.Node
+  @moduledoc false
 
   @enforce_keys [:id]
   defstruct parent: nil, id: nil, name: "", public: "", system: ""
 
+  @impl true
   def html(node, _document) do
-    "<!DOCTYPE #{node.name}#{format_legacy node.public, node.system}>"
+    "<!DOCTYPE #{node.name}#{format_legacy(node.public, node.system)}>"
   end
 
+  @impl true
   def tree(node, _document) do
     {:doctype, node.name, node.public, node.system}
   end

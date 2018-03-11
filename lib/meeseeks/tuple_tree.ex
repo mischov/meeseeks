@@ -18,13 +18,14 @@ defmodule Meeseeks.TupleTree do
   them.
   """
 
-  @type comment :: {:comment, String.t}
-  @type doctype :: {:doctype, String.t, String.t, String.t}
-  @type element :: {String.t, [{String.t, String.t}], [node_t]}
-  @type processing_instruction :: {:pi, String.t} |
-                                  {:pi, String.t, [{String.t, String.t}]} |
-                                  {:pi, String.t, String.t}
-  @type text :: String.t
+  @type comment :: {:comment, String.t()}
+  @type doctype :: {:doctype, String.t(), String.t(), String.t()}
+  @type element :: {String.t(), [{String.t(), String.t()}], [node_t]}
+  @type processing_instruction ::
+          {:pi, String.t()}
+          | {:pi, String.t(), [{String.t(), String.t()}]}
+          | {:pi, String.t(), String.t()}
+  @type text :: String.t()
   @type node_t :: comment | doctype | element | processing_instruction | text
   @type t :: node | [node_t]
 end

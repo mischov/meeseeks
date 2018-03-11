@@ -7,28 +7,30 @@ defmodule Meeseeks.Select do
   @matches Context.matches_key()
   @nodes Context.nodes_key()
 
-  @type queryable :: Document.t | Result.t
-  @type selectors :: Selector.t | [Selector.t]
+  @type queryable :: Document.t() | Result.t()
+  @type selectors :: Selector.t() | [Selector.t()]
 
   # All
 
-  @spec all(queryable, selectors, Context.t) :: [Result.t]
+  @spec all(queryable, selectors, Context.t()) :: [Result.t()]
   def all(queryable, selectors, context) do
     context = Context.add_accumulator(context, %Accumulator.All{})
+
     select(queryable, selectors, context)
   end
 
   # One
 
-  @spec one(queryable, selectors, Context.t) :: Result.t
+  @spec one(queryable, selectors, Context.t()) :: Result.t()
   def one(queryable, selectors, context) do
     context = Context.add_accumulator(context, %Accumulator.One{})
+
     select(queryable, selectors, context)
   end
 
   # Select
 
-  @spec select(queryable, selectors, Context.t) :: any
+  @spec select(queryable, selectors, Context.t()) :: any
   def select(queryable, selectors, context)
 
   def select(_queryable, string, _context) when is_binary(string) do
@@ -36,9 +38,11 @@ defmodule Meeseeks.Select do
   end
 
   def select(queryable, selectors, context) do
-    context = context
-    |> Context.prepare_for_selection()
-    |> Context.ensure_accumulator!()
+    context =
+      context
+      |> Context.prepare_for_selection()
+      |> Context.ensure_accumulator!()
+
     walk(queryable, selectors, context)
   end
 
@@ -53,6 +57,7 @@ defmodule Meeseeks.Select do
 
   defp walk(%Result{id: id, document: document}, selectors, context) do
     ids = [id | Document.descendants(document, id)]
+
     document
     |> Document.get_nodes(ids)
     |> walk_nodes(document, selectors, context)
@@ -82,10 +87,11 @@ defmodule Meeseeks.Select do
   end
 
   defp walk_nodes(nodes, document, selectors, context) do
-    context = Enum.reduce(
-      nodes,
-      Context.clear_matches(context),
-      fn(node, context) -> walk_node(node, document, selectors, context) end)
+    context =
+      Enum.reduce(nodes, Context.clear_matches(context), fn node, context ->
+        walk_node(node, document, selectors, context)
+      end)
+
     walk_nodes([], document, [], context)
   end
 
@@ -103,8 +109,9 @@ defmodule Meeseeks.Select do
     context
   end
 
-  defp walk_node(node, document, [selector|selectors], context) do
+  defp walk_node(node, document, [selector | selectors], context) do
     context = walk_node(node, document, selector, context)
+
     walk_node(node, document, selectors, context)
   end
 
@@ -140,15 +147,20 @@ defmodule Meeseeks.Select do
           nil -> Context.add_to_accumulator(context, document, node.id)
           combinator -> walk_combinator(combinator, node, document, context)
         end
+
       # Filters, accumulate or store for filtering
       filters ->
         combinator = Selector.combinator(selector)
+
         case {combinator, filters} do
           # Add to accumulator if there is no combinator and no filters
-          {nil, []} -> Context.add_to_accumulator(context, document, node.id)
+          {nil, []} ->
+            Context.add_to_accumulator(context, document, node.id)
+
           # Add to @matches so all matching nodes can be filtered prior to
           # continuing
-          _ -> Context.add_to_matches(context, selector, node)
+          _ ->
+            Context.add_to_matches(context, selector, node)
         end
     end
   end
@@ -157,22 +169,24 @@ defmodule Meeseeks.Select do
 
   defp filter_and_walk(matching, document, context) do
     # For each set of nodes matching a selector
-    Enum.reduce(matching, context, fn({selector, nodes}, context) ->
+    Enum.reduce(matching, context, fn {selector, nodes}, context ->
       filters = Selector.filters(selector)
       nodes = Enum.reverse(nodes)
       # Filter the nodes based on the selector's filters
       {nodes, context} = filter_nodes(filters, nodes, document, context)
+
       walk_filtered(nodes, document, selector, context)
     end)
   end
 
   defp walk_filtered(nodes, document, selector, context) do
     # For each remaining node either
-    Enum.reduce(nodes, context, fn(node, context) ->
+    Enum.reduce(nodes, context, fn node, context ->
       case Selector.combinator(selector) do
         # Add the node to the accumulator if there is no combinator
         nil ->
           Context.add_to_accumulator(context, document, node.id)
+
         # Or walk the combinator
         combinator ->
           walk_combinator(combinator, node, document, context)
@@ -186,19 +200,20 @@ defmodule Meeseeks.Select do
 
   defp filter_nodes(filters, nodes, document, context) when is_list(filters) do
     context = Map.put(context, @nodes, nodes)
-    Enum.reduce(filters, {nodes, context}, fn(filter, {nodes, context}) ->
+
+    Enum.reduce(filters, {nodes, context}, fn filter, {nodes, context} ->
       filter_nodes(filter, nodes, document, context)
       |> reverse_filtered_nodes()
     end)
   end
 
   defp filter_nodes(filter, nodes, document, context) do
-    Enum.reduce(nodes, {[], context}, fn(node, {nodes, context}) ->
+    Enum.reduce(nodes, {[], context}, fn node, {nodes, context} ->
       case Selector.match(filter, node, document, context) do
         false -> {nodes, context}
         {false, context} -> {nodes, context}
-        true -> {[node|nodes], context}
-        {true, context} -> {[node|nodes], context}
+        true -> {[node | nodes], context}
+        {true, context} -> {[node | nodes], context}
       end
     end)
   end
@@ -211,14 +226,17 @@ defmodule Meeseeks.Select do
 
   defp walk_combinator(combinator, node, document, context) do
     case Selector.Combinator.next(combinator, node, document) do
-      nil -> context
+      nil ->
+        context
 
       nodes when is_list(nodes) ->
         selector = Selector.Combinator.selector(combinator)
+
         walk_nodes(nodes, document, selector, context)
 
       node ->
         selector = Selector.Combinator.selector(combinator)
+
         walk_nodes([node], document, selector, context)
     end
   end

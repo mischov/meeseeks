@@ -29,17 +29,17 @@ defmodule Meeseeks.Result do
   @enforce_keys [:document, :id]
   defstruct document: nil, id: nil
 
-  @type t :: %Result{document: Document.t,
-                     id: Document.node_id}
+  @type t :: %Result{document: Document.t(), id: Document.node_id()}
 
   @doc """
   Returns the value for attribute in result, or nil if there isn't one.
   """
-  @spec attr(Result.t, String.t) :: String.t | nil
+  @spec attr(Result.t(), String.t()) :: String.t() | nil
   def attr(result, attribute)
 
   def attr(%Result{id: id, document: document}, attribute) do
     node = Document.get_node(document, id)
+
     Document.Node.attr(node, attribute)
   end
 
@@ -47,11 +47,12 @@ defmodule Meeseeks.Result do
   Returns the result's attributes list, which may be empty, or nil if
   result represents a node without attributes.
   """
-  @spec attrs(Result.t) :: [{String.t, String.t}] | nil
+  @spec attrs(Result.t()) :: [{String.t(), String.t()}] | nil
   def attrs(result)
 
   def attrs(%Result{id: id, document: document}) do
     node = Document.get_node(document, id)
+
     Document.Node.attrs(node)
   end
 
@@ -64,11 +65,12 @@ defmodule Meeseeks.Result do
   is to support the extraction of CDATA from HTML, since HTML5 parsers parse
   CDATA as comments.
   """
-  @spec data(Result.t) :: String.t
+  @spec data(Result.t()) :: String.t()
   def data(result)
 
   def data(%Result{id: id, document: document}) do
     node = Document.get_node(document, id)
+
     Document.Node.data(node, document)
     |> String.trim()
   end
@@ -82,7 +84,7 @@ defmodule Meeseeks.Result do
 
   See: https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dataset
   """
-  @spec dataset(Result.t) :: %{optional(String.t) => String.t} | nil
+  @spec dataset(Result.t()) :: %{optional(String.t()) => String.t()} | nil
   def dataset(result) do
     case attrs(result) do
       nil -> nil
@@ -92,7 +94,7 @@ defmodule Meeseeks.Result do
   end
 
   defp attributes_to_dataset(attributes) do
-    Enum.reduce(attributes, %{}, fn({attribute, value}, dataset) ->
+    Enum.reduce(attributes, %{}, fn {attribute, value}, dataset ->
       case Regex.run(~r/^data-([a-z0-9\-\.\:\_]+)$/, attribute) do
         [_, raw_name] -> Map.put(dataset, dataset_name(raw_name), value)
         _ -> dataset
@@ -101,7 +103,7 @@ defmodule Meeseeks.Result do
   end
 
   defp dataset_name(raw_name) do
-    Regex.replace(~r/\-([a-z])/, raw_name, fn(_, c) ->
+    Regex.replace(~r/\-([a-z])/, raw_name, fn _, c ->
       String.upcase(c)
     end)
   end
@@ -109,11 +111,12 @@ defmodule Meeseeks.Result do
   @doc """
   Returns the combined HTML of result and its descendants.
   """
-  @spec html(Result.t) :: String.t
+  @spec html(Result.t()) :: String.t()
   def html(result)
 
   def html(%Result{id: id, document: document}) do
     node = Document.get_node(document, id)
+
     Document.Node.html(node, document)
     |> String.trim()
   end
@@ -122,11 +125,12 @@ defmodule Meeseeks.Result do
   Returns the combined text of result or result's children, which may be an
   empty string.
   """
-  @spec own_text(Result.t) :: String.t
+  @spec own_text(Result.t()) :: String.t()
   def own_text(result)
 
   def own_text(%Result{id: id, document: document}) do
     node = Document.get_node(document, id)
+
     Document.Node.own_text(node, document)
     |> String.trim()
   end
@@ -134,11 +138,12 @@ defmodule Meeseeks.Result do
   @doc """
   Returns result's tag, or nil if result represents a node without a tag.
   """
-  @spec tag(Result.t) :: String.t | nil
+  @spec tag(Result.t()) :: String.t() | nil
   def tag(result)
 
   def tag(%Result{id: id, document: document}) do
     node = Document.get_node(document, id)
+
     Document.Node.tag(node)
   end
 
@@ -146,11 +151,12 @@ defmodule Meeseeks.Result do
   Returns the combined text of result or result's descendants, which may be
   an empty string.
   """
-  @spec text(Result.t) :: String.t
+  @spec text(Result.t()) :: String.t()
   def text(result)
 
   def text(%Result{id: id, document: document}) do
     node = Document.get_node(document, id)
+
     Document.Node.text(node, document)
     |> String.trim()
   end
@@ -158,11 +164,12 @@ defmodule Meeseeks.Result do
   @doc """
   Returns a `Meeseeks.TupleTree` of result and its descendants.
   """
-  @spec tree(Result.t) :: TupleTree.node_t
+  @spec tree(Result.t()) :: TupleTree.node_t()
   def tree(result)
 
   def tree(%Result{id: id, document: document}) do
     node = Document.get_node(document, id)
+
     Document.Node.tree(node, document)
   end
 end
@@ -173,8 +180,10 @@ defimpl Inspect, for: Meeseeks.Result do
   alias Meeseeks.Result
 
   def inspect(result, _opts) do
-    result_html = Result.html(result)
-    |> String.replace(~r/[\s]+/, " ")
+    result_html =
+      Result.html(result)
+      |> String.replace(~r/[\s]+/, " ")
+
     "#Meeseeks.Result<{ #{result_html} }>"
   end
 end

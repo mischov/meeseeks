@@ -2,7 +2,6 @@ defmodule Meeseeks.Document.Helpers do
   @moduledoc false
 
   def collapse_whitespace(string) do
-    string
-    |> String.replace(~r/[\s]+/, " ")
+    String.replace(string, ~r/[\s]+/, " ")
   end
 end

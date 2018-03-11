@@ -1,12 +1,12 @@
 defmodule Meeseeks.Selector.Combinator.DescendantsOrSelf do
-  @moduledoc false
-
   use Meeseeks.Selector.Combinator
+  @moduledoc false
 
   alias Meeseeks.Document
 
   defstruct selector: nil
 
+  @impl true
   def next(_combinator, %Document.Element{children: []} = element, _document) do
     element
   end
