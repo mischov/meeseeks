@@ -171,7 +171,7 @@ defmodule Meeseeks.Selector do
       @impl Selector
       def validate(selector), do: {:ok, selector}
 
-      defoverridable Selector
+      defoverridable match: 4, combinator: 1, filters: 1, validate: 1
     end
   end
 end

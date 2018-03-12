@@ -94,7 +94,7 @@ defmodule Meeseeks.Selector.Combinator do
       @impl Selector.Combinator
       def selector(combinator), do: combinator.selector
 
-      defoverridable Selector.Combinator
+      defoverridable next: 3, selector: 1
     end
   end
 end

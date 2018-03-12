@@ -107,7 +107,7 @@ defmodule Meeseeks.Document.Node do
       @impl Document.Node
       def tree(_, _), do: raise("tree/2 not implemented")
 
-      defoverridable Document.Node
+      defoverridable attr: 2, attrs: 1, data: 2, html: 2, own_text: 2, tag: 1, text: 2, tree: 2
     end
   end
 end

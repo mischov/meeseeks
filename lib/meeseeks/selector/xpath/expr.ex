@@ -36,7 +36,7 @@ defmodule Meeseeks.Selector.XPath.Expr do
       @impl XPath.Expr
       def eval(_, _, _, _), do: raise("eval/4 not implemented")
 
-      defoverridable XPath.Expr
+      defoverridable eval: 4
     end
   end
 end

@@ -76,7 +76,7 @@ defmodule Meeseeks.Accumulator do
       @impl Accumulator
       def return(_), do: raise("return/1 not implemented")
 
-      defoverridable Accumulator
+      defoverridable add: 3, complete?: 1, return: 1
     end
   end
 end
