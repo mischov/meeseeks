@@ -30,7 +30,6 @@ defmodule Meeseeks.Mixfile do
       {:meeseeks_html5ever, "~> 0.8.1"},
 
       # dev
-      {:credo, "~> 0.6.1", only: :dev},
       {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
 
       # docs
