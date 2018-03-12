@@ -5,16 +5,21 @@ defmodule Meeseeks.Parser.TupleTreeTest do
 
   @tuple_tree [
     {:doctype, "html", "", ""},
-    {"html", [], [
-        {"head", [], []},
-        {"body", [], [
-            {"div", [], [
-                {"p", [], []},
-                {"p", [], []},
-                {"div", [], [
-                    {"p", [], []},
-                    {"p", [], []}]},
-                {"p", [], []}]}]}]}]
+    {"html", [],
+     [
+       {"head", [], []},
+       {"body", [],
+        [
+          {"div", [],
+           [
+             {"p", [], []},
+             {"p", [], []},
+             {"div", [], [{"p", [], []}, {"p", [], []}]},
+             {"p", [], []}
+           ]}
+        ]}
+     ]}
+  ]
 
   @string "<!DOCTYPE html><html><head></head><body><div><p></p><p></p><div><p></p><p></p></div><p></p></div></body></html>"
 

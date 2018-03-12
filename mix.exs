@@ -4,19 +4,21 @@ defmodule Meeseeks.Mixfile do
   @version "0.7.7"
 
   def project do
-    [app: :meeseeks,
-     version: @version,
-     elixir: "~> 1.3",
-     deps: deps(),
+    [
+      app: :meeseeks,
+      version: @version,
+      elixir: "~> 1.3",
+      deps: deps(),
 
-     # Hex
-     package: package(),
-     description: description(),
+      # Hex
+      package: package(),
+      description: description(),
 
-     # HexDocs
-     name: "Meeseeks",
-     source_url: "https://github.com/mischov/meeseeks",
-     docs: [main: "Meeseeks"]]
+      # HexDocs
+      name: "Meeseeks",
+      source_url: "https://github.com/mischov/meeseeks",
+      docs: [main: "Meeseeks"]
+    ]
   end
 
   def application do
@@ -24,15 +26,16 @@ defmodule Meeseeks.Mixfile do
   end
 
   defp deps do
-    [{:meeseeks_html5ever, "~> 0.8.1"},
+    [
+      {:meeseeks_html5ever, "~> 0.8.1"},
 
-     # dev
-     {:credo, "~> 0.6.1", only: :dev},
-     {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
+      # dev
+      {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
 
-     # docs
-     {:ex_doc, "~> 0.14", only: :docs},
-     {:markdown, github: "devinus/markdown", only: :docs}]
+      # docs
+      {:ex_doc, "~> 0.14", only: :docs},
+      {:markdown, github: "devinus/markdown", only: :docs}
+    ]
   end
 
   defp description do
@@ -42,9 +45,19 @@ defmodule Meeseeks.Mixfile do
   end
 
   defp package do
-    [maintainers: ["Mischov"],
-     licenses: ["MIT"],
-     files: ["lib", "src/*.xrl", "src/*.yrl", "mix.exs", "README.md", "LICENSE", "LICENSE-APACHE"],
-     links: %{"Github" => "https://github.com/mischov/meeseeks"}]
+    [
+      maintainers: ["Mischov"],
+      licenses: ["MIT"],
+      files: [
+        "lib",
+        "src/*.xrl",
+        "src/*.yrl",
+        "mix.exs",
+        "README.md",
+        "LICENSE",
+        "LICENSE-APACHE"
+      ],
+      links: %{"Github" => "https://github.com/mischov/meeseeks"}
+    ]
   end
 end

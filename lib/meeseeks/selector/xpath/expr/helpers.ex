@@ -11,15 +11,19 @@ defmodule Meeseeks.Selector.XPath.Expr.Helpers do
   def eq_fmt(x, y, document) when is_list(x) or is_list(y) do
     nodes_fmt(x, y, document)
   end
+
   def eq_fmt(x, y, document) when is_boolean(x) or is_boolean(y) do
     boolean(x, document)
   end
+
   def eq_fmt(x, y, document) when is_number(x) or is_number(y) do
     number(x, document)
   end
+
   def eq_fmt(x, y, document) when x in @other_nums or y in @other_nums do
     number(x, document)
   end
+
   def eq_fmt(x, _y, document) do
     string(x, document)
   end
@@ -29,6 +33,7 @@ defmodule Meeseeks.Selector.XPath.Expr.Helpers do
   def cmp_fmt(x, y, document) when is_list(x) or is_list(y) do
     nodes_fmt(x, y, document)
   end
+
   def cmp_fmt(x, _y, document) do
     number(x, document)
   end
@@ -38,27 +43,35 @@ defmodule Meeseeks.Selector.XPath.Expr.Helpers do
   defp nodes_fmt(x, _y, _document) when is_number(x) do
     x
   end
+
   defp nodes_fmt(x, _y, _document) when x in @other_nums do
     x
   end
+
   defp nodes_fmt(x, _y, _document) when is_boolean(x) do
     x
   end
+
   defp nodes_fmt(x, _y, _document) when is_binary(x) do
     x
   end
+
   defp nodes_fmt(x, y, document) when is_list(x) and is_number(y) do
     Enum.map(x, &(string(&1, document) |> number(document)))
   end
+
   defp nodes_fmt(x, y, document) when is_list(x) and y in @other_nums do
     Enum.map(x, &(string(&1, document) |> number(document)))
   end
+
   defp nodes_fmt(x, y, document) when is_list(x) and is_boolean(y) do
     boolean(x, document)
   end
+
   defp nodes_fmt(x, y, document) when is_list(x) and is_binary(y) do
     Enum.map(x, &string(&1, document))
   end
+
   defp nodes_fmt(x, y, document) when is_list(x) and is_list(y) do
     Enum.map(x, &string(&1, document))
   end
@@ -76,7 +89,7 @@ defmodule Meeseeks.Selector.XPath.Expr.Helpers do
   def boolean(x, _document) when is_integer(x), do: x != 0
   def boolean(x, _document) when is_float(x), do: x != 0.0
   def boolean(x, _document) when is_list(x), do: nodes?(x)
-  def boolean(x, _document), do: raise ArgumentError, arg_error("boolean", x)
+  def boolean(x, _document), do: raise(ArgumentError, arg_error("boolean", x))
 
   # number
 
@@ -89,6 +102,7 @@ defmodule Meeseeks.Selector.XPath.Expr.Helpers do
   def number(:"-Infinity", _document), do: :"-Infinity"
   def number(x, _document) when is_number(x), do: x
   def number(x, document) when is_list(x), do: string(x, document) |> number(document)
+
   def number(x, _document) when is_binary(x) do
     case Regex.run(~r/^\s*(\-?\d+(\.\d+)?)\s*$/, x) do
       [_, s] -> String.to_integer(s)
@@ -96,7 +110,8 @@ defmodule Meeseeks.Selector.XPath.Expr.Helpers do
       _ -> :NaN
     end
   end
-  def number(x, _document), do: raise ArgumentError, arg_error("number", x)
+
+  def number(x, _document), do: raise(ArgumentError, arg_error("number", x))
 
   # string
 
@@ -113,25 +128,30 @@ defmodule Meeseeks.Selector.XPath.Expr.Helpers do
   def string(%Document.Comment{} = x, _document), do: x.content
   def string(%Document.Data{} = x, _document), do: x.content
   def string(%Document.Text{} = x, _document), do: x.content
+
   def string(%Document.Element{} = x, document) do
     children = Document.children(document, x.id)
     child_nodes = Document.get_nodes(document, children)
+
     child_nodes
     |> Enum.map(&string(&1, document))
     |> Enum.join("")
   end
+
   def string(x, _document) when is_binary(x), do: x
   def string(x, _document) when is_integer(x), do: Integer.to_string(x)
   def string(x, _document) when is_float(x), do: Float.to_string(x)
+
   def string(x, document) when is_list(x) do
     if nodes?(x) do
-      [node|_] = x
+      [node | _] = x
       string(node, document)
     else
       raise ArgumentError, arg_error("string", x)
     end
   end
-  def string(x, _document), do: raise ArgumentError, arg_error("string", x)
+
+  def string(x, _document), do: raise(ArgumentError, arg_error("string", x))
 
   # nodes?
 
@@ -156,7 +176,7 @@ defmodule Meeseeks.Selector.XPath.Expr.Helpers do
   def position(node, context) do
     context
     |> Map.fetch!(@nodes)
-    |> Enum.find_index(fn(n) -> node == n end)
+    |> Enum.find_index(fn n -> node == n end)
     |> plus_one()
   end
 
@@ -166,6 +186,7 @@ defmodule Meeseeks.Selector.XPath.Expr.Helpers do
   def substring(_s, :Infinity), do: ""
   def substring(s, :"-Infinity"), do: s
   def substring(s, n) when n <= 0, do: s
+
   def substring(s, n) do
     {_, sub} = String.split_at(s, n)
     sub
@@ -178,12 +199,18 @@ defmodule Meeseeks.Selector.XPath.Expr.Helpers do
   def substring(_s, :Infinity, _n2), do: ""
   def substring(s, :"-Infinity", :Infinity), do: s
   def substring(s, :"-Infinity", n2), do: String.slice(s, 0, n2)
+
   def substring(s, n1, n2) when n1 <= 0 do
     case n2 do
-      :"-Infinity" -> ""
-      :Infinity -> String.slice(s, 0, String.length(s))
+      :"-Infinity" ->
+        ""
+
+      :Infinity ->
+        String.slice(s, 0, String.length(s))
+
       _ ->
         len = n1 + n2
+
         if len <= 0 do
           ""
         else
@@ -191,17 +218,21 @@ defmodule Meeseeks.Selector.XPath.Expr.Helpers do
         end
     end
   end
+
   def substring(s, n1, n2) do
     case n2 do
-      :"-Infinity" -> ""
-      :Infinity -> String.slice(s, n1, String.length(s))
+      :"-Infinity" ->
+        ""
+
+      :Infinity ->
+        String.slice(s, n1, String.length(s))
+
       _ ->
         if n2 <= 0 do
           ""
         else
           String.slice(s, n1, n2)
         end
-
     end
   end
 
@@ -325,7 +356,7 @@ defmodule Meeseeks.Selector.XPath.Expr.Helpers do
   def negate(:NaN), do: :NaN
   def negate(:Infinity), do: :"-Infinity"
   def negate(:"-Infinity"), do: :Infinity
-  def negate(n), do: - n
+  def negate(n), do: -n
 
   # misc
 

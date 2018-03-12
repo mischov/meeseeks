@@ -17,7 +17,7 @@ defmodule Meeseeks.Accumulator do
   @doc """
   Invoked to add a selected node to the accumulator.
   """
-  @callback add(accumulator :: t, document :: Document.t, id :: Document.node_id) :: t
+  @callback add(accumulator :: t, document :: Document.t(), id :: Document.node_id()) :: t
 
   @doc """
   Invoked to determine if the accumulator is satisfied.
@@ -34,7 +34,7 @@ defmodule Meeseeks.Accumulator do
   @doc """
   Provided a document and a node id, returns an updated accumulator.
   """
-  @spec add(t, Document.t, Document.node_id) :: t
+  @spec add(t, Document.t(), Document.node_id()) :: t
   def add(%{__struct__: struct} = accumulator, document, id) do
     struct.add(accumulator, document, id)
   end
@@ -66,9 +66,16 @@ defmodule Meeseeks.Accumulator do
   defmacro __using__(_) do
     quote do
       @behaviour Accumulator
-      def add(_, _, _), do: raise "add/3 not implemented"
+
+      @impl Accumulator
+      def add(_, _, _), do: raise("add/3 not implemented")
+
+      @impl Accumulator
       def complete?(_), do: false
-      def return(_), do: raise "return/1 not implemented"
+
+      @impl Accumulator
+      def return(_), do: raise("return/1 not implemented")
+
       defoverridable add: 3, complete?: 1, return: 1
     end
   end

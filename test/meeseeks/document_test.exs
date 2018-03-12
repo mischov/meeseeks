@@ -5,20 +5,27 @@ defmodule Meeseeks.DocumentTest do
 
   @tree [
     {:doctype, "html", "", ""},
-    {"html", [], [
-        {"head", [], []},
-        {"body", [], [
-            {"div", [], [
-                {"p", [], []},
-                {"p", [], []},
-                {"div", [], [
-                    {"p", [], []},
-                    {"p", [], []}]},
-                {"p", [], []}]}]}]}]
+    {"html", [],
+     [
+       {"head", [], []},
+       {"body", [],
+        [
+          {"div", [],
+           [
+             {"p", [], []},
+             {"p", [], []},
+             {"div", [], [{"p", [], []}, {"p", [], []}]},
+             {"p", [], []}
+           ]}
+        ]}
+     ]}
+  ]
   @document Meeseeks.Parser.parse(@tree)
 
   test "html" do
-    expected = "<!DOCTYPE html><html><head></head><body><div><p></p><p></p><div><p></p><p></p></div><p></p></div></body></html>"
+    expected =
+      "<!DOCTYPE html><html><head></head><body><div><p></p><p></p><div><p></p><p></p></div><p></p></div></body></html>"
+
     assert Document.html(@document) == expected
   end
 
@@ -69,7 +76,9 @@ defmodule Meeseeks.DocumentTest do
   test "get_root_nodes" do
     expected = [
       %Meeseeks.Document.Doctype{id: 1, name: "html", public: "", system: ""},
-      %Meeseeks.Document.Element{id: 2, tag: "html", children: [3, 4]}]
+      %Meeseeks.Document.Element{id: 2, tag: "html", children: [3, 4]}
+    ]
+
     assert Document.get_root_nodes(@document) == expected
   end
 end

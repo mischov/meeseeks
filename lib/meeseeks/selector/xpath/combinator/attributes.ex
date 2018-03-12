@@ -1,12 +1,12 @@
 defmodule Meeseeks.Selector.XPath.Combinator.Attributes do
-  @moduledoc false
-
   use Meeseeks.Selector.Combinator
+  @moduledoc false
 
   alias Meeseeks.Document
 
   defstruct selector: nil
 
+  @impl true
   def next(_combinator, %Document.Element{} = element, _document) do
     element.attributes
   end

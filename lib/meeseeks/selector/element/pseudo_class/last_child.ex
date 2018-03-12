@@ -1,19 +1,22 @@
 defmodule Meeseeks.Selector.Element.PseudoClass.LastChild do
-  @moduledoc false
-
   use Meeseeks.Selector
+  @moduledoc false
 
   alias Meeseeks.Document
   alias Meeseeks.Selector.Element.PseudoClass.Helpers
 
   defstruct args: []
 
+  @impl true
   def match(_selector, %Document.Element{parent: nil}, _document, _context) do
     false
   end
 
   def match(_selector, %Document.Element{} = element, document, _context) do
-    last_sibling = Helpers.siblings(element, document) |> List.last()
+    last_sibling =
+      Helpers.siblings(element, document)
+      |> List.last()
+
     element.id == last_sibling
   end
 
@@ -21,6 +24,7 @@ defmodule Meeseeks.Selector.Element.PseudoClass.LastChild do
     false
   end
 
+  @impl true
   def validate(selector) do
     case selector.args do
       [] -> {:ok, selector}

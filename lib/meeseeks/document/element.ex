@@ -1,7 +1,6 @@
 defmodule Meeseeks.Document.Element do
-  @moduledoc false
-
   use Meeseeks.Document.Node
+  @moduledoc false
 
   alias Meeseeks.Document
   alias Meeseeks.Document.Helpers
@@ -9,19 +8,37 @@ defmodule Meeseeks.Document.Element do
   @enforce_keys [:id]
   defstruct parent: nil, id: nil, namespace: "", tag: "", attributes: [], children: []
 
-  @self_closing_tags ["area", "base", "br", "col", "command", "embed", "hr",
-                      "img", "input", "keygen", "link", "meta", "param",
-                      "source", "track", "wbr"]
+  @self_closing_tags [
+    "area",
+    "base",
+    "br",
+    "col",
+    "command",
+    "embed",
+    "hr",
+    "img",
+    "input",
+    "keygen",
+    "link",
+    "meta",
+    "param",
+    "source",
+    "track",
+    "wbr"
+  ]
 
+  @impl true
   def attr(node, attribute) do
     {_attr, value} = List.keyfind(node.attributes, attribute, 0, {nil, nil})
     value
   end
 
+  @impl true
   def attrs(node) do
     node.attributes
   end
 
+  @impl true
   def data(node, document) do
     child_nodes(document, node)
     |> Enum.filter(&data_node?/1)
@@ -29,6 +46,7 @@ defmodule Meeseeks.Document.Element do
     |> Helpers.collapse_whitespace()
   end
 
+  @impl true
   def html(node, document) do
     if node.tag in @self_closing_tags and node.children == [] do
       self_closing_tag(node)
@@ -37,6 +55,7 @@ defmodule Meeseeks.Document.Element do
     end
   end
 
+  @impl true
   def own_text(node, document) do
     child_nodes(document, node)
     |> Enum.filter(&text_node?/1)
@@ -44,21 +63,23 @@ defmodule Meeseeks.Document.Element do
     |> Helpers.collapse_whitespace()
   end
 
+  @impl true
   def tag(node) do
     node.tag
   end
 
+  @impl true
   def text(node, document) do
     child_nodes(document, node)
     |> Enum.reduce("", &join_text(&1, &2, document))
     |> Helpers.collapse_whitespace()
   end
 
+  @impl true
   def tree(node, document) do
     child_nodes = child_nodes(document, node)
-    {node.tag,
-     node.attributes,
-     Enum.map(child_nodes, &Document.Node.tree(&1, document))}
+
+    {node.tag, node.attributes, Enum.map(child_nodes, &Document.Node.tree(&1, document))}
   end
 
   # Helpers
@@ -66,12 +87,14 @@ defmodule Meeseeks.Document.Element do
   defp self_closing_tag(node) do
     tag = full_tag(node.namespace, node.tag)
     attributes = join_attributes(node.attributes)
+
     "<#{tag}#{attributes} />"
   end
 
   defp opening_tag(node) do
     tag = full_tag(node.namespace, node.tag)
     attributes = join_attributes(node.attributes)
+
     "<#{tag}#{attributes}>"
   end
 
@@ -82,6 +105,7 @@ defmodule Meeseeks.Document.Element do
 
   defp closing_tag(node) do
     tag = full_tag(node.namespace, node.tag)
+
     "</#{tag}>"
   end
 
@@ -90,6 +114,7 @@ defmodule Meeseeks.Document.Element do
 
   defp child_nodes(document, node) do
     children = Document.children(document, node.id)
+
     Document.get_nodes(document, children)
   end
 
@@ -127,6 +152,5 @@ defmodule Meeseeks.Document.Element do
       "" -> acc
       text -> "#{acc} #{text}"
     end
-
   end
 end

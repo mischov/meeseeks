@@ -10,6 +10,7 @@ defmodule Meeseeks.Selector.XPath.Expr.NameTestTest do
     document = nil
     context = nil
     expected = true
+
     assert Expr.eval(expr, node, document, context) == expected
   end
 
@@ -19,6 +20,7 @@ defmodule Meeseeks.Selector.XPath.Expr.NameTestTest do
     document = nil
     context = nil
     expected = true
+
     assert Expr.eval(expr, node, document, context) == expected
   end
 
@@ -28,6 +30,7 @@ defmodule Meeseeks.Selector.XPath.Expr.NameTestTest do
     document = nil
     context = nil
     expected = false
+
     assert Expr.eval(expr, node, document, context) == expected
   end
 
@@ -37,6 +40,7 @@ defmodule Meeseeks.Selector.XPath.Expr.NameTestTest do
     document = nil
     context = nil
     expected = false
+
     assert Expr.eval(expr, node, document, context) == expected
   end
 
@@ -46,6 +50,7 @@ defmodule Meeseeks.Selector.XPath.Expr.NameTestTest do
     document = nil
     context = nil
     expected = true
+
     assert Expr.eval(expr, node, document, context) == expected
   end
 
@@ -55,6 +60,7 @@ defmodule Meeseeks.Selector.XPath.Expr.NameTestTest do
     document = nil
     context = nil
     expected = false
+
     assert Expr.eval(expr, node, document, context) == expected
   end
 
@@ -64,6 +70,7 @@ defmodule Meeseeks.Selector.XPath.Expr.NameTestTest do
     document = nil
     context = nil
     expected = false
+
     assert Expr.eval(expr, node, document, context) == expected
   end
 
@@ -73,6 +80,7 @@ defmodule Meeseeks.Selector.XPath.Expr.NameTestTest do
     document = nil
     context = nil
     expected = true
+
     assert Expr.eval(expr, node, document, context) == expected
   end
 
@@ -82,6 +90,7 @@ defmodule Meeseeks.Selector.XPath.Expr.NameTestTest do
     document = nil
     context = nil
     expected = false
+
     assert Expr.eval(expr, node, document, context) == expected
   end
 
@@ -91,6 +100,7 @@ defmodule Meeseeks.Selector.XPath.Expr.NameTestTest do
     document = nil
     context = nil
     expected = true
+
     assert Expr.eval(expr, node, document, context) == expected
   end
 
@@ -100,6 +110,7 @@ defmodule Meeseeks.Selector.XPath.Expr.NameTestTest do
     document = nil
     context = nil
     expected = false
+
     assert Expr.eval(expr, node, document, context) == expected
   end
 
@@ -109,6 +120,7 @@ defmodule Meeseeks.Selector.XPath.Expr.NameTestTest do
     document = nil
     context = nil
     expected = false
+
     assert Expr.eval(expr, node, document, context) == expected
   end
 
@@ -118,6 +130,7 @@ defmodule Meeseeks.Selector.XPath.Expr.NameTestTest do
     document = nil
     context = nil
     expected = false
+
     assert Expr.eval(expr, node, document, context) == expected
   end
 
@@ -127,6 +140,7 @@ defmodule Meeseeks.Selector.XPath.Expr.NameTestTest do
     document = nil
     context = nil
     expected = false
+
     assert Expr.eval(expr, node, document, context) == expected
   end
 end

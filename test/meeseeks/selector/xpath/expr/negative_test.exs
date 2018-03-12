@@ -5,16 +5,15 @@ defmodule Meeseeks.Selector.XPath.Expr.NegativeTest do
   alias Meeseeks.Selector.XPath.Expr
 
   @document Meeseeks.parse(
-    {"book", [], [
-        {"chapter", [], [
-            {"page", [], ["1"]},
-            {"page", [], ["2"]}]}]})
+              {"book", [], [{"chapter", [], [{"page", [], ["1"]}, {"page", [], ["2"]}]}]}
+            )
 
   test "negate positive" do
     expr = %Expr.Negative{e: %Expr.Number{value: 2}}
     node = Document.get_node(@document, 4)
     context = %{}
     expected = -2
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -23,6 +22,7 @@ defmodule Meeseeks.Selector.XPath.Expr.NegativeTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = 2
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -31,6 +31,7 @@ defmodule Meeseeks.Selector.XPath.Expr.NegativeTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = :NaN
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -39,6 +40,7 @@ defmodule Meeseeks.Selector.XPath.Expr.NegativeTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = :"-Infinity"
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -47,6 +49,7 @@ defmodule Meeseeks.Selector.XPath.Expr.NegativeTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = :Infinity
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 end

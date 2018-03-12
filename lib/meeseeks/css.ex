@@ -79,4 +79,8 @@ defmodule Meeseeks.CSS do
   defmacro css({:<<>>, _meta, _pieces} = interpolated_string) do
     quote do: CSS.compile_selectors(unquote(interpolated_string))
   end
+
+  defmacro css({:<>, _meta, _pieces} = interpolated_string) do
+    quote do: CSS.compile_selectors(unquote(interpolated_string))
+  end
 end

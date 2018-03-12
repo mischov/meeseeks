@@ -1,13 +1,13 @@
 defmodule Meeseeks.Selector.Element.Namespace do
-  @moduledoc false
-
   use Meeseeks.Selector
+  @moduledoc false
 
   alias Meeseeks.Document
   alias Meeseeks.Selector.Element
 
   defstruct value: nil
 
+  @impl true
   def match(%Element.Namespace{value: "*"}, %Document.Element{}, _document, _context) do
     true
   end

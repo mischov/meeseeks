@@ -1,7 +1,6 @@
 defmodule Meeseeks.Selector.XPath.Expr.Path do
-  @moduledoc false
-
   use Meeseeks.Selector.XPath.Expr
+  @moduledoc false
 
   alias Meeseeks.Document
   alias Meeseeks.Selector.XPath.Expr
@@ -9,8 +8,10 @@ defmodule Meeseeks.Selector.XPath.Expr.Path do
 
   defstruct type: nil, steps: []
 
+  @impl true
   def eval(%Path{type: :abs} = expr, _node, document, context) do
     root_nodes = Document.get_nodes(document, document.roots)
+
     next_step(expr.steps, root_nodes, document, context)
   end
 
@@ -22,25 +23,30 @@ defmodule Meeseeks.Selector.XPath.Expr.Path do
     []
   end
 
-  defp next_step([step|steps], nodes, document, context) when is_list(nodes) do
+  defp next_step([step | steps], nodes, document, context) when is_list(nodes) do
     case steps do
       [] ->
-        Enum.reduce(nodes, [], fn(node, nodes) ->
+        Enum.reduce(nodes, [], fn node, nodes ->
           nodes ++ Expr.eval(step, node, document, context)
         end)
+
       steps ->
-        Enum.reduce(nodes, [], fn(node, nodes) ->
+        Enum.reduce(nodes, [], fn node, nodes ->
           v = Expr.eval(step, node, document, context)
+
           nodes ++ next_step(steps, v, document, context)
         end)
     end
   end
 
-  defp next_step([step|steps], node, document, context) do
+  defp next_step([step | steps], node, document, context) do
     case steps do
-      [] -> Expr.eval(step, node, document, context)
+      [] ->
+        Expr.eval(step, node, document, context)
+
       steps ->
         v = Expr.eval(step, node, document, context)
+
         next_step(steps, v, document, context)
     end
   end

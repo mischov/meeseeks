@@ -1,5 +1,4 @@
 defmodule Meeseeks do
-
   alias Meeseeks.{Context, Document, Parser, Result, Select, Selector, TupleTree}
 
   @moduledoc """
@@ -132,9 +131,9 @@ defmodule Meeseeks do
   `Meeseeks.Selector.Combinator`
   """
 
-  @type queryable :: Parser.source | Document.t | Result.t
-  @type extractable :: Document.t | Result.t
-  @type selectors :: Selector.t | [Selector.t]
+  @type queryable :: Parser.source() | Document.t() | Result.t()
+  @type extractable :: Document.t() | Result.t()
+  @type selectors :: Selector.t() | [Selector.t()]
 
   # Parse
 
@@ -155,12 +154,12 @@ defmodule Meeseeks do
       iex> Meeseeks.parse("<book><author>GGK</author></book>", :xml)
       #Meeseeks.Document<{...}>
   """
-  @spec parse(Parser.source) :: Document.t | Parser.error
+  @spec parse(Parser.source()) :: Document.t() | Parser.error()
   def parse(source) do
     Parser.parse(source)
   end
 
-  @spec parse(Parser.source, Parser.type) :: Document.t | Parser.error
+  @spec parse(Parser.source(), Parser.type()) :: Document.t() | Parser.error()
   def parse(source, parser) do
     Parser.parse(source, parser)
   end
@@ -182,12 +181,12 @@ defmodule Meeseeks do
       iex> Meeseeks.all("<div id=main><p>1</p><p>2</p><p>3</p></div>", css("#main p")) |> List.first()
       #Meeseeks.Result<{ <p>1</p> }>
   """
-  @spec all(queryable, selectors) :: [Result.t] | Parser.error
+  @spec all(queryable, selectors) :: [Result.t()] | Parser.error()
   def all(queryable, selectors) do
     all(queryable, selectors, %{})
   end
 
-  @spec all(queryable, selectors, Context.t) :: [Result.t] | Parser.error
+  @spec all(queryable, selectors, Context.t()) :: [Result.t()] | Parser.error()
   def all(queryable, selectors, context)
 
   def all({:error, _} = error, _selectors, _context), do: error
@@ -223,12 +222,12 @@ defmodule Meeseeks do
       iex> Meeseeks.one("<div id=main><p>1</p><p>2</p><p>3</p></div>", css("#main p"))
       #Meeseeks.Result<{ <p>1</p> }>
   """
-  @spec one(queryable, selectors) :: Result.t | Parser.error
+  @spec one(queryable, selectors) :: Result.t() | Parser.error()
   def one(queryable, selectors) do
     one(queryable, selectors, %{})
   end
 
-  @spec one(queryable, selectors, Context.t) :: Result.t | Parser.error
+  @spec one(queryable, selectors, Context.t()) :: Result.t() | Parser.error()
   def one(queryable, selectors, context)
 
   def one({:error, _} = error, _selectors, _context), do: error
@@ -268,7 +267,7 @@ defmodule Meeseeks do
       iex> Meeseeks.select("<div id=main><p>1</p><p>2</p><p>3</p></div>", css("#main p"), context)
       #Meeseeks.Result<{ <p>1</p> }>
   """
-  @spec select(queryable, selectors, Context.t) :: any | Parser.error
+  @spec select(queryable, selectors, Context.t()) :: any | Parser.error()
   def select(queryable, selectors, context)
 
   def select({:error, _} = error, _selectors, _context), do: error
@@ -303,7 +302,7 @@ defmodule Meeseeks do
       iex> Meeseeks.attr(result, "id")
       "example"
   """
-  @spec attr(extractable, String.t) :: String.t | nil
+  @spec attr(extractable, String.t()) :: String.t() | nil
   def attr(extractable, attribute)
   def attr(nil, _), do: nil
   def attr(%Result{} = result, attribute), do: Result.attr(result, attribute)
@@ -323,7 +322,7 @@ defmodule Meeseeks do
       iex> Meeseeks.attrs(result)
       [{"id", "example"}]
   """
-  @spec attrs(extractable) :: [{String.t, String.t}] | nil
+  @spec attrs(extractable) :: [{String.t(), String.t()}] | nil
   def attrs(extractable)
   def attrs(nil), do: nil
   def attrs(%Result{} = result), do: Result.attrs(result)
@@ -352,7 +351,7 @@ defmodule Meeseeks do
       iex> Meeseeks.data(result2)
       "Hi"
   """
-  @spec data(extractable) :: String.t | nil
+  @spec data(extractable) :: String.t() | nil
   def data(extractable)
   def data(nil), do: nil
   def data(%Result{} = result), do: Result.data(result)
@@ -377,7 +376,7 @@ defmodule Meeseeks do
       iex> Meeseeks.dataset(result)
       %{"xVal" => "1", "yVal" => "2"}
   """
-  @spec dataset(extractable) :: %{optional(String.t) => String.t} | nil
+  @spec dataset(extractable) :: %{optional(String.t()) => String.t()} | nil
   def dataset(extractable)
   def dataset(nil), do: nil
   def dataset(%Result{} = result), do: Result.dataset(result)
@@ -400,7 +399,7 @@ defmodule Meeseeks do
       iex> Meeseeks.html(result)
       "<div id=\\"example\\">Hi</div>"
   """
-  @spec html(extractable) :: String.t | nil
+  @spec html(extractable) :: String.t() | nil
   def html(extractable)
   def html(nil), do: nil
   def html(%Document{} = document), do: Document.html(document)
@@ -421,7 +420,7 @@ defmodule Meeseeks do
       iex> Meeseeks.own_text(result)
       "Hello,"
   """
-  @spec own_text(extractable) :: String.t | nil
+  @spec own_text(extractable) :: String.t() | nil
   def own_text(extractable)
   def own_text(nil), do: nil
   def own_text(%Result{} = result), do: Result.own_text(result)
@@ -441,7 +440,7 @@ defmodule Meeseeks do
       iex> Meeseeks.tag(result)
       "div"
   """
-  @spec tag(extractable) :: String.t | nil
+  @spec tag(extractable) :: String.t() | nil
   def tag(extractable)
   def tag(nil), do: nil
   def tag(%Result{} = result), do: Result.tag(result)
@@ -461,7 +460,7 @@ defmodule Meeseeks do
       iex> Meeseeks.text(result)
       "Hello, World!"
   """
-  @spec text(extractable) :: String.t | nil
+  @spec text(extractable) :: String.t() | nil
   def text(extractable)
   def text(nil), do: nil
   def text(%Result{} = result), do: Result.text(result)
@@ -486,7 +485,7 @@ defmodule Meeseeks do
       iex> Meeseeks.tree(result)
       {"div", [{"id", "example"}], ["Hi"]}
   """
-  @spec tree(extractable) :: TupleTree.t | nil
+  @spec tree(extractable) :: TupleTree.t() | nil
   def tree(extractable)
   def tree(nil), do: nil
   def tree(%Document{} = document), do: Document.tree(document)
@@ -494,6 +493,6 @@ defmodule Meeseeks do
   def tree(x), do: raise_cannot_extract(x, "tree/1")
 
   defp raise_cannot_extract(target, extractor) do
-    raise "Cannot run Meeseeks.#{extractor} on #{inspect target}"
+    raise "Cannot run Meeseeks.#{extractor} on #{inspect(target)}"
   end
 end

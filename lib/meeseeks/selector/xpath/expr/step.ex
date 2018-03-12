@@ -1,19 +1,23 @@
 defmodule Meeseeks.Selector.XPath.Expr.Step do
-  @moduledoc false
-
   use Meeseeks.Selector.XPath.Expr
+  @moduledoc false
 
   alias Meeseeks.Selector
   alias Meeseeks.Selector.XPath.Expr
 
   defstruct combinator: nil, predicates: []
 
+  @impl true
   def eval(expr, node, document, context) do
     case Selector.Combinator.next(expr.combinator, node, document) do
-      nil -> []
+      nil ->
+        []
+
       nodes when is_list(nodes) ->
         filter_nodes(nodes, expr.predicates, document, context)
-      node -> filter_nodes([node], expr.predicates, document, context)
+
+      node ->
+        filter_nodes([node], expr.predicates, document, context)
     end
   end
 

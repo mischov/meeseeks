@@ -1,13 +1,13 @@
 defmodule Meeseeks.Selector.XPath.Expr.NameTest do
-  @moduledoc false
-
   use Meeseeks.Selector.XPath.Expr
+  @moduledoc false
 
   alias Meeseeks.Document
   alias Meeseeks.Selector.XPath.Expr.NameTest
 
   defstruct namespace: nil, tag: nil
 
+  @impl true
   def eval(%NameTest{namespace: nil, tag: "*"}, %Document.Element{}, _document, _context) do
     true
   end
@@ -20,7 +20,12 @@ defmodule Meeseeks.Selector.XPath.Expr.NameTest do
     element.namespace == ns
   end
 
-  def eval(%NameTest{namespace: nil, tag: tag}, %Document.Element{} = element, _document, _context) do
+  def eval(
+        %NameTest{namespace: nil, tag: tag},
+        %Document.Element{} = element,
+        _document,
+        _context
+      ) do
     element.tag == tag
   end
 

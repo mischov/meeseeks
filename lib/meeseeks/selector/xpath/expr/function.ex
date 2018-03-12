@@ -1,7 +1,6 @@
 defmodule Meeseeks.Selector.XPath.Expr.Function do
-  @moduledoc false
-
   use Meeseeks.Selector.XPath.Expr
+  @moduledoc false
 
   alias Meeseeks.{Context, Document}
   alias Meeseeks.Selector.XPath.Expr
@@ -9,6 +8,9 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
   defstruct f: nil, args: []
 
   @nodes Context.nodes_key()
+
+  @impl true
+  def eval(expr, node, document, context)
 
   # last
 
@@ -36,6 +38,7 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
 
   def eval(%Expr.Function{f: :count, args: [e]}, node, document, context) do
     v = Expr.eval(e, node, document, context)
+
     if Expr.Helpers.nodes?(v) do
       Enum.count(v)
     else
@@ -57,8 +60,10 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
 
   def eval(%Expr.Function{f: :"local-name", args: [e]}, node, document, context) do
     v = Expr.eval(e, node, document, context)
+
     if Expr.Helpers.nodes?(v) do
-      [node|_] = v
+      [node | _] = v
+
       local_name(node)
     else
       raise invalid_evaluated_args("local-name", [v])
@@ -79,8 +84,10 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
 
   def eval(%Expr.Function{f: :"namespace-uri", args: [e]}, node, document, context) do
     v = Expr.eval(e, node, document, context)
+
     if Expr.Helpers.nodes?(v) do
-      [node|_] = v
+      [node | _] = v
+
       namespace_uri(node)
     else
       raise invalid_evaluated_args("namespace-uri", [v])
@@ -99,8 +106,10 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
 
   def eval(%Expr.Function{f: :name, args: [e]}, node, document, context) do
     v = Expr.eval(e, node, document, context)
+
     if Expr.Helpers.nodes?(v) do
-      [node|_] = v
+      [node | _] = v
+
       name(node)
     else
       raise invalid_evaluated_args("name", [v])
@@ -128,7 +137,7 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
 
   # concat
 
-  def eval(%Expr.Function{f: :concat, args: [_, _|_] = args}, node, document, context) do
+  def eval(%Expr.Function{f: :concat, args: [_, _ | _] = args}, node, document, context) do
     args
     |> Enum.map(&Expr.eval(&1, node, document, context))
     |> Enum.map(&Expr.Helpers.string(&1, document))
@@ -142,10 +151,14 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
   # starts-with
 
   def eval(%Expr.Function{f: :"starts-with", args: [e1, e2]}, node, document, context) do
-    v1 = Expr.eval(e1, node, document, context)
-    |> Expr.Helpers.string(document)
-    v2 = Expr.eval(e2, node, document, context)
-    |> Expr.Helpers.string(document)
+    v1 =
+      Expr.eval(e1, node, document, context)
+      |> Expr.Helpers.string(document)
+
+    v2 =
+      Expr.eval(e2, node, document, context)
+      |> Expr.Helpers.string(document)
+
     String.starts_with?(v1, v2)
   end
 
@@ -156,10 +169,14 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
   # contains
 
   def eval(%Expr.Function{f: :contains, args: [e1, e2]}, node, document, context) do
-    v1 = Expr.eval(e1, node, document, context)
-    |> Expr.Helpers.string(document)
-    v2 = Expr.eval(e2, node, document, context)
-    |> Expr.Helpers.string(document)
+    v1 =
+      Expr.eval(e1, node, document, context)
+      |> Expr.Helpers.string(document)
+
+    v2 =
+      Expr.eval(e2, node, document, context)
+      |> Expr.Helpers.string(document)
+
     String.contains?(v1, v2)
   end
 
@@ -170,10 +187,14 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
   # substring-before
 
   def eval(%Expr.Function{f: :"substring-before", args: [e1, e2]}, node, document, context) do
-    v1 = Expr.eval(e1, node, document, context)
-    |> Expr.Helpers.string(document)
-    v2 = Expr.eval(e2, node, document, context)
-    |> Expr.Helpers.string(document)
+    v1 =
+      Expr.eval(e1, node, document, context)
+      |> Expr.Helpers.string(document)
+
+    v2 =
+      Expr.eval(e2, node, document, context)
+      |> Expr.Helpers.string(document)
+
     case String.split(v1, v2, parts: 2) do
       [_] -> ""
       [substring_before, _] -> substring_before
@@ -187,10 +208,14 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
   # substring-after
 
   def eval(%Expr.Function{f: :"substring-after", args: [e1, e2]}, node, document, context) do
-    v1 = Expr.eval(e1, node, document, context)
-    |> Expr.Helpers.string(document)
-    v2 = Expr.eval(e2, node, document, context)
-    |> Expr.Helpers.string(document)
+    v1 =
+      Expr.eval(e1, node, document, context)
+      |> Expr.Helpers.string(document)
+
+    v2 =
+      Expr.eval(e2, node, document, context)
+      |> Expr.Helpers.string(document)
+
     case String.split(v1, v2, parts: 2) do
       [_] -> ""
       [_, substring_after] -> substring_after
@@ -204,27 +229,37 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
   # substring
 
   def eval(%Expr.Function{f: :substring, args: [e1, e2]}, node, document, context) do
-    v1 = Expr.eval(e1, node, document, context)
-    |> Expr.Helpers.string(document)
-    v2 = Expr.eval(e2, node, document, context)
-    |> Expr.Helpers.number(document)
-    |> Expr.Helpers.round_()
-    # First index is 1, not 0, so subtract 1
-    |> Expr.Helpers.sub(1)
+    v1 =
+      Expr.eval(e1, node, document, context)
+      |> Expr.Helpers.string(document)
+
+    v2 =
+      Expr.eval(e2, node, document, context)
+      |> Expr.Helpers.number(document)
+      |> Expr.Helpers.round_()
+      # First index is 1, not 0, so subtract 1
+      |> Expr.Helpers.sub(1)
+
     Expr.Helpers.substring(v1, v2)
   end
 
   def eval(%Expr.Function{f: :substring, args: [e1, e2, e3]}, node, document, context) do
-    v1 = Expr.eval(e1, node, document, context)
-    |> Expr.Helpers.string(document)
-    v2 = Expr.eval(e2, node, document, context)
-    |> Expr.Helpers.number(document)
-    |> Expr.Helpers.round_()
-    # First index is 1, not 0, so subtract 1
-    |> Expr.Helpers.sub(1)
-    v3 = Expr.eval(e3, node, document, context)
-    |> Expr.Helpers.number(document)
-    |> Expr.Helpers.round_()
+    v1 =
+      Expr.eval(e1, node, document, context)
+      |> Expr.Helpers.string(document)
+
+    v2 =
+      Expr.eval(e2, node, document, context)
+      |> Expr.Helpers.number(document)
+      |> Expr.Helpers.round_()
+      # First index is 1, not 0, so subtract 1
+      |> Expr.Helpers.sub(1)
+
+    v3 =
+      Expr.eval(e3, node, document, context)
+      |> Expr.Helpers.number(document)
+      |> Expr.Helpers.round_()
+
     Expr.Helpers.substring(v1, v2, v3)
   end
 
@@ -295,21 +330,21 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
 
   # true
 
-  def eval(%Expr.Function{f: :true, args: []}, _node, _document, _context) do
+  def eval(%Expr.Function{f: true, args: []}, _node, _document, _context) do
     true
   end
 
-  def eval(%Expr.Function{f: :true, args: args}, _node, _document, _context) do
+  def eval(%Expr.Function{f: true, args: args}, _node, _document, _context) do
     raise invalid_args("true", args)
   end
 
   # false
 
-  def eval(%Expr.Function{f: :false, args: []}, _node, _document, _context) do
+  def eval(%Expr.Function{f: false, args: []}, _node, _document, _context) do
     false
   end
 
-  def eval(%Expr.Function{f: :false, args: args}, _node, _document, _context) do
+  def eval(%Expr.Function{f: false, args: args}, _node, _document, _context) do
     raise invalid_args("false", args)
   end
 
@@ -335,8 +370,9 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
 
   def eval(%Expr.Function{f: :sum, args: [e]}, node, document, context) do
     v = Expr.eval(e, node, document, context)
+
     if Expr.Helpers.nodes?(v) do
-      Enum.reduce(v, 0, fn(node, sum) ->
+      Enum.reduce(v, 0, fn node, sum ->
         node
         |> Expr.Helpers.string(document)
         |> Expr.Helpers.number(document)
@@ -404,31 +440,36 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
   end
 
   defp local_name(%Document.Element{tag: local_name}), do: local_name
+
   defp local_name({attr, _value}) do
     case String.split(attr, ":", parts: 2) do
       [name] -> name
       [_namespace, name] -> name
     end
   end
+
   defp local_name(namespace) when is_binary(namespace), do: namespace
   defp local_name(_), do: ""
 
   defp namespace_uri(%Document.Element{namespace: ns_uri}), do: ns_uri
+
   defp namespace_uri({attr, _value}) do
     case String.split(attr, ":", parts: 2) do
       [_name] -> ""
       [namespace, _name] -> namespace
     end
   end
+
   defp namespace_uri(_), do: ""
 
   defp name(%Document.Element{} = element) do
     case [element.namespace, element.tag] do
-      ["",  ""] -> ""
+      ["", ""] -> ""
       ["", local_name] -> local_name
       [ns_uri, local_name] -> ns_uri <> ":" <> local_name
     end
   end
+
   defp name({attr, _value}), do: attr
   defp name(namespace) when is_binary(namespace), do: namespace
   defp name(_), do: ""
@@ -439,5 +480,5 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
     |> String.replace(~r/[\s]+/, " ")
   end
 
-  defp not_(b) when is_boolean(b), do: not(b)
+  defp not_(b) when is_boolean(b), do: not b
 end

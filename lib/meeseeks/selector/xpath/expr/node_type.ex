@@ -1,13 +1,13 @@
 defmodule Meeseeks.Selector.XPath.Expr.NodeType do
-  @moduledoc false
-
   use Meeseeks.Selector.XPath.Expr
+  @moduledoc false
 
   alias Meeseeks.Document
   alias Meeseeks.Selector.XPath.Expr.NodeType
 
   defstruct type: nil
 
+  @impl true
   def eval(%NodeType{type: :comment}, %Document.Comment{}, _document, _context) do
     true
   end
@@ -16,7 +16,12 @@ defmodule Meeseeks.Selector.XPath.Expr.NodeType do
     true
   end
 
-  def eval(%NodeType{type: :"processing-instruction"}, %Document.ProcessingInstruction{}, _document, _context) do
+  def eval(
+        %NodeType{type: :"processing-instruction"},
+        %Document.ProcessingInstruction{},
+        _document,
+        _context
+      ) do
     true
   end
 

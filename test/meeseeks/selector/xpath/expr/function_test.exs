@@ -7,26 +7,34 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
 
   @nodes Context.nodes_key()
   @document Meeseeks.Parser.parse(
-    {"html", [], [
-        {"head", [], []},
-        {"body", [], [
-            {"div", [], [
-                {"p", [], ["1"]},
-                {"special:p", [], ["2"]},
-                {"div", [], [
-                    {"p", [], ["3"]},
-                    {"p", [], ["4"]}]},
-                {"p", [], ["5"]}]}]}]})
+              {"html", [],
+               [
+                 {"head", [], []},
+                 {"body", [],
+                  [
+                    {"div", [],
+                     [
+                       {"p", [], ["1"]},
+                       {"special:p", [], ["2"]},
+                       {"div", [], [{"p", [], ["3"]}, {"p", [], ["4"]}]},
+                       {"p", [], ["5"]}
+                     ]}
+                  ]}
+               ]}
+            )
 
   # last
 
   test "last no args" do
     expr = %Expr.Function{
       f: :last,
-      args: []}
+      args: []
+    }
+
     node = Document.get_node(@document, 4)
     context = %{@nodes => Document.get_nodes(@document)}
     expected = 15
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -35,10 +43,13 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
   test "position no args" do
     expr = %Expr.Function{
       f: :position,
-      args: []}
+      args: []
+    }
+
     node = Document.get_node(@document, 7)
     context = %{@nodes => Document.get_nodes(@document)}
     expected = 7
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -52,14 +63,22 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
           steps: [
             %Expr.Step{
               combinator: %Combinator.DescendantsOrSelf{selector: nil},
-              predicates: [%Expr.NodeType{type: :node}]},
+              predicates: [%Expr.NodeType{type: :node}]
+            },
             %Expr.Step{
               combinator: %Combinator.Children{selector: nil},
-              predicates: [%Expr.NameTest{ namespace: nil, tag: "p"}]}],
-          type: :abs}]}
+              predicates: [%Expr.NameTest{namespace: nil, tag: "p"}]
+            }
+          ],
+          type: :abs
+        }
+      ]
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = 5
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -68,10 +87,13 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
   test "local-name no args" do
     expr = %Expr.Function{
       f: :"local-name",
-      args: []}
+      args: []
+    }
+
     node = Document.get_node(@document, 7)
     context = %{}
     expected = "p"
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -81,13 +103,20 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
       args: [
         %Expr.Path{
           steps: [
-            %Expr.Step{combinator: %Combinator.Self{selector: nil},
-                       predicates: [%Expr.NameTest{namespace: nil,
-                                                   tag: "p"}]}],
-          type: :rel}]}
+            %Expr.Step{
+              combinator: %Combinator.Self{selector: nil},
+              predicates: [%Expr.NameTest{namespace: nil, tag: "p"}]
+            }
+          ],
+          type: :rel
+        }
+      ]
+    }
+
     node = Document.get_node(@document, 7)
     context = %{}
     expected = "p"
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -96,10 +125,13 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
   test "namespace-uri no args" do
     expr = %Expr.Function{
       f: :"namespace-uri",
-      args: []}
+      args: []
+    }
+
     node = Document.get_node(@document, 7)
     context = %{}
     expected = "special"
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -109,13 +141,20 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
       args: [
         %Expr.Path{
           steps: [
-            %Expr.Step{combinator: %Combinator.Self{selector: nil},
-                       predicates: [%Expr.NameTest{namespace: nil,
-                                                   tag: "p"}]}],
-          type: :rel}]}
+            %Expr.Step{
+              combinator: %Combinator.Self{selector: nil},
+              predicates: [%Expr.NameTest{namespace: nil, tag: "p"}]
+            }
+          ],
+          type: :rel
+        }
+      ]
+    }
+
     node = Document.get_node(@document, 5)
     context = %{}
     expected = ""
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -124,10 +163,13 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
   test "name no args" do
     expr = %Expr.Function{
       f: :name,
-      args: []}
+      args: []
+    }
+
     node = Document.get_node(@document, 7)
     context = %{}
     expected = "special:p"
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -137,13 +179,20 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
       args: [
         %Expr.Path{
           steps: [
-            %Expr.Step{combinator: %Combinator.Self{selector: nil},
-                       predicates: [%Expr.NameTest{namespace: nil,
-                                                   tag: "p"}]}],
-          type: :rel}]}
+            %Expr.Step{
+              combinator: %Combinator.Self{selector: nil},
+              predicates: [%Expr.NameTest{namespace: nil, tag: "p"}]
+            }
+          ],
+          type: :rel
+        }
+      ]
+    }
+
     node = Document.get_node(@document, 5)
     context = %{}
     expected = "p"
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -152,20 +201,26 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
   test "string no args" do
     expr = %Expr.Function{
       f: :string,
-      args: []}
+      args: []
+    }
+
     node = Document.get_node(@document, 7)
     context = %{}
     expected = "2"
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
   test "string one arg" do
     expr = %Expr.Function{
       f: :string,
-      args: [%Expr.Number{value: :Infinity}]}
+      args: [%Expr.Number{value: :Infinity}]
+    }
+
     node = Document.get_node(@document, 7)
     context = %{}
     expected = "Infinity"
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -177,10 +232,14 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
       args: [
         %Expr.Number{value: :Infinity},
         %Expr.Literal{value: " plus "},
-        %Expr.Number{value: 1}]}
+        %Expr.Number{value: 1}
+      ]
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = "Infinity plus 1"
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -191,10 +250,14 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
       f: :"starts-with",
       args: [
         %Expr.Literal{value: "hello"},
-        %Expr.Literal{value: "hell"}]}
+        %Expr.Literal{value: "hell"}
+      ]
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -203,10 +266,14 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
       f: :"starts-with",
       args: [
         %Expr.Literal{value: "hello"},
-        %Expr.Literal{value: "no"}]}
+        %Expr.Literal{value: "no"}
+      ]
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = false
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -217,7 +284,10 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
       f: :contains,
       args: [
         %Expr.Literal{value: "hello"},
-        %Expr.Literal{value: "ello"}]}
+        %Expr.Literal{value: "ello"}
+      ]
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
@@ -229,10 +299,14 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
       f: :contains,
       args: [
         %Expr.Literal{value: "hello"},
-        %Expr.Literal{value: "no"}]}
+        %Expr.Literal{value: "no"}
+      ]
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = false
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -243,10 +317,14 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
       f: :"substring-before",
       args: [
         %Expr.Literal{value: "Hello, World!"},
-        %Expr.Literal{value: ","}]}
+        %Expr.Literal{value: ","}
+      ]
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = "Hello"
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -257,10 +335,14 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
       f: :"substring-after",
       args: [
         %Expr.Literal{value: "Hello, World!"},
-        %Expr.Literal{value: ","}]}
+        %Expr.Literal{value: ","}
+      ]
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = " World!"
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -271,10 +353,14 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
       f: :substring,
       args: [
         %Expr.Literal{value: "12345"},
-        %Expr.Number{value: "2"}]}
+        %Expr.Number{value: "2"}
+      ]
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = "2345"
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -283,10 +369,14 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
       f: :substring,
       args: [
         %Expr.Literal{value: "12345"},
-        %Expr.Number{value: :NaN}]}
+        %Expr.Number{value: :NaN}
+      ]
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = ""
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -295,10 +385,14 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
       f: :substring,
       args: [
         %Expr.Literal{value: "12345"},
-        %Expr.Number{value: :Infinity}]}
+        %Expr.Number{value: :Infinity}
+      ]
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = ""
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -307,10 +401,14 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
       f: :substring,
       args: [
         %Expr.Literal{value: "12345"},
-        %Expr.Number{value: :"-Infinity"}]}
+        %Expr.Number{value: :"-Infinity"}
+      ]
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = "12345"
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -320,10 +418,14 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
       args: [
         %Expr.Literal{value: "12345"},
         %Expr.Number{value: 2},
-        %Expr.Number{value: 3}]}
+        %Expr.Number{value: 3}
+      ]
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = "234"
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -333,10 +435,14 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
       args: [
         %Expr.Literal{value: "12345"},
         %Expr.Number{value: 2},
-        %Expr.Number{value: :NaN}]}
+        %Expr.Number{value: :NaN}
+      ]
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = ""
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -346,10 +452,14 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
       args: [
         %Expr.Literal{value: "12345"},
         %Expr.Number{value: :Infinity},
-        %Expr.Number{value: 5}]}
+        %Expr.Number{value: 5}
+      ]
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = ""
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -359,10 +469,14 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
       args: [
         %Expr.Literal{value: "12345"},
         %Expr.Number{value: -3},
-        %Expr.Number{value: 3}]}
+        %Expr.Number{value: 3}
+      ]
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = ""
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -372,10 +486,14 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
       args: [
         %Expr.Literal{value: "12345"},
         %Expr.Number{value: -3},
-        %Expr.Number{value: 5}]}
+        %Expr.Number{value: 5}
+      ]
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = "1"
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -385,10 +503,14 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
       args: [
         %Expr.Literal{value: "12345"},
         %Expr.Number{value: -3},
-        %Expr.Number{value: :Infinity}]}
+        %Expr.Number{value: :Infinity}
+      ]
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = "12345"
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -398,10 +520,14 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
       args: [
         %Expr.Literal{value: "12345"},
         %Expr.Number{value: :"-Infinity"},
-        %Expr.Number{value: :Infinity}]}
+        %Expr.Number{value: :Infinity}
+      ]
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = "12345"
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -411,10 +537,14 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
       args: [
         %Expr.Literal{value: "12345"},
         %Expr.Number{value: 2},
-        %Expr.Number{value: -1}]}
+        %Expr.Number{value: -1}
+      ]
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = ""
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -423,20 +553,26 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
   test "string-length no args" do
     expr = %Expr.Function{
       f: :"string-length",
-      args: []}
+      args: []
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = 5
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
   test "string-length one arg" do
     expr = %Expr.Function{
       f: :"string-length",
-      args: [%Expr.Literal{value: "Hi"}]}
+      args: [%Expr.Literal{value: "Hi"}]
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = 2
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -445,20 +581,26 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
   test "normalize-space no args" do
     expr = %Expr.Function{
       f: :"normalize-space",
-      args: []}
+      args: []
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = "12345"
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
   test "normalize-space one arg" do
     expr = %Expr.Function{
       f: :"normalize-space",
-      args: [%Expr.Literal{value: "     Hello,     World!  "}]}
+      args: [%Expr.Literal{value: "     Hello,     World!  "}]
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = "Hello, World!"
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -467,20 +609,26 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
   test "boolean one arg true" do
     expr = %Expr.Function{
       f: :boolean,
-      args: [%Expr.Literal{value: "Hi"}]}
+      args: [%Expr.Literal{value: "Hi"}]
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
   test "boolean one arg false" do
     expr = %Expr.Function{
       f: :boolean,
-      args: [%Expr.Literal{value: ""}]}
+      args: [%Expr.Literal{value: ""}]
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = false
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -489,12 +637,18 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
   test "not one arg" do
     expr = %Expr.Function{
       f: :not,
-      args: [%Expr.Function{
-                f: :boolean,
-                args: [%Expr.Literal{value: ""}]}]}
+      args: [
+        %Expr.Function{
+          f: :boolean,
+          args: [%Expr.Literal{value: ""}]
+        }
+      ]
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -502,11 +656,14 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
 
   test "true no args" do
     expr = %Expr.Function{
-      f: :true,
-      args: []}
+      f: true,
+      args: []
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -514,11 +671,14 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
 
   test "false no args" do
     expr = %Expr.Function{
-      f: :false,
-      args: []}
+      f: false,
+      args: []
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = false
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -527,20 +687,28 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
   test "number no args" do
     expr = %Expr.Function{
       f: :number,
-      args: []}
+      args: []
+    }
+
     node = Document.get_node(@document, 7)
     context = %{}
     expected = 2
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
   test "number one arg" do
     expr = %Expr.Function{
       f: :number,
-      args: [%Expr.Function{f: :false, args: []}]}
+      args: [
+        %Expr.Function{f: false, args: []}
+      ]
+    }
+
     node = Document.get_node(@document, 7)
     context = %{}
     expected = 0
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -554,14 +722,22 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
           steps: [
             %Expr.Step{
               combinator: %Combinator.DescendantsOrSelf{selector: nil},
-              predicates: [%Expr.NodeType{type: :node}]},
+              predicates: [%Expr.NodeType{type: :node}]
+            },
             %Expr.Step{
               combinator: %Combinator.Children{selector: nil},
-              predicates: [%Expr.NameTest{ namespace: nil, tag: "p"}]}],
-          type: :abs}]}
+              predicates: [%Expr.NameTest{namespace: nil, tag: "p"}]
+            }
+          ],
+          type: :abs
+        }
+      ]
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = 15
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -570,10 +746,13 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
   test "floor one arg" do
     expr = %Expr.Function{
       f: :floor,
-      args: [%Expr.Number{value: 2.6}]}
+      args: [%Expr.Number{value: 2.6}]
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = 2
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -582,10 +761,13 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
   test "ceiling one arg" do
     expr = %Expr.Function{
       f: :ceiling,
-      args: [%Expr.Number{value: 2.5}]}
+      args: [%Expr.Number{value: 2.5}]
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = 3
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -594,10 +776,13 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
   test "round one arg" do
     expr = %Expr.Function{
       f: :round,
-      args: [%Expr.Number{value: 2.4}]}
+      args: [%Expr.Number{value: 2.4}]
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = 2
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 end

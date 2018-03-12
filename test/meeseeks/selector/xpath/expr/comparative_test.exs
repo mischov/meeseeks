@@ -6,19 +6,20 @@ defmodule Meeseeks.Selector.XPath.Expr.ComparativeTest do
   alias Meeseeks.Selector.XPath.Expr
 
   @document Meeseeks.parse(
-    {"book", [], [
-        {"chapter", [], [
-            {"page", [], ["1"]},
-            {"page", [], ["2"]}]}]})
+              {"book", [], [{"chapter", [], [{"page", [], ["1"]}, {"page", [], ["2"]}]}]}
+            )
 
   test "equal" do
     expr = %Expr.Comparative{
       op: :=,
       e1: %Expr.Number{value: 2},
-      e2: %Expr.Number{value: 2}}
+      e2: %Expr.Number{value: 2}
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -26,10 +27,13 @@ defmodule Meeseeks.Selector.XPath.Expr.ComparativeTest do
     expr = %Expr.Comparative{
       op: :!=,
       e1: %Expr.Number{value: 1},
-      e2: %Expr.Number{value: 2}}
+      e2: %Expr.Number{value: 2}
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -37,10 +41,13 @@ defmodule Meeseeks.Selector.XPath.Expr.ComparativeTest do
     expr = %Expr.Comparative{
       op: :<=,
       e1: %Expr.Number{value: 1},
-      e2: %Expr.Number{value: 2}}
+      e2: %Expr.Number{value: 2}
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -48,10 +55,13 @@ defmodule Meeseeks.Selector.XPath.Expr.ComparativeTest do
     expr = %Expr.Comparative{
       op: :<,
       e1: %Expr.Number{value: 1},
-      e2: %Expr.Number{value: 2}}
+      e2: %Expr.Number{value: 2}
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -59,10 +69,13 @@ defmodule Meeseeks.Selector.XPath.Expr.ComparativeTest do
     expr = %Expr.Comparative{
       op: :>=,
       e1: %Expr.Number{value: 2},
-      e2: %Expr.Number{value: 1}}
+      e2: %Expr.Number{value: 1}
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -70,10 +83,13 @@ defmodule Meeseeks.Selector.XPath.Expr.ComparativeTest do
     expr = %Expr.Comparative{
       op: :>,
       e1: %Expr.Number{value: 2},
-      e2: %Expr.Number{value: 1}}
+      e2: %Expr.Number{value: 1}
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -81,10 +97,13 @@ defmodule Meeseeks.Selector.XPath.Expr.ComparativeTest do
     expr = %Expr.Comparative{
       op: :>,
       e1: %Expr.Number{value: 2},
-      e2: %Expr.Number{value: :NaN}}
+      e2: %Expr.Number{value: :NaN}
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -92,10 +111,13 @@ defmodule Meeseeks.Selector.XPath.Expr.ComparativeTest do
     expr = %Expr.Comparative{
       op: :<,
       e1: %Expr.Number{value: 2},
-      e2: %Expr.Number{value: :Infinity}}
+      e2: %Expr.Number{value: :Infinity}
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -103,10 +125,13 @@ defmodule Meeseeks.Selector.XPath.Expr.ComparativeTest do
     expr = %Expr.Comparative{
       op: :>,
       e1: %Expr.Number{value: 2},
-      e2: %Expr.Number{value: :"-Infinity"}}
+      e2: %Expr.Number{value: :"-Infinity"}
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -114,10 +139,13 @@ defmodule Meeseeks.Selector.XPath.Expr.ComparativeTest do
     expr = %Expr.Comparative{
       op: :=,
       e1: %Expr.Literal{value: "2"},
-      e2: %Expr.Number{value: 2}}
+      e2: %Expr.Number{value: 2}
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -125,32 +153,41 @@ defmodule Meeseeks.Selector.XPath.Expr.ComparativeTest do
     expr = %Expr.Comparative{
       op: :<,
       e1: %Expr.Literal{value: "1"},
-      e2: %Expr.Number{value: 2}}
+      e2: %Expr.Number{value: 2}
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
   test "eq boolean" do
     expr = %Expr.Comparative{
       op: :=,
-      e1: %Expr.Function{f: :false, args: []},
-      e2: %Expr.Number{value: 0}}
+      e1: %Expr.Function{f: false, args: []},
+      e2: %Expr.Number{value: 0}
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
   test "comp boolean" do
     expr = %Expr.Comparative{
       op: :<,
-      e1: %Expr.Function{f: :true, args: []},
-      e2: %Expr.Number{value: 2}}
+      e1: %Expr.Function{f: true, args: []},
+      e2: %Expr.Number{value: 2}
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -161,15 +198,22 @@ defmodule Meeseeks.Selector.XPath.Expr.ComparativeTest do
         steps: [
           %Expr.Step{
             combinator: %Combinator.DescendantsOrSelf{selector: nil},
-            predicates: [%Expr.NodeType{type: :node}]},
+            predicates: [%Expr.NodeType{type: :node}]
+          },
           %Expr.Step{
             combinator: %Combinator.Children{selector: nil},
-            predicates: [%Expr.NameTest{ namespace: nil, tag: "page"}]}],
-        type: :abs},
-      e2: %Expr.Number{value: 2}}
+            predicates: [%Expr.NameTest{namespace: nil, tag: "page"}]
+          }
+        ],
+        type: :abs
+      },
+      e2: %Expr.Number{value: 2}
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -180,15 +224,22 @@ defmodule Meeseeks.Selector.XPath.Expr.ComparativeTest do
         steps: [
           %Expr.Step{
             combinator: %Combinator.DescendantsOrSelf{selector: nil},
-            predicates: [%Expr.NodeType{type: :node}]},
+            predicates: [%Expr.NodeType{type: :node}]
+          },
           %Expr.Step{
             combinator: %Combinator.Children{selector: nil},
-            predicates: [%Expr.NameTest{ namespace: nil, tag: "page"}]}],
-        type: :abs},
-      e2: %Expr.Number{value: 3}}
+            predicates: [%Expr.NameTest{namespace: nil, tag: "page"}]
+          }
+        ],
+        type: :abs
+      },
+      e2: %Expr.Number{value: 3}
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = false
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -199,23 +250,34 @@ defmodule Meeseeks.Selector.XPath.Expr.ComparativeTest do
         steps: [
           %Expr.Step{
             combinator: %Combinator.DescendantsOrSelf{selector: nil},
-            predicates: [%Expr.NodeType{type: :node}]},
+            predicates: [%Expr.NodeType{type: :node}]
+          },
           %Expr.Step{
             combinator: %Combinator.Children{selector: nil},
-            predicates: [%Expr.NameTest{ namespace: nil, tag: "missing"}]}],
-        type: :abs},
+            predicates: [%Expr.NameTest{namespace: nil, tag: "missing"}]
+          }
+        ],
+        type: :abs
+      },
       e2: %Expr.Path{
         steps: [
           %Expr.Step{
             combinator: %Combinator.DescendantsOrSelf{selector: nil},
-            predicates: [%Expr.NodeType{type: :node}]},
+            predicates: [%Expr.NodeType{type: :node}]
+          },
           %Expr.Step{
             combinator: %Combinator.Children{selector: nil},
-            predicates: [%Expr.NameTest{ namespace: nil, tag: "page"}]}],
-        type: :abs}}
+            predicates: [%Expr.NameTest{namespace: nil, tag: "page"}]
+          }
+        ],
+        type: :abs
+      }
+    }
+
     node = Document.get_node(@document, 4)
     context = %{}
     expected = false
+
     assert Expr.eval(expr, node, @document, context) == expected
   end
 end

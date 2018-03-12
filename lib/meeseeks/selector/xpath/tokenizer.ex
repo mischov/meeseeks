@@ -6,6 +6,7 @@ defmodule Meeseeks.Selector.XPath.Tokenizer do
       selector
       |> String.trim()
       |> String.to_charlist()
+
     :xmerl_xpath_scan.tokens(selector_chars)
   end
 end

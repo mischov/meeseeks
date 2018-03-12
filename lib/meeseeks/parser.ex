@@ -4,13 +4,13 @@ defmodule Meeseeks.Parser do
   alias Meeseeks.{Document, TupleTree}
   alias Meeseeks.Document.{Comment, Data, Doctype, Element, ProcessingInstruction, Text}
 
-  @type source :: String.t | TupleTree.t
-  @type error :: {:error, String.t}
+  @type source :: String.t() | TupleTree.t()
+  @type error :: {:error, String.t()}
   @type type :: :html | :xml
 
   # Parse
 
-  @spec parse(source) :: Document.t | error
+  @spec parse(source) :: Document.t() | error
 
   def parse(string) when is_binary(string) do
     case MeeseeksHtml5ever.parse_html(string) do
@@ -23,7 +23,7 @@ defmodule Meeseeks.Parser do
     parse_tuple_tree(tuple_tree)
   end
 
-  @spec parse(source, type) :: Document.t | error
+  @spec parse(source, type) :: Document.t() | error
 
   def parse(string, :html) when is_binary(string) do
     case MeeseeksHtml5ever.parse_html(string) do
@@ -32,7 +32,7 @@ defmodule Meeseeks.Parser do
     end
   end
 
-   def parse(string, :xml) when is_binary(string) do
+  def parse(string, :xml) when is_binary(string) do
     case MeeseeksHtml5ever.parse_xml(string) do
       {:ok, document} -> document
       {:error, error} -> {:error, error}
@@ -46,7 +46,7 @@ defmodule Meeseeks.Parser do
   # Parse TupleTree
 
   # Can't return error, only Document, just surpressing dialyzer error
-  @spec parse_tuple_tree(TupleTree.t) :: Document.t | error
+  @spec parse_tuple_tree(TupleTree.t()) :: Document.t() | error
 
   defp parse_tuple_tree(tuple_tree) when is_list(tuple_tree) do
     add_root_nodes(%Document{}, tuple_tree)
@@ -57,7 +57,7 @@ defmodule Meeseeks.Parser do
   end
 
   defp add_root_nodes(document, roots) do
-    Enum.reduce(roots, document, &(add_root_node &2, &1))
+    Enum.reduce(roots, document, &add_root_node(&2, &1))
   end
 
   # :mochiweb_html parses <?php ...?> to {:pi, "php ..."}
@@ -66,10 +66,13 @@ defmodule Meeseeks.Parser do
     [_, data] = String.split(php_string, "php ")
     data = String.trim(data)
     node = %ProcessingInstruction{id: id, target: "php", data: data}
-    %{document |
-      id_counter: id,
-      roots: document.roots ++ [id],
-      nodes: insert_node(document.nodes, node)}
+
+    %{
+      document
+      | id_counter: id,
+        roots: document.roots ++ [id],
+        nodes: insert_node(document.nodes, node)
+    }
   end
 
   # `:mochiweb_html` parses `<?target data ?>` into `{:pi, "target", [{"data", "data"}]}`
@@ -77,51 +80,63 @@ defmodule Meeseeks.Parser do
     id = next_id(document.id_counter)
     data = join_pi(attributes)
     node = %ProcessingInstruction{id: id, target: target, data: data}
-    %{document |
-      id_counter: id,
-      roots: document.roots ++ [id],
-      nodes: insert_node(document.nodes, node)}
+
+    %{
+      document
+      | id_counter: id,
+        roots: document.roots ++ [id],
+        nodes: insert_node(document.nodes, node)
+    }
   end
 
-  defp add_root_node(document, {:pi, target, data})  do
+  defp add_root_node(document, {:pi, target, data}) do
     id = next_id(document.id_counter)
     node = %ProcessingInstruction{id: id, target: target, data: data}
-    %{document |
-      id_counter: id,
-      roots: document.roots ++ [id],
-      nodes: insert_node(document.nodes, node)}
+
+    %{
+      document
+      | id_counter: id,
+        roots: document.roots ++ [id],
+        nodes: insert_node(document.nodes, node)
+    }
   end
 
   defp add_root_node(document, {tag, attributes, children}) do
     id = next_id(document.id_counter)
     [ns, tg] = split_namespace_from_tag(tag)
-    node = %Element{id: id,
-                    namespace: ns,
-                    tag: tg,
-                    attributes: attributes}
-    %{document |
-      id_counter: id,
-      roots: document.roots ++ [id],
-      nodes: insert_node(document.nodes, node)}
+    node = %Element{id: id, namespace: ns, tag: tg, attributes: attributes}
+
+    %{
+      document
+      | id_counter: id,
+        roots: document.roots ++ [id],
+        nodes: insert_node(document.nodes, node)
+    }
     |> add_child_nodes(id, children)
   end
 
   defp add_root_node(document, {:comment, comment}) do
     id = next_id(document.id_counter)
     node = %Comment{id: id, content: comment}
-    %{document |
-      id_counter: id,
-      roots: document.roots ++ [id],
-      nodes: insert_node(document.nodes, node)}
+
+    %{
+      document
+      | id_counter: id,
+        roots: document.roots ++ [id],
+        nodes: insert_node(document.nodes, node)
+    }
   end
 
   defp add_root_node(document, {:doctype, name, public, system}) do
     id = next_id(document.id_counter)
     node = %Doctype{id: id, name: name, public: public, system: system}
-    %{document |
-      id_counter: id,
-      roots: document.roots ++ [id],
-      nodes: insert_node(document.nodes, node)}
+
+    %{
+      document
+      | id_counter: id,
+        roots: document.roots ++ [id],
+        nodes: insert_node(document.nodes, node)
+    }
   end
 
   defp add_root_node(document, _other) do
@@ -129,7 +144,7 @@ defmodule Meeseeks.Parser do
   end
 
   defp add_child_nodes(document, parent_id, children) do
-    Enum.reduce(children, document, &(add_child_node &2, parent_id, &1))
+    Enum.reduce(children, document, &add_child_node(&2, parent_id, &1))
   end
 
   # :mochiweb_html parses <?php ... ?> to {:pi, "php ..."}
@@ -137,74 +152,55 @@ defmodule Meeseeks.Parser do
     id = next_id(document.id_counter)
     [_, data] = String.split(php_string, "php ")
     data = String.trim(data)
-    node = %ProcessingInstruction{parent: parent,
-                                  id: id,
-                                  target: "php",
-                                  data: data}
-    %{document |
-      id_counter: id,
-      nodes: insert_node(document.nodes, node)}
+    node = %ProcessingInstruction{parent: parent, id: id, target: "php", data: data}
+
+    %{document | id_counter: id, nodes: insert_node(document.nodes, node)}
   end
 
   # `:mochiweb_html` parses `<?target data ?>` into `{:pi, "target", [{"data", "data"}]}`
   defp add_child_node(document, parent, {:pi, target, attributes}) when is_list(attributes) do
     id = next_id(document.id_counter)
     data = join_pi(attributes)
-    node = %ProcessingInstruction{parent: parent,
-                                  id: id,
-                                  target: target,
-                                  data: data}
-    %{document |
-      id_counter: id,
-      nodes: insert_node(document.nodes, node)}
+    node = %ProcessingInstruction{parent: parent, id: id, target: target, data: data}
+
+    %{document | id_counter: id, nodes: insert_node(document.nodes, node)}
   end
 
-  defp add_child_node(document, parent, {:pi, target, data})  do
+  defp add_child_node(document, parent, {:pi, target, data}) do
     id = next_id(document.id_counter)
-    node = %ProcessingInstruction{parent: parent,
-                                  id: id,
-                                  target: target,
-                                  data: data}
-    %{document |
-      id_counter: id,
-      nodes: insert_node(document.nodes, node)}
+    node = %ProcessingInstruction{parent: parent, id: id, target: target, data: data}
+
+    %{document | id_counter: id, nodes: insert_node(document.nodes, node)}
   end
 
   defp add_child_node(document, parent, {tag, attributes, children}) do
     id = next_id(document.id_counter)
     [ns, tg] = split_namespace_from_tag(tag)
-    node = %Element{parent: parent,
-                    id: id,
-                    namespace: ns,
-                    tag: tg,
-                    attributes: attributes}
-    %{document |
-      id_counter: id,
-      nodes: insert_node(document.nodes, node)}
+    node = %Element{parent: parent, id: id, namespace: ns, tag: tg, attributes: attributes}
+
+    %{document | id_counter: id, nodes: insert_node(document.nodes, node)}
     |> add_child_nodes(id, children)
   end
 
   defp add_child_node(document, parent, {:comment, comment}) do
     id = next_id(document.id_counter)
     node = %Comment{parent: parent, id: id, content: comment}
-    %{document |
-      id_counter: id,
-      nodes: insert_node(document.nodes, node)}
+
+    %{document | id_counter: id, nodes: insert_node(document.nodes, node)}
   end
 
   defp add_child_node(document, parent, text) when is_binary(text) do
     id = next_id(document.id_counter)
     parent_node = Document.get_node(document, parent)
+
     if parent_node.tag == "script" or parent_node.tag == "style" do
       node = %Data{parent: parent, id: id, content: text}
-      %{document |
-        id_counter: id,
-        nodes: insert_node(document.nodes, node)}
+
+      %{document | id_counter: id, nodes: insert_node(document.nodes, node)}
     else
       node = %Text{parent: parent, id: id, content: text}
-      %{document |
-        id_counter: id,
-        nodes: insert_node(document.nodes, node)}
+
+      %{document | id_counter: id, nodes: insert_node(document.nodes, node)}
     end
   end
 
@@ -249,6 +245,7 @@ defmodule Meeseeks.Parser do
   defp insert_node(nodes, %{parent: parent, id: child} = node) do
     parent_node = Map.get(nodes, parent)
     children = parent_node.children
+
     nodes
     |> Map.put(child, node)
     # List append is a horrible way to build children, but the alternative

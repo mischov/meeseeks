@@ -1,12 +1,12 @@
 defmodule Meeseeks.Selector.XPath.Expr.Predicate do
-  @moduledoc false
-
   use Meeseeks.Selector.XPath.Expr
+  @moduledoc false
 
   alias Meeseeks.Selector.XPath.Expr
 
   defstruct e: nil
 
+  @impl true
   def eval(expr, node, document, context) do
     case Expr.eval(expr.e, node, document, context) do
       :NaN -> false
