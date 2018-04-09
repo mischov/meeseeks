@@ -146,6 +146,7 @@ defmodule Meeseeks.Selector do
   Validates selector, returning the selector if it is valid or raising a
   Meeseeks.Selector.InvalidSelectorError if it is not.
   """
+  @spec validate!(t) :: t | no_return
   def validate!(selector) do
     case validate(selector) do
       {:ok, selector} -> selector

@@ -27,5 +27,5 @@ defmodule Meeseeks.TupleTree do
           | {:pi, String.t(), String.t()}
   @type text :: String.t()
   @type node_t :: comment | doctype | element | processing_instruction | text
-  @type t :: node | [node_t]
+  @type t :: node_t | [node_t]
 end

@@ -21,7 +21,7 @@ defmodule Meeseeks.Select do
 
   # One
 
-  @spec one(queryable, selectors, Context.t()) :: Result.t()
+  @spec one(queryable, selectors, Context.t()) :: Result.t() | nil
   def one(queryable, selectors, context) do
     context = Context.add_accumulator(context, %Accumulator.One{})
 

@@ -132,7 +132,7 @@ defmodule Meeseeks do
   """
 
   @type queryable :: Parser.source() | Document.t() | Result.t()
-  @type extractable :: Document.t() | Result.t()
+  @type extractable :: Document.t() | Result.t() | nil
   @type selectors :: Selector.t() | [Selector.t()]
 
   # Parse
@@ -208,7 +208,7 @@ defmodule Meeseeks do
 
   @doc """
   Returns a `Result` for the first node in the queryable (depth-first)
-  matching a selector.
+  matching a selector, or nil if there is no matching node.
 
   Optionally accepts a `Meeseeks.Context` map.
 
@@ -222,12 +222,12 @@ defmodule Meeseeks do
       iex> Meeseeks.one("<div id=main><p>1</p><p>2</p><p>3</p></div>", css("#main p"))
       #Meeseeks.Result<{ <p>1</p> }>
   """
-  @spec one(queryable, selectors) :: Result.t() | Parser.error()
+  @spec one(queryable, selectors) :: Result.t()| nil | Parser.error()
   def one(queryable, selectors) do
     one(queryable, selectors, %{})
   end
 
-  @spec one(queryable, selectors, Context.t()) :: Result.t() | Parser.error()
+  @spec one(queryable, selectors, Context.t()) :: Result.t() | nil | Parser.error()
   def one(queryable, selectors, context)
 
   def one({:error, _} = error, _selectors, _context), do: error
