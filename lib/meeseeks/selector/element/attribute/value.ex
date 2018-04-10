@@ -10,7 +10,6 @@ defmodule Meeseeks.Selector.Element.Attribute.Value do
   @impl true
   def match(selector, %Document.Element{} = element, _document, _context) do
     value = Helpers.get(element.attributes, selector.attribute)
-
     value == selector.value
   end
 

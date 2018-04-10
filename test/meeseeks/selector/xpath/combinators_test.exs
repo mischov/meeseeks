@@ -11,7 +11,6 @@ defmodule Meeseeks.Selector.XPath.CombinatorsTest do
     combinator = %XPath.Combinator.Attributes{}
     node = Document.get_node(@document, 1)
     expected = @attributes
-
     assert Combinator.next(combinator, node, @document) == expected
   end
 
@@ -19,7 +18,6 @@ defmodule Meeseeks.Selector.XPath.CombinatorsTest do
     combinator = %XPath.Combinator.Namespaces{}
     node = Document.get_node(@document, 1)
     expected = "awesome"
-
     assert Combinator.next(combinator, node, @document) == expected
   end
 end

@@ -15,7 +15,6 @@ defmodule Meeseeks.Select do
   @spec all(queryable, selectors, Context.t()) :: [Result.t()]
   def all(queryable, selectors, context) do
     context = Context.add_accumulator(context, %Accumulator.All{})
-
     select(queryable, selectors, context)
   end
 
@@ -24,7 +23,6 @@ defmodule Meeseeks.Select do
   @spec one(queryable, selectors, Context.t()) :: Result.t() | nil
   def one(queryable, selectors, context) do
     context = Context.add_accumulator(context, %Accumulator.One{})
-
     select(queryable, selectors, context)
   end
 
@@ -174,7 +172,6 @@ defmodule Meeseeks.Select do
       nodes = Enum.reverse(nodes)
       # Filter the nodes based on the selector's filters
       {nodes, context} = filter_nodes(filters, nodes, document, context)
-
       walk_filtered(nodes, document, selector, context)
     end)
   end
@@ -231,12 +228,10 @@ defmodule Meeseeks.Select do
 
       nodes when is_list(nodes) ->
         selector = Selector.Combinator.selector(combinator)
-
         walk_nodes(nodes, document, selector, context)
 
       node ->
         selector = Selector.Combinator.selector(combinator)
-
         walk_nodes([node], document, selector, context)
     end
   end

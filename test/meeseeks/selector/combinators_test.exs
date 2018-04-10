@@ -25,7 +25,6 @@ defmodule Meeseeks.Selector.CombinatorsTest do
     combinator = %Combinator.Parent{}
     node = Document.get_node(@document, 5)
     expected = Document.get_node(@document, 4)
-
     assert Combinator.next(combinator, node, @document) == expected
   end
 
@@ -33,7 +32,6 @@ defmodule Meeseeks.Selector.CombinatorsTest do
     combinator = %Combinator.Ancestors{}
     node = Document.get_node(@document, 6)
     expected = Document.get_nodes(@document, [5, 4, 3, 1])
-
     assert Combinator.next(combinator, node, @document) == expected
   end
 
@@ -41,7 +39,6 @@ defmodule Meeseeks.Selector.CombinatorsTest do
     combinator = %Combinator.AncestorsOrSelf{}
     node = Document.get_node(@document, 6)
     expected = Document.get_nodes(@document, [6, 5, 4, 3, 1])
-
     assert Combinator.next(combinator, node, @document) == expected
   end
 
@@ -56,7 +53,6 @@ defmodule Meeseeks.Selector.CombinatorsTest do
     combinator = %Combinator.ChildElements{}
     node = Document.get_node(@document, 9)
     expected = Document.get_nodes(@document, [10, 12])
-
     assert Combinator.next(combinator, node, @document) == expected
   end
 
@@ -64,7 +60,6 @@ defmodule Meeseeks.Selector.CombinatorsTest do
     combinator = %Combinator.Descendants{}
     node = Document.get_node(@document, 9)
     expected = Document.get_nodes(@document, [10, 11, 12, 13])
-
     assert Combinator.next(combinator, node, @document) == expected
   end
 
@@ -72,7 +67,6 @@ defmodule Meeseeks.Selector.CombinatorsTest do
     combinator = %Combinator.DescendantsOrSelf{}
     node = Document.get_node(@document, 9)
     expected = Document.get_nodes(@document, [9, 10, 11, 12, 13])
-
     assert Combinator.next(combinator, node, @document) == expected
   end
 
@@ -80,7 +74,6 @@ defmodule Meeseeks.Selector.CombinatorsTest do
     combinator = %Combinator.DescendantElements{}
     node = Document.get_node(@document, 9)
     expected = Document.get_nodes(@document, [10, 12])
-
     assert Combinator.next(combinator, node, @document) == expected
   end
 
@@ -88,7 +81,6 @@ defmodule Meeseeks.Selector.CombinatorsTest do
     combinator = %Combinator.PreviousSiblings{}
     node = Document.get_node(@document, 9)
     expected = Document.get_nodes(@document, [5, 7])
-
     assert Combinator.next(combinator, node, @document) == expected
   end
 
@@ -96,7 +88,6 @@ defmodule Meeseeks.Selector.CombinatorsTest do
     combinator = %Combinator.NextSiblings{}
     node = Document.get_node(@document, 7)
     expected = Document.get_nodes(@document, [9, 14])
-
     assert Combinator.next(combinator, node, @document) == expected
   end
 
@@ -104,7 +95,6 @@ defmodule Meeseeks.Selector.CombinatorsTest do
     combinator = %Combinator.NextSiblingElement{}
     node = Document.get_node(@document, 7)
     expected = Document.get_node(@document, 9)
-
     assert Combinator.next(combinator, node, @document) == expected
   end
 
@@ -112,7 +102,6 @@ defmodule Meeseeks.Selector.CombinatorsTest do
     combinator = %Combinator.NextSiblingElements{}
     node = Document.get_node(@document, 7)
     expected = Document.get_nodes(@document, [9, 14])
-
     assert Combinator.next(combinator, node, @document) == expected
   end
 
@@ -120,7 +109,6 @@ defmodule Meeseeks.Selector.CombinatorsTest do
     combinator = %Combinator.Self{}
     node = Document.get_node(@document, 7)
     expected = Document.get_node(@document, 7)
-
     assert Combinator.next(combinator, node, @document) == expected
   end
 end

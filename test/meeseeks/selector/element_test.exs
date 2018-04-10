@@ -8,7 +8,6 @@ defmodule Meeseeks.Selector.ElementTest do
   test "namespace matches" do
     element = %Document.Element{id: 1, namespace: "namespaced", tag: "tag"}
     selector = %Element{selectors: [%Element.Namespace{value: "namespaced"}]}
-
     assert Selector.match(selector, element, nil, %{})
   end
 
@@ -25,21 +24,18 @@ defmodule Meeseeks.Selector.ElementTest do
   test "tag matches namespaced tag" do
     element = %Document.Element{id: 1, namespace: "namespaced", tag: "tag"}
     selector = %Element{selectors: [%Element.Tag{value: "tag"}]}
-
     assert Selector.match(selector, element, nil, %{})
   end
 
   test "tag matches unnamespaced tag" do
     element = %Document.Element{id: 1, tag: "tag"}
     selector = %Element{selectors: [%Element.Tag{value: "tag"}]}
-
     assert Selector.match(selector, element, nil, %{})
   end
 
   test "tag doesn't match" do
     element = %Document.Element{id: 1, tag: "element"}
     selector = %Element{selectors: [%Element.Tag{value: "tag"}]}
-
     refute Selector.match(selector, element, nil, %{})
   end
 

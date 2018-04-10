@@ -62,7 +62,6 @@ defmodule Meeseeks.Context do
   def add_to_accumulator(%{@accumulator => acc, @return? => ret} = context, document, id) do
     acc = Accumulator.add(acc, document, id)
     ret = ret or Accumulator.complete?(acc)
-
     %{context | @accumulator => acc, @return? => ret}
   end
 

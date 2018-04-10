@@ -38,7 +38,6 @@ defmodule Meeseeks.Selector.XPath.Expr.UnionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = Document.get_nodes(@document, [1, 2])
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -71,7 +70,6 @@ defmodule Meeseeks.Selector.XPath.Expr.UnionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = Document.get_nodes(@document, [2])
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -104,7 +102,6 @@ defmodule Meeseeks.Selector.XPath.Expr.UnionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = []
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 end

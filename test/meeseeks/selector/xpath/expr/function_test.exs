@@ -34,7 +34,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{@nodes => Document.get_nodes(@document)}
     expected = 15
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -49,7 +48,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 7)
     context = %{@nodes => Document.get_nodes(@document)}
     expected = 7
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -78,7 +76,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = 5
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -93,7 +90,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 7)
     context = %{}
     expected = "p"
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -116,7 +112,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 7)
     context = %{}
     expected = "p"
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -131,7 +126,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 7)
     context = %{}
     expected = "special"
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -154,7 +148,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 5)
     context = %{}
     expected = ""
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -169,7 +162,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 7)
     context = %{}
     expected = "special:p"
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -192,7 +184,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 5)
     context = %{}
     expected = "p"
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -207,7 +198,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 7)
     context = %{}
     expected = "2"
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -220,7 +210,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 7)
     context = %{}
     expected = "Infinity"
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -239,7 +228,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = "Infinity plus 1"
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -257,7 +245,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -273,7 +260,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = false
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -306,7 +292,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = false
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -324,7 +309,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = "Hello"
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -342,7 +326,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = " World!"
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -360,7 +343,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = "2345"
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -376,7 +358,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = ""
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -392,7 +373,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = ""
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -408,7 +388,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = "12345"
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -425,7 +404,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = "234"
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -442,7 +420,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = ""
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -459,7 +436,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = ""
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -476,7 +452,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = ""
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -493,7 +468,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = "1"
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -510,7 +484,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = "12345"
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -527,7 +500,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = "12345"
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -544,7 +516,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = ""
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -559,7 +530,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = 5
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -572,7 +542,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = 2
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -587,7 +556,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = "12345"
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -600,7 +568,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = "Hello, World!"
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -615,7 +582,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -628,7 +594,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = false
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -648,7 +613,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -663,7 +627,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -678,7 +641,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = false
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -693,7 +655,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 7)
     context = %{}
     expected = 2
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -708,7 +669,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 7)
     context = %{}
     expected = 0
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -737,7 +697,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = 15
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -752,7 +711,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = 2
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -767,7 +725,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = 3
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -782,7 +739,6 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = 2
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 end

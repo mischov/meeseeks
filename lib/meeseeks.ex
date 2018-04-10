@@ -222,7 +222,7 @@ defmodule Meeseeks do
       iex> Meeseeks.one("<div id=main><p>1</p><p>2</p><p>3</p></div>", css("#main p"))
       #Meeseeks.Result<{ <p>1</p> }>
   """
-  @spec one(queryable, selectors) :: Result.t()| nil | Parser.error()
+  @spec one(queryable, selectors) :: Result.t() | nil | Parser.error()
   def one(queryable, selectors) do
     one(queryable, selectors, %{})
   end

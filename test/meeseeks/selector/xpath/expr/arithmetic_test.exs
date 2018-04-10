@@ -19,7 +19,6 @@ defmodule Meeseeks.Selector.XPath.Expr.ArithmeticTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = 4
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -33,7 +32,6 @@ defmodule Meeseeks.Selector.XPath.Expr.ArithmeticTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = :Infinity
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -47,7 +45,6 @@ defmodule Meeseeks.Selector.XPath.Expr.ArithmeticTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = 0
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -61,7 +58,6 @@ defmodule Meeseeks.Selector.XPath.Expr.ArithmeticTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = 4
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -75,7 +71,6 @@ defmodule Meeseeks.Selector.XPath.Expr.ArithmeticTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = 1
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -89,7 +84,6 @@ defmodule Meeseeks.Selector.XPath.Expr.ArithmeticTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = :Infinity
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -103,7 +97,6 @@ defmodule Meeseeks.Selector.XPath.Expr.ArithmeticTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = 0
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -117,7 +110,6 @@ defmodule Meeseeks.Selector.XPath.Expr.ArithmeticTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = 4
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -164,7 +156,6 @@ defmodule Meeseeks.Selector.XPath.Expr.ArithmeticTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = 3
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -190,7 +181,6 @@ defmodule Meeseeks.Selector.XPath.Expr.ArithmeticTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = :NaN
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 end

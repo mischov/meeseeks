@@ -18,7 +18,6 @@ defmodule Meeseeks.Selector.XPath.Expr.StepTest do
     node = Document.get_node(@document, 1)
     context = %{}
     expected = []
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -31,7 +30,6 @@ defmodule Meeseeks.Selector.XPath.Expr.StepTest do
     node = Document.get_node(@document, 1)
     context = %{}
     expected = Document.get_nodes(@document, [2])
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -44,7 +42,6 @@ defmodule Meeseeks.Selector.XPath.Expr.StepTest do
     node = Document.get_node(@document, 1)
     context = %{}
     expected = Document.get_nodes(@document, [3, 5])
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 end

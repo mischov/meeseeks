@@ -9,7 +9,6 @@ defmodule Meeseeks.Accumulator.All do
   @impl true
   def add(%Accumulator.All{values: values} = acc, document, id) do
     result = %Result{document: document, id: id}
-
     %{acc | values: Map.put(values, id, result)}
   end
 

@@ -9,56 +9,48 @@ defmodule Meeseeks.ParseTest do
   test "comment can exist at root" do
     document = Parser.parse("<!-- Hi --><html></html>")
     nodes = document.nodes |> Map.values()
-
     assert Enum.any?(nodes, &comment_node?/1)
   end
 
   test "comment can exist as child" do
     document = Parser.parse("<div><!-- Hi --></div>", :html)
     nodes = document.nodes |> Map.values()
-
     assert Enum.any?(nodes, &comment_node?/1)
   end
 
   test "data can exist as child" do
     document = Parser.parse("<script>Hi</script>")
     nodes = document.nodes |> Map.values()
-
     assert Enum.any?(nodes, &data_node?/1)
   end
 
   test "doctype can exist at root" do
     document = Parser.parse("<!DOCTYPE html><html></html>", :html)
     nodes = document.nodes |> Map.values()
-
     assert Enum.any?(nodes, &doctype_node?/1)
   end
 
   test "doctype can't exist elsewhere" do
     document = Parser.parse("<div><!DOCTYPE html></div>")
     nodes = document.nodes |> Map.values()
-
     refute Enum.any?(nodes, &doctype_node?/1)
   end
 
   test "element can exist at root" do
     document = Parser.parse("<html></html>", :html)
     nodes = document.nodes |> Map.values()
-
     assert Enum.any?(nodes, &element_node?/1)
   end
 
   test "element can exist as child" do
     document = Parser.parse("<div><p>Hi</p></div>")
     nodes = document.nodes |> Map.values()
-
     assert Enum.any?(nodes, &element_node?/1)
   end
 
   test "text can exist as child" do
     document = Parser.parse("<p>Hi</p>")
     nodes = document.nodes |> Map.values()
-
     assert Enum.any?(nodes, &text_node?/1)
   end
 
@@ -73,7 +65,6 @@ defmodule Meeseeks.ParseTest do
   test "processing instructions can exist" do
     document = Parser.parse("<?xml-stylesheet type='text/xsl' href='style.xsl'?>", :xml)
     nodes = document.nodes |> Map.values()
-
     assert Enum.any?(nodes, &pi_node?/1)
   end
 

@@ -35,28 +35,24 @@ defmodule Meeseeks.XPath_Test do
   test "absolute path multiple segments" do
     selector = xpath("/html/head")
     expected = [%Result{id: 3, document: @document}]
-
     assert Meeseeks.all(@document, selector) == expected
   end
 
   test "rel path single segment" do
     selector = xpath("head")
     expected = [%Result{id: 3, document: @document}]
-
     assert Meeseeks.all(@document, selector) == expected
   end
 
   test "rel path dot single segment" do
     selector = xpath("./head")
     expected = [%Result{id: 3, document: @document}]
-
     assert Meeseeks.all(@document, selector) == expected
   end
 
   test "rel path multiple segments" do
     selector = xpath("body/div")
     expected = [%Result{id: 9, document: @document}]
-
     assert Meeseeks.all(@document, selector) == expected
   end
 
@@ -85,7 +81,6 @@ defmodule Meeseeks.XPath_Test do
   test "root elements" do
     selector = xpath("/*")
     expected = [%Result{id: 2, document: @document}]
-
     assert Meeseeks.all(@document, selector) == expected
   end
 
@@ -115,14 +110,12 @@ defmodule Meeseeks.XPath_Test do
   test "4th node" do
     selector = xpath(".[4]")
     expected = [%Result{id: 4, document: @document}]
-
     assert Meeseeks.all(@document, selector) == expected
   end
 
   test "4th element" do
     selector = xpath("self::*[4]")
     expected = [%Result{id: 9, document: @document}]
-
     assert Meeseeks.all(@document, selector) == expected
   end
 
@@ -187,7 +180,6 @@ defmodule Meeseeks.XPath_Test do
   test "second child p of div with id main" do
     selector = xpath("//div[@id = 'main']/p[2]")
     expected = [%Result{id: 14, document: @document}]
-
     assert Meeseeks.all(@document, selector) == expected
   end
 
@@ -248,28 +240,24 @@ defmodule Meeseeks.XPath_Test do
   test "first following p sibling of #first-p" do
     selector = xpath("//p[@id='first-p']/following-sibling::p[1]")
     expected = [%Result{id: 14, document: @document}]
-
     assert Meeseeks.all(@document, selector) == expected
   end
 
   test "parent of the first following p sibling of #first-p" do
     selector = xpath("//p[@id='first-p']/following-sibling::p[1]/..")
     expected = [%Result{id: 9, document: @document}]
-
     assert Meeseeks.all(@document, selector) == expected
   end
 
   test "elements with 'special' namespace via path" do
     selector = xpath("*[namespace::special]")
     expected = [%Result{id: 17, document: @document}]
-
     assert Meeseeks.all(@document, selector) == expected
   end
 
   test "elements with 'special' namespace via namespace-uri()" do
     selector = xpath("*[namespace-uri()='special']")
     expected = [%Result{id: 17, document: @document}]
-
     assert Meeseeks.all(@document, selector) == expected
   end
 
@@ -282,7 +270,6 @@ defmodule Meeseeks.XPath_Test do
   test "id is first-p" do
     selector = xpath("//*[@id = 'first-p']")
     expected = [%Result{id: 11, document: @document}]
-
     assert Meeseeks.all(@document, selector) == expected
   end
 
@@ -300,7 +287,6 @@ defmodule Meeseeks.XPath_Test do
   test "div contains p with text equal to '2'" do
     selector = xpath("div[p/text() = '2']")
     expected = [%Result{id: 9, document: @document}]
-
     assert Meeseeks.all(@document, selector) == expected
   end
 
@@ -319,7 +305,6 @@ defmodule Meeseeks.XPath_Test do
   test "element has text '5'" do
     selector = xpath("//*[text() = '5']")
     expected = [%Result{id: 25, document: @document}]
-
     assert Meeseeks.all(@document, selector) == expected
   end
 

@@ -153,7 +153,6 @@ defmodule Meeseeks.Parser do
     [_, data] = String.split(php_string, "php ")
     data = String.trim(data)
     node = %ProcessingInstruction{parent: parent, id: id, target: "php", data: data}
-
     %{document | id_counter: id, nodes: insert_node(document.nodes, node)}
   end
 
@@ -162,14 +161,12 @@ defmodule Meeseeks.Parser do
     id = next_id(document.id_counter)
     data = join_pi(attributes)
     node = %ProcessingInstruction{parent: parent, id: id, target: target, data: data}
-
     %{document | id_counter: id, nodes: insert_node(document.nodes, node)}
   end
 
   defp add_child_node(document, parent, {:pi, target, data}) do
     id = next_id(document.id_counter)
     node = %ProcessingInstruction{parent: parent, id: id, target: target, data: data}
-
     %{document | id_counter: id, nodes: insert_node(document.nodes, node)}
   end
 
@@ -185,7 +182,6 @@ defmodule Meeseeks.Parser do
   defp add_child_node(document, parent, {:comment, comment}) do
     id = next_id(document.id_counter)
     node = %Comment{parent: parent, id: id, content: comment}
-
     %{document | id_counter: id, nodes: insert_node(document.nodes, node)}
   end
 
@@ -195,11 +191,9 @@ defmodule Meeseeks.Parser do
 
     if parent_node.tag == "script" or parent_node.tag == "style" do
       node = %Data{parent: parent, id: id, content: text}
-
       %{document | id_counter: id, nodes: insert_node(document.nodes, node)}
     else
       node = %Text{parent: parent, id: id, content: text}
-
       %{document | id_counter: id, nodes: insert_node(document.nodes, node)}
     end
   end

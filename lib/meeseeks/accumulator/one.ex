@@ -9,7 +9,6 @@ defmodule Meeseeks.Accumulator.One do
   @impl true
   def add(%Accumulator.One{value: nil} = acc, document, id) do
     result = %Result{document: document, id: id}
-
     %{acc | value: result}
   end
 

@@ -63,7 +63,6 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
 
     if Expr.Helpers.nodes?(v) do
       [node | _] = v
-
       local_name(node)
     else
       raise invalid_evaluated_args("local-name", [v])
@@ -87,7 +86,6 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
 
     if Expr.Helpers.nodes?(v) do
       [node | _] = v
-
       namespace_uri(node)
     else
       raise invalid_evaluated_args("namespace-uri", [v])
@@ -109,7 +107,6 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
 
     if Expr.Helpers.nodes?(v) do
       [node | _] = v
-
       name(node)
     else
       raise invalid_evaluated_args("name", [v])

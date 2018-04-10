@@ -154,11 +154,8 @@ defmodule Meeseeks.Document do
   @spec descendants(Document.t(), node_id) :: [node_id]
   def descendants(document, node_id) do
     case get_node(document, node_id) do
-      %Element{children: children} ->
-        Enum.flat_map(children, &[&1 | descendants(document, &1)])
-
-      _ ->
-        []
+      %Element{children: children} -> Enum.flat_map(children, &[&1 | descendants(document, &1)])
+      _ -> []
     end
   end
 
@@ -175,11 +172,8 @@ defmodule Meeseeks.Document do
     nd = get_node(document, node_id)
 
     case nd.parent do
-      nil ->
-        []
-
-      parent ->
-        children(document, parent)
+      nil -> []
+      parent -> children(document, parent)
     end
   end
 

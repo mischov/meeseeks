@@ -27,7 +27,6 @@ defmodule Meeseeks.Selector.XPath.Expr.PathTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = Document.get_nodes(@document, [2])
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -45,7 +44,6 @@ defmodule Meeseeks.Selector.XPath.Expr.PathTest do
     node = Document.get_node(@document, 3)
     context = %{}
     expected = Document.get_nodes(@document, [3])
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -63,7 +61,6 @@ defmodule Meeseeks.Selector.XPath.Expr.PathTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = []
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -81,7 +78,6 @@ defmodule Meeseeks.Selector.XPath.Expr.PathTest do
     node = Document.get_node(@document, 2)
     context = %{}
     expected = Document.get_nodes(@document, [2])
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -103,7 +99,6 @@ defmodule Meeseeks.Selector.XPath.Expr.PathTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = Document.get_nodes(@document, [3, 5])
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 end

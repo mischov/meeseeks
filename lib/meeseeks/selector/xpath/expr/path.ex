@@ -11,7 +11,6 @@ defmodule Meeseeks.Selector.XPath.Expr.Path do
   @impl true
   def eval(%Path{type: :abs} = expr, _node, document, context) do
     root_nodes = Document.get_nodes(document, document.roots)
-
     next_step(expr.steps, root_nodes, document, context)
   end
 
@@ -33,7 +32,6 @@ defmodule Meeseeks.Selector.XPath.Expr.Path do
       steps ->
         Enum.reduce(nodes, [], fn node, nodes ->
           v = Expr.eval(step, node, document, context)
-
           nodes ++ next_step(steps, v, document, context)
         end)
     end
@@ -46,7 +44,6 @@ defmodule Meeseeks.Selector.XPath.Expr.Path do
 
       steps ->
         v = Expr.eval(step, node, document, context)
-
         next_step(steps, v, document, context)
     end
   end

@@ -47,7 +47,6 @@ defmodule Meeseeks.Selector.XPath.Transpiler do
   defp combine_steps(steps) do
     Enum.reduce(steps, nil, fn step, combinator ->
       selector = combine_predicates(step.predicates, combinator)
-
       %{step.combinator | selector: selector}
     end)
   end

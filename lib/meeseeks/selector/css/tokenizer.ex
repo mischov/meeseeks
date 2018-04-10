@@ -8,7 +8,6 @@ defmodule Meeseeks.Selector.CSS.Tokenizer do
       |> String.to_charlist()
 
     {:ok, tokens, _} = :css_selector_tokenizer.string(selector_chars)
-
     tokens
   end
 end

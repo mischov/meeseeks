@@ -23,7 +23,6 @@ defmodule Meeseeks.Selector.CSS.Parser do
 
   defp parse_elements(toks, elements) do
     {element, toks} = parse_element(toks)
-
     parse_elements(toks, [element | elements])
   end
 
@@ -35,13 +34,11 @@ defmodule Meeseeks.Selector.CSS.Parser do
 
   defp parse_element([], element) do
     element = %{element | selectors: Enum.reverse(element.selectors)}
-
     {element, []}
   end
 
   defp parse_element([',' | toks], element) do
     element = %{element | selectors: Enum.reverse(element.selectors)}
-
     {element, toks}
   end
 
@@ -54,49 +51,42 @@ defmodule Meeseeks.Selector.CSS.Parser do
   defp parse_element(['*', '|' | toks], element) do
     selector = %Namespace{value: "*"}
     element = %{element | selectors: [selector | element.selectors]}
-
     parse_element(toks, element)
   end
 
   defp parse_element([{:ident, tag} | toks], element) do
     selector = %Tag{value: List.to_string(tag)}
     element = %{element | selectors: [selector | element.selectors]}
-
     parse_element(toks, element)
   end
 
   defp parse_element(['*' | toks], element) do
     selector = %Tag{value: "*"}
     element = %{element | selectors: [selector | element.selectors]}
-
     parse_element(toks, element)
   end
 
   defp parse_element([{:id, id} | toks], element) do
     selector = %Attribute.Value{attribute: "id", value: List.to_string(id)}
     element = %{element | selectors: [selector | element.selectors]}
-
     parse_element(toks, element)
   end
 
   defp parse_element([{:class, class} | toks], element) do
     selector = %Attribute.ValueIncludes{attribute: "class", value: List.to_string(class)}
     element = %{element | selectors: [selector | element.selectors]}
-
     parse_element(toks, element)
   end
 
   defp parse_element(['[' | toks], element) do
     {selector, toks} = parse_attribute(toks)
     element = %{element | selectors: [selector | element.selectors]}
-
     parse_element(toks, element)
   end
 
   defp parse_element([':' | toks], element) do
     {selector, toks} = parse_pseudo_class(toks)
     element = %{element | selectors: [selector | element.selectors]}
-
     Selector.validate!(selector)
     parse_element(toks, element)
   end
@@ -105,7 +95,6 @@ defmodule Meeseeks.Selector.CSS.Parser do
     {combinator_selector, toks} = parse_element(toks)
     combinator = %Combinator.ChildElements{selector: combinator_selector}
     element = %{element | combinator: combinator}
-
     parse_element([',' | toks], element)
   end
 
@@ -113,7 +102,6 @@ defmodule Meeseeks.Selector.CSS.Parser do
     {combinator_selector, toks} = parse_element(toks)
     combinator = %Combinator.DescendantElements{selector: combinator_selector}
     element = %{element | combinator: combinator}
-
     parse_element([',' | toks], element)
   end
 
@@ -121,7 +109,6 @@ defmodule Meeseeks.Selector.CSS.Parser do
     {combinator_selector, toks} = parse_element(toks)
     combinator = %Combinator.NextSiblingElement{selector: combinator_selector}
     element = %{element | combinator: combinator}
-
     parse_element([',' | toks], element)
   end
 
@@ -129,7 +116,6 @@ defmodule Meeseeks.Selector.CSS.Parser do
     {combinator_selector, toks} = parse_element(toks)
     combinator = %Combinator.NextSiblingElements{selector: combinator_selector}
     element = %{element | combinator: combinator}
-
     parse_element([',' | toks], element)
   end
 
@@ -146,27 +132,23 @@ defmodule Meeseeks.Selector.CSS.Parser do
 
   defp parse_attribute(['^', {:ident, attr}, ']' | toks]) do
     selector = %Attribute.AttributePrefix{attribute: List.to_string(attr)}
-
     {selector, toks}
   end
 
   defp parse_attribute([{:ident, attr}, type, {:ident, val}, ']' | toks])
        when type in @attribute_value_selector_types do
     selector = attribute_value_selector(type, List.to_string(attr), List.to_string(val))
-
     {selector, toks}
   end
 
   defp parse_attribute([{:ident, attr}, type, {:string, val}, ']' | toks])
        when type in @attribute_value_selector_types do
     selector = attribute_value_selector(type, List.to_string(attr), List.to_string(val))
-
     {selector, toks}
   end
 
   defp parse_attribute([{:ident, attr}, ']' | toks]) do
     selector = %Attribute.Attribute{attribute: List.to_string(attr)}
-
     {selector, toks}
   end
 
@@ -185,14 +167,12 @@ defmodule Meeseeks.Selector.CSS.Parser do
 
   defp parse_pseudo_class([{:ident, type} | toks]) do
     selector = pseudo_class_selector(type, [])
-
     {selector, toks}
   end
 
   defp parse_pseudo_class([{:function, type} | toks]) do
     {args, toks} = parse_pseudo_class_args(type, toks)
     selector = pseudo_class_selector(type, args)
-
     {selector, toks}
   end
 

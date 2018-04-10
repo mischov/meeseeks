@@ -10,7 +10,6 @@ defmodule Meeseeks.Selector.Element.Attribute.ValueContains do
   @impl true
   def match(selector, %Document.Element{} = element, _document, _context) do
     value = Helpers.get(element.attributes, selector.attribute)
-
     String.contains?(value, selector.value)
   end
 

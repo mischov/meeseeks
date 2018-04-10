@@ -15,7 +15,6 @@ defmodule Meeseeks.Selector.XPath.Expr.Filter do
 
     if Expr.Helpers.nodes?(v) do
       context = Map.put(context, @nodes, v)
-
       Enum.filter(v, &Expr.eval(expr.predicate, &1, document, context))
     else
       raise "Invalid evaluated argument to XPath filter: #{inspect(v)}"

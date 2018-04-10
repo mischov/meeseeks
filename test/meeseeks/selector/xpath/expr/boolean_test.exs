@@ -19,7 +19,6 @@ defmodule Meeseeks.Selector.XPath.Expr.BooleanTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -33,7 +32,6 @@ defmodule Meeseeks.Selector.XPath.Expr.BooleanTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -47,7 +45,6 @@ defmodule Meeseeks.Selector.XPath.Expr.BooleanTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = false
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -61,7 +58,6 @@ defmodule Meeseeks.Selector.XPath.Expr.BooleanTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -75,7 +71,6 @@ defmodule Meeseeks.Selector.XPath.Expr.BooleanTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = false
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -89,7 +84,6 @@ defmodule Meeseeks.Selector.XPath.Expr.BooleanTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = false
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -103,7 +97,6 @@ defmodule Meeseeks.Selector.XPath.Expr.BooleanTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -117,7 +110,6 @@ defmodule Meeseeks.Selector.XPath.Expr.BooleanTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = false
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -131,7 +123,6 @@ defmodule Meeseeks.Selector.XPath.Expr.BooleanTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -145,7 +136,6 @@ defmodule Meeseeks.Selector.XPath.Expr.BooleanTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = false
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -159,7 +149,6 @@ defmodule Meeseeks.Selector.XPath.Expr.BooleanTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = false
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -173,7 +162,6 @@ defmodule Meeseeks.Selector.XPath.Expr.BooleanTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -199,7 +187,6 @@ defmodule Meeseeks.Selector.XPath.Expr.BooleanTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = true
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 
@@ -225,7 +212,6 @@ defmodule Meeseeks.Selector.XPath.Expr.BooleanTest do
     node = Document.get_node(@document, 4)
     context = %{}
     expected = false
-
     assert Expr.eval(expr, node, @document, context) == expected
   end
 end

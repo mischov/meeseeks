@@ -39,7 +39,6 @@ defmodule Meeseeks.Result do
 
   def attr(%Result{id: id, document: document}, attribute) do
     node = Document.get_node(document, id)
-
     Document.Node.attr(node, attribute)
   end
 
@@ -52,7 +51,6 @@ defmodule Meeseeks.Result do
 
   def attrs(%Result{id: id, document: document}) do
     node = Document.get_node(document, id)
-
     Document.Node.attrs(node)
   end
 
@@ -143,7 +141,6 @@ defmodule Meeseeks.Result do
 
   def tag(%Result{id: id, document: document}) do
     node = Document.get_node(document, id)
-
     Document.Node.tag(node)
   end
 
@@ -169,7 +166,6 @@ defmodule Meeseeks.Result do
 
   def tree(%Result{id: id, document: document}) do
     node = Document.get_node(document, id)
-
     Document.Node.tree(node, document)
   end
 end

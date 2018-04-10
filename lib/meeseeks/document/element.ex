@@ -78,7 +78,6 @@ defmodule Meeseeks.Document.Element do
   @impl true
   def tree(node, document) do
     child_nodes = child_nodes(document, node)
-
     {node.tag, node.attributes, Enum.map(child_nodes, &Document.Node.tree(&1, document))}
   end
 
@@ -87,14 +86,12 @@ defmodule Meeseeks.Document.Element do
   defp self_closing_tag(node) do
     tag = full_tag(node.namespace, node.tag)
     attributes = join_attributes(node.attributes)
-
     "<#{tag}#{attributes} />"
   end
 
   defp opening_tag(node) do
     tag = full_tag(node.namespace, node.tag)
     attributes = join_attributes(node.attributes)
-
     "<#{tag}#{attributes}>"
   end
 
@@ -105,7 +102,6 @@ defmodule Meeseeks.Document.Element do
 
   defp closing_tag(node) do
     tag = full_tag(node.namespace, node.tag)
-
     "</#{tag}>"
   end
 
