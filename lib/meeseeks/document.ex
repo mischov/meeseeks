@@ -251,6 +251,38 @@ defmodule Meeseeks.Document do
     Map.get(nodes, node_id, nil)
   end
 
+  @doc """
+  Deletes the node referenced by node_id and all its descendants from the document.
+  """
+  @spec delete_node(Document.t(), node_id) :: Document.t()
+  def delete_node(%Document{nodes: nodes, roots: roots} = document, node_id) do
+    deleted = [node_id | descendants(document, node_id)]
+
+    roots =
+      roots
+      |> Enum.reject(&(&1 in deleted))
+
+    nodes =
+      nodes
+      |> Enum.reduce(nodes, fn {id, node}, nodes ->
+        cond do
+          id in deleted ->
+            Map.delete(nodes, id)
+
+          Map.has_key?(node, :children) ->
+            Map.put(nodes, id, %{
+              node
+              | children: Enum.reject(node.children, &(&1 in deleted))
+            })
+
+          true ->
+            nodes
+        end
+      end)
+
+    %{document | roots: roots, nodes: nodes}
+  end
+
   # Inspect
 
   defimpl Inspect do
