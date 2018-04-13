@@ -81,4 +81,31 @@ defmodule Meeseeks.DocumentTest do
 
     assert Document.get_root_nodes(@document) == expected
   end
+
+  test "delete_node results in the proper descendants" do
+    assert Document.descendants(Document.delete_node(@document, 8), 5) == [6, 7, 11]
+  end
+
+  test "delete_node retains the proper keys" do
+    edited = Document.delete_node(@document, 8)
+    assert Map.keys(edited.nodes) == [1, 2, 3, 4, 5, 6, 7, 11]
+  end
+
+  test "delete_node retains non-element keys" do
+    edited =
+      "<!DOCTYPE html><html><head></head><body><div><p>hello world</p><p></p><div><p></p><p></p></div><p></p></div></body></html>"
+      |> Meeseeks.Parser.parse()
+      |> Document.delete_node(9)
+
+    assert Map.keys(edited.nodes) == [1, 2, 3, 4, 5, 6, 7, 8, 12]
+  end
+
+  test "delete_node with a root node" do
+    expected = [
+      %Meeseeks.Document.Element{id: 2, tag: "html", children: [3, 4]}
+    ]
+
+    modified = Document.delete_node(@document, 1)
+    assert Document.get_root_nodes(modified) == expected
+  end
 end
