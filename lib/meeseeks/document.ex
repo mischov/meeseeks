@@ -73,7 +73,7 @@ defmodule Meeseeks.Document do
   @doc """
   Returns the HTML of the document.
   """
-  def html(document) do
+  def html(%Document{} = document) do
     document
     |> get_root_nodes()
     |> Enum.reduce("", fn root_node, acc ->
@@ -84,7 +84,7 @@ defmodule Meeseeks.Document do
   @doc """
   Returns the `Meeseeks.TupleTree` of the document.
   """
-  def tree(document) do
+  def tree(%Document{} = document) do
     document
     |> get_root_nodes()
     |> Enum.map(&Node.tree(&1, document))
@@ -95,24 +95,30 @@ defmodule Meeseeks.Document do
   @doc """
   Checks if a node_id refers to a `Meeseeks.Document.Element` in the context
   of the document.
+
+  Raises if node_id does not exist in the document.
   """
-  @spec element?(Document.t(), node_id) :: boolean
-  def element?(document, node_id) do
-    case get_node(document, node_id) do
-      %Element{} -> true
-      _ -> false
+  @spec element?(Document.t(), node_id) :: boolean | no_return
+  def element?(%Document{} = document, node_id) do
+    case fetch_node(document, node_id) do
+      {:ok, %Element{}} -> true
+      {:ok, _} -> false
+      :error -> raise_unknown_node_id(node_id)
     end
   end
 
   @doc """
   Returns the node id of node_id's parent in the context of the document, or
   nil if node_id does not have a parent.
+
+  Raises if node_id does not exist in the document.
   """
-  @spec parent(Document.t(), node_id) :: node_id | nil
-  def parent(document, node_id) do
-    case get_node(document, node_id) do
-      %{parent: nil} -> nil
-      %{parent: parent} -> parent
+  @spec parent(Document.t(), node_id) :: node_id | nil | no_return
+  def parent(%Document{} = document, node_id) do
+    case fetch_node(document, node_id) do
+      {:ok, %{parent: nil}} -> nil
+      {:ok, %{parent: parent}} -> parent
+      :error -> raise_unknown_node_id(node_id)
     end
   end
 
@@ -120,9 +126,11 @@ defmodule Meeseeks.Document do
   Returns the node ids of node_id's ancestors in the context of the document.
 
   Returns the ancestors in reverse order: `[parent, grandparent, ...]`
+
+  Raises if node_id does not exist in the document.
   """
-  @spec ancestors(Document.t(), node_id) :: [node_id]
-  def ancestors(document, node_id) do
+  @spec ancestors(Document.t(), node_id) :: [node_id] | no_return
+  def ancestors(%Document{} = document, node_id) do
     case parent(document, node_id) do
       nil -> []
       parent_id -> [parent_id | ancestors(document, parent_id)]
@@ -135,12 +143,15 @@ defmodule Meeseeks.Document do
   Returns *all* children, not just those that are `Meeseeks.Document.Element`s.
 
   Returns children in depth-first order.
+
+  Raises if node_id does not exist in the document.
   """
-  @spec children(Document.t(), node_id) :: [node_id]
-  def children(document, node_id) do
-    case get_node(document, node_id) do
-      %Document.Element{children: children} -> children
-      _ -> []
+  @spec children(Document.t(), node_id) :: [node_id] | no_return
+  def children(%Document{} = document, node_id) do
+    case fetch_node(document, node_id) do
+      {:ok, %Document.Element{children: children}} -> children
+      {:ok, _} -> []
+      :error -> raise_unknown_node_id(node_id)
     end
   end
 
@@ -150,12 +161,20 @@ defmodule Meeseeks.Document do
   Returns *all* descendants, not just those that are `Meeseeks.Document.Element`s.
 
   Returns descendants in depth-first order.
+
+  Raises if node_id does not exist in the document.
   """
-  @spec descendants(Document.t(), node_id) :: [node_id]
-  def descendants(document, node_id) do
-    case get_node(document, node_id) do
-      %Element{children: children} -> Enum.flat_map(children, &[&1 | descendants(document, &1)])
-      _ -> []
+  @spec descendants(Document.t(), node_id) :: [node_id] | no_return
+  def descendants(%Document{} = document, node_id) do
+    case fetch_node(document, node_id) do
+      {:ok, %Element{children: children}} ->
+        Enum.flat_map(children, &[&1 | descendants(document, &1)])
+
+      {:ok, _} ->
+        []
+
+      :error ->
+        raise_unknown_node_id(node_id)
     end
   end
 
@@ -166,14 +185,18 @@ defmodule Meeseeks.Document do
   that are `Meeseeks.Document.Element`s.
 
   Returns siblings in depth-first order.
-  """
-  @spec siblings(Document.t(), node_id) :: [node_id]
-  def siblings(document, node_id) do
-    nd = get_node(document, node_id)
 
-    case nd.parent do
-      nil -> []
-      parent -> children(document, parent)
+  Raises if node_id does not exist in the document.
+  """
+  @spec siblings(Document.t(), node_id) :: [node_id] | no_return
+  def siblings(%Document{} = document, node_id) do
+    with {:ok, node} <- fetch_node(document, node_id) do
+      case node.parent do
+        nil -> get_root_ids(document)
+        parent -> children(document, parent)
+      end
+    else
+      :error -> raise_unknown_node_id(node_id)
     end
   end
 
@@ -184,9 +207,11 @@ defmodule Meeseeks.Document do
   Returns *all* of these siblings, not just those that are `Meeseeks.Document.Element`s.
 
   Returns siblings in depth-first order.
+
+  Raises if node_id does not exist in the document.
   """
-  @spec previous_siblings(Document.t(), node_id) :: [node_id]
-  def previous_siblings(document, node_id) do
+  @spec previous_siblings(Document.t(), node_id) :: [node_id] | no_return
+  def previous_siblings(%Document{} = document, node_id) do
     document
     |> siblings(node_id)
     |> Enum.take_while(fn id -> id != node_id end)
@@ -200,13 +225,25 @@ defmodule Meeseeks.Document do
   `Meeseeks.Document.Element`s.
 
   Returns siblings in depth-first order.
+
+  Raises if node_id does not exist in the document.
   """
-  @spec next_siblings(Document.t(), node_id) :: [node_id]
-  def next_siblings(document, node_id) do
+  @spec next_siblings(Document.t(), node_id) :: [node_id] | no_return
+  def next_siblings(%Document{} = document, node_id) do
     document
     |> siblings(node_id)
     |> Enum.drop_while(fn id -> id != node_id end)
     |> Enum.drop(1)
+  end
+
+  @doc """
+  Returns all of the document's root ids.
+
+  Returns root ids in depth-first order.
+  """
+  @spec get_root_ids(Document.t()) :: [node_id]
+  def get_root_ids(%Document{roots: roots}) do
+    Enum.sort(roots)
   end
 
   @doc """
@@ -215,8 +252,21 @@ defmodule Meeseeks.Document do
   Returns nodes in depth-first order.
   """
   @spec get_root_nodes(Document.t()) :: [node_t]
-  def get_root_nodes(%Document{roots: roots} = document) do
-    get_nodes(document, Enum.sort(roots))
+  def get_root_nodes(%Document{} = document) do
+    root_ids = get_root_ids(document)
+    get_nodes(document, root_ids)
+  end
+
+  @doc """
+  Returns all of the document's node ids.
+
+  Returns node ids in depth-first order.
+  """
+  @spec get_node_ids(Document.t()) :: [node_id]
+  def get_node_ids(%Document{nodes: nodes}) do
+    nodes
+    |> Map.keys()
+    |> Enum.sort()
   end
 
   @doc """
@@ -225,26 +275,39 @@ defmodule Meeseeks.Document do
   Returns nodes in depth-first order.
   """
   @spec get_nodes(Document.t()) :: [node_t]
-  def get_nodes(%Document{id_counter: nil}), do: []
-
-  def get_nodes(%Document{id_counter: id_counter, nodes: nodes}) do
-    for id <- 1..id_counter do
+  def get_nodes(%Document{nodes: nodes} = document) do
+    for id <- get_node_ids(document) do
       Map.get(nodes, id, nil)
     end
   end
 
   @doc """
-  Returns the nodes referred to by node_ids in the context of the document.
+  Returns a list of nodes referred to by node_ids in the context of the document.
 
-  Returns nodes in the order they are provided if node_ids are provided.
+  Returns nodes in the same order as node_ids.
+
+  Raises if any id in node_ids does not exist in the document.
   """
   @spec get_nodes(Document.t(), [node_id]) :: [node_t]
   def get_nodes(%Document{nodes: nodes}, node_ids) do
-    Enum.map(node_ids, fn node_id -> Map.get(nodes, node_id, nil) end)
+    Enum.map(node_ids, fn node_id ->
+      case Map.fetch(nodes, node_id) do
+        {:ok, node} -> node
+        :error -> raise_unknown_node_id(node_id)
+      end
+    end)
   end
 
   @doc """
-  Returns the node referred to by node_id in the context of the document.
+  Returns a tuple of {:ok, node}, where node is the node referred to by node_id in the context of the document, or :error.
+  """
+  @spec fetch_node(Document.t(), node_id) :: {:ok, node} :: :error
+  def fetch_node(%Document{nodes: nodes}, node_id) do
+    Map.fetch(nodes, node_id)
+  end
+
+  @doc """
+  Returns the node referred to by node_id in the context of the document, or nil.
   """
   @spec get_node(Document.t(), node_id) :: node_t
   def get_node(%Document{nodes: nodes}, node_id) do
@@ -253,8 +316,10 @@ defmodule Meeseeks.Document do
 
   @doc """
   Deletes the node referenced by node_id and all its descendants from the document.
+
+  Raises if node_id does not exist in the document.
   """
-  @spec delete_node(Document.t(), node_id) :: Document.t()
+  @spec delete_node(Document.t(), node_id) :: Document.t() | no_return
   def delete_node(%Document{nodes: nodes, roots: roots} = document, node_id) do
     deleted = [node_id | descendants(document, node_id)]
 
@@ -281,6 +346,12 @@ defmodule Meeseeks.Document do
       end)
 
     %{document | roots: roots, nodes: nodes}
+  end
+
+  # Helpers
+
+  defp raise_unknown_node_id(node_id) do
+    raise "Unknown node id, node #{inspect(node_id)} does not exist in document"
   end
 
   # Inspect

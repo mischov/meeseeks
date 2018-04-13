@@ -73,6 +73,10 @@ defmodule Meeseeks.DocumentTest do
     assert Document.next_siblings(@document, 7) == [8, 11]
   end
 
+  test "get_root_ids" do
+    assert Document.get_root_ids(@document) == [1, 2]
+  end
+
   test "get_root_nodes" do
     expected = [
       %Meeseeks.Document.Doctype{id: 1, name: "html", public: "", system: ""},
@@ -82,30 +86,50 @@ defmodule Meeseeks.DocumentTest do
     assert Document.get_root_nodes(@document) == expected
   end
 
+  test "get_node_ids" do
+    assert Document.get_node_ids(@document) == [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+  end
+
   test "delete_node results in the proper descendants" do
-    assert Document.descendants(Document.delete_node(@document, 8), 5) == [6, 7, 11]
+    descendants_after_deletion =
+      @document
+      |> Document.delete_node(8)
+      |> Document.descendants(5)
+
+    assert descendants_after_deletion == [6, 7, 11]
   end
 
   test "delete_node retains the proper keys" do
-    edited = Document.delete_node(@document, 8)
-    assert Map.keys(edited.nodes) == [1, 2, 3, 4, 5, 6, 7, 11]
+    node_ids_after_deletion =
+      @document
+      |> Document.delete_node(8)
+      |> Document.get_node_ids()
+
+    assert node_ids_after_deletion == [1, 2, 3, 4, 5, 6, 7, 11]
   end
 
   test "delete_node retains non-element keys" do
-    edited =
+    node_ids_after_deletion =
       "<!DOCTYPE html><html><head></head><body><div><p>hello world</p><p></p><div><p></p><p></p></div><p></p></div></body></html>"
       |> Meeseeks.Parser.parse()
       |> Document.delete_node(9)
+      |> Document.get_node_ids()
 
-    assert Map.keys(edited.nodes) == [1, 2, 3, 4, 5, 6, 7, 8, 12]
+    assert node_ids_after_deletion == [1, 2, 3, 4, 5, 6, 7, 8, 12]
   end
 
   test "delete_node with a root node" do
-    expected = [
-      %Meeseeks.Document.Element{id: 2, tag: "html", children: [3, 4]}
-    ]
+    root_ids_after_deletion =
+      @document
+      |> Document.delete_node(1)
+      |> Document.get_root_ids()
 
-    modified = Document.delete_node(@document, 1)
-    assert Document.get_root_nodes(modified) == expected
+    assert root_ids_after_deletion == [2]
+  end
+
+  test "raise if attempting to provide node_id that doesn't exist in document" do
+    assert_raise RuntimeError, ~r/^Unknown node id/, fn ->
+      Document.children(@document, 9000)
+    end
   end
 end
