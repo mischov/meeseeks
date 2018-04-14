@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.8.0 (2018-04-14)
+
+### Enhancements
+
+  * [Select] Most `Document` functions now raise if an unknown `node_id` is provided, when before they might have raised or might have handle the situation gracefully
+  * [Select] Add `get_root_ids/1`, `get_node_ids/1`, and `fetch_node/2` to `Document`
+  * [Select] Add `Document.delete_note/2`, courtesy of @willbarrett
+  * [Readability] Remove Credo
+  * [Readability] Add .formatters.exs and `mix format` project
+
+### Fixes
+
+  * [All] Fix various typespecs
+
 ## v0.7.7 (2018-02-08)
 
 ### Fixes
