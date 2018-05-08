@@ -10,7 +10,7 @@ defmodule Meeseeks.DocumentTest do
        {"head", [], []},
        {"body", [],
         [
-          {"div", [],
+          {"div", [{"attr", "1 \"2\" 3"}],
            [
              {"p", [], []},
              {"p", [], []},
@@ -24,7 +24,7 @@ defmodule Meeseeks.DocumentTest do
 
   test "html" do
     expected =
-      "<!DOCTYPE html><html><head></head><body><div><p></p><p></p><div><p></p><p></p></div><p></p></div></body></html>"
+      "<!DOCTYPE html><html><head></head><body><div attr='1 \"2\" 3'><p></p><p></p><div><p></p><p></p></div><p></p></div></body></html>"
 
     assert Document.html(@document) == expected
   end
