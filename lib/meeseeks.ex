@@ -51,17 +51,24 @@ defmodule Meeseeks do
 
   ### Select
 
-  Next, use one of Meeseeks's two main selection functions, `all` or `one`,
-  to search for nodes. Both functions accept a queryable (a source, a
-  document, or a `Meeseeks.Result`), one or more `Meeseeks.Selector`s, and
-  optionally an initial context.
+  Next, use one of Meeseeks's selection functions - `fetch_all`, `all`,
+  `fetch_one`, or `one` - to search for nodes.
 
-  `all` returns a list of results representing every node matching one of
-  the provided selectors, while `one` returns a result representing the
-  first node to match a selector (depth-first).
+  All these functions accept a queryable (a source, a document, or a
+  `Meeseeks.Result`), one or more `Meeseeks.Selector`s, and optionally an
+  initial context.
 
-  Use the `css` macro provided by `Meeseeks.CSS` or the `xpath` macro
-  provided by `Meeseeks.XPath` to generate selectors.
+  `all` returns a (possibly empty) list of results representing every node
+  matching one of the provided selectors, while `one` returns a result
+  representing the first node to match a selector (depth-first) or nil if
+  there is no match.
+
+  `fetch_all` and `fetch_one` work like `all` and `one` respectively, but
+  wrap the result in `{:ok, ...}` if there is a match or return
+  `{:error, :no_match}` if there is not.
+
+  To generate selectors, use the `css` macro provided by `Meeseeks.CSS` or
+  the `xpath` macro provided by `Meeseeks.XPath`.
 
   ```elixir
   import Meeseeks.CSS
@@ -167,11 +174,53 @@ defmodule Meeseeks do
   # Select
 
   @doc """
-  Returns a `Result` for each node in the queryable matching a selector.
+  Returns `{:ok, [Result, ...]}` if one of more nodes in the queryable match a selector, or `{:error, :no_match}` if none do.
 
   Optionally accepts a `Meeseeks.Context` map.
 
-  Parses the source if it is not a `Meeseeks.Document` or `Meeseeks.Result`.
+  Parses the source if it is not a `Meeseeks.Document` or `Meeseeks.Result`, and may return {:error, reason} if there is a parse error.
+
+  If multiple selections are being ran on the same unparsed source, parse
+  first to avoid unnecessary computation.
+
+  ## Examples
+
+      iex> import Meeseeks.CSS
+      iex> Meeseeks.fetch_all("<div id=main><p>1</p><p>2</p><p>3</p></div>", css("#main p")) |> elem(1) |> List.first()
+      #Meeseeks.Result<{ <p>1</p> }>
+  """
+  @spec fetch_all(queryable, selectors) :: {:ok, [Result.t()]} | {:error, any}
+  def fetch_all(queryable, selectors) do
+    fetch_all(queryable, selectors, %{})
+  end
+
+  @spec fetch_all(queryable, selectors, Context.t()) :: {:ok, [Result.t()]} | {:error, any}
+  def fetch_all(queryable, selectors, context)
+
+  def fetch_all({:error, _} = error, _selectors, _context), do: error
+
+  def fetch_all(%Document{} = queryable, selectors, context) do
+    Select.fetch_all(queryable, selectors, context)
+  end
+
+  def fetch_all(%Result{} = queryable, selectors, context) do
+    Select.fetch_all(queryable, selectors, context)
+  end
+
+  def fetch_all(source, selectors, context) do
+    case parse(source) do
+      {:error, reason} -> {:error, reason}
+      document -> Select.fetch_all(document, selectors, context)
+    end
+  end
+
+  @doc """
+  Returns `[Result, ...]` if one or more nodes in the queryable match a selector, or `[]` if none do.
+
+  Optionally accepts a `Meeseeks.Context` map.
+
+  Parses the source if it is not a `Meeseeks.Document` or `Meeseeks.Result`, and may return {:error, reason} if there is a parse error.
+
   If multiple selections are being ran on the same unparsed source, parse
   first to avoid unnecessary computation.
 
@@ -207,12 +256,55 @@ defmodule Meeseeks do
   end
 
   @doc """
-  Returns a `Result` for the first node in the queryable (depth-first)
-  matching a selector, or nil if there is no matching node.
+  Returns `{:ok, Result}` for the first node in the queryable (depth-first)
+  matching a selector, or `{:error, :no_match}` if none do.
 
   Optionally accepts a `Meeseeks.Context` map.
 
-  Parses the source if it is not a `Meeseeks.Document` or `Meeseeks.Result`.
+  Parses the source if it is not a `Meeseeks.Document` or `Meeseeks.Result`, and may return {:error, reason} if there is a parse error.
+
+  If multiple selections are being ran on the same unparsed source, parse
+  first to avoid unnecessary computation.
+
+  ## Examples
+
+      iex> import Meeseeks.CSS
+      iex> Meeseeks.fetch_one("<div id=main><p>1</p><p>2</p><p>3</p></div>", css("#main p")) |> elem(1)
+      #Meeseeks.Result<{ <p>1</p> }>
+  """
+  @spec fetch_one(queryable, selectors) :: {:ok, Result.t()} | {:error, any}
+  def fetch_one(queryable, selectors) do
+    fetch_one(queryable, selectors, %{})
+  end
+
+  @spec fetch_one(queryable, selectors, Context.t()) :: {:ok, Result.t()} | {:error, any}
+  def fetch_one(queryable, selectors, context)
+
+  def fetch_one({:error, _} = error, _selectors, _context), do: error
+
+  def fetch_one(%Document{} = queryable, selectors, context) do
+    Select.fetch_one(queryable, selectors, context)
+  end
+
+  def fetch_one(%Result{} = queryable, selectors, context) do
+    Select.fetch_one(queryable, selectors, context)
+  end
+
+  def fetch_one(source, selectors, context) do
+    case parse(source) do
+      {:error, reason} -> {:error, reason}
+      document -> Select.fetch_one(document, selectors, context)
+    end
+  end
+
+  @doc """
+  Returns a `Result` for the first node in the queryable (depth-first)
+  matching a selector, or `nil` if none do.
+
+  Optionally accepts a `Meeseeks.Context` map.
+
+  Parses the source if it is not a `Meeseeks.Document` or `Meeseeks.Result`, and may return {:error, reason} if there is a parse error.
+
   If multiple selections are being ran on the same unparsed source, parse
   first to avoid unnecessary computation.
 
@@ -255,7 +347,8 @@ defmodule Meeseeks do
   Requires that a `Meeseeks.Accumulator` has been added to the context via
   `Meeseeks.Context.add_accumulator/2`, and will raise an error if it hasn't.
 
-  Parses the source if it is not a `Meeseeks.Document` or `Meeseeks.Result`.
+  Parses the source if it is not a `Meeseeks.Document` or `Meeseeks.Result`, and may return {:error, reason} if there is a parse error.
+
   If multiple selections are being ran on the same unparsed source, parse
   first to avoid unnecessary computation.
 

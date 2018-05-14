@@ -12,6 +12,14 @@ defmodule Meeseeks.Select do
 
   # All
 
+  @spec fetch_all(queryable, selectors, Context.t()) :: {:ok, [Result.t()]} | {:error, :no_match}
+  def fetch_all(queryable, selectors, context) do
+    case all(queryable, selectors, context) do
+      [] -> {:error, :no_match}
+      results -> {:ok, results}
+    end
+  end
+
   @spec all(queryable, selectors, Context.t()) :: [Result.t()]
   def all(queryable, selectors, context) do
     context = Context.add_accumulator(context, %Accumulator.All{})
@@ -19,6 +27,14 @@ defmodule Meeseeks.Select do
   end
 
   # One
+
+  @spec fetch_one(queryable, selectors, Context.t()) :: {:ok, Result.t()} | {:error, :no_match}
+  def fetch_one(queryable, selectors, context) do
+    case one(queryable, selectors, context) do
+      nil -> {:error, :no_match}
+      result -> {:ok, result}
+    end
+  end
 
   @spec one(queryable, selectors, Context.t()) :: Result.t() | nil
   def one(queryable, selectors, context) do

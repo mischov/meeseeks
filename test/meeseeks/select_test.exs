@@ -36,10 +36,56 @@ defmodule Meeseeks.SelectTest do
     assert Select.all(@document, selector, %{}) == expected
   end
 
+  test "select all links" do
+    selector = css("link")
+    expected = []
+    assert Select.all(@document, selector, %{}) == expected
+  end
+
+  test "fetch_all paragraphs in divs" do
+    selector = css("div p")
+
+    expected =
+      {:ok,
+       [
+         %Result{id: 8, document: @document},
+         %Result{id: 11, document: @document},
+         %Result{id: 14, document: @document},
+         %Result{id: 19, document: @document},
+         %Result{id: 22, document: @document}
+       ]}
+
+    assert Select.fetch_all(@document, selector, %{}) == expected
+  end
+
+  test "fetch_all links" do
+    selector = css("link")
+    expected = {:error, :no_match}
+    assert Select.fetch_all(@document, selector, %{}) == expected
+  end
+
   test "select first paragraph" do
     selector = css("div.main > p")
     expected = %Result{id: 8, document: @document}
     assert Select.one(@document, selector, %{}) == expected
+  end
+
+  test "select first link" do
+    selector = css("link")
+    expected = nil
+    assert Select.one(@document, selector, %{}) == expected
+  end
+
+  test "fetch_one paragraph" do
+    selector = css("div.main > p")
+    expected = {:ok, %Result{id: 8, document: @document}}
+    assert Select.fetch_one(@document, selector, %{}) == expected
+  end
+
+  test "fetch_one link" do
+    selector = css("link")
+    expected = {:error, :no_match}
+    assert Select.fetch_one(@document, selector, %{}) == expected
   end
 
   test "select all with class 'main'" do
