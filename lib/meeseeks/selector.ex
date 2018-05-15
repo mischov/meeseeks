@@ -45,13 +45,7 @@ defmodule Meeseeks.Selector do
   ```
   """
 
-  alias Meeseeks.{Context, Document, Selector}
-
-  defmodule InvalidSelectorError do
-    @moduledoc false
-
-    defexception [:message]
-  end
+  alias Meeseeks.{Context, Document, Error, Selector}
 
   @type t :: struct
 
@@ -133,9 +127,9 @@ defmodule Meeseeks.Selector do
 
   @doc """
   Validates selector, returning `{:ok, selector}` if the selector is valid or
-  `{:error, reason}` if it is not.
+  `{:error, %Meeseeks.Error{}}` if it is not.
   """
-  @spec validate(t) :: {:ok, t} | {:error, String.t()}
+  @spec validate(t) :: {:ok, t} | {:error, Error.t()}
   def validate(%{__struct__: struct} = selector) do
     struct.validate(selector)
   end
@@ -144,13 +138,13 @@ defmodule Meeseeks.Selector do
 
   @doc """
   Validates selector, returning the selector if it is valid or raising a
-  Meeseeks.Selector.InvalidSelectorError if it is not.
+  `Meeseeks.Error` if it is not.
   """
   @spec validate!(t) :: t | no_return
   def validate!(selector) do
     case validate(selector) do
       {:ok, selector} -> selector
-      {:error, reason} -> raise InvalidSelectorError, reason
+      {:error, %Error{} = error} -> raise error
     end
   end
 

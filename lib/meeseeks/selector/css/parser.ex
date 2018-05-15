@@ -1,15 +1,9 @@
 defmodule Meeseeks.Selector.CSS.Parser do
   @moduledoc false
 
-  alias Meeseeks.Selector
+  alias Meeseeks.{Error, Selector}
   alias Meeseeks.Selector.{Combinator, Element}
   alias Meeseeks.Selector.Element.{Attribute, Namespace, PseudoClass, Tag}
-
-  defmodule ParseError do
-    @moduledoc false
-
-    defexception [:message]
-  end
 
   # Parse Elements
 
@@ -283,7 +277,9 @@ defmodule Meeseeks.Selector.CSS.Parser do
         %PseudoClass.NthOfType{args: args}
 
       _ ->
-        raise ParseError, "Pseudo class \"#{type}\" not supported"
+        raise Error.new(:css_selector_parser, :invalid_input, %{
+                description: "Pseudo class \"#{type}\" not supported"
+              })
     end
   end
 end

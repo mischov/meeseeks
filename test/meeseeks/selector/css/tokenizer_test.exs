@@ -1,6 +1,7 @@
 defmodule Meeseeks.Selector.CSS.TokenizerTest do
   use ExUnit.Case
 
+  alias Meeseeks.Error
   alias Meeseeks.Selector.CSS.Tokenizer
 
   test "multiple selectors" do
@@ -208,5 +209,15 @@ defmodule Meeseeks.Selector.CSS.TokenizerTest do
     selector = "tag :nth-child(1)"
     tokens = [{:ident, 'tag'}, :space, ':', {:function, 'nth-child'}, {:int, '1'}, ')']
     assert Tokenizer.tokenize(selector) == tokens
+  end
+
+  # invalid input
+
+  test "invalid input" do
+    selector = "..."
+
+    assert_raise Error, ~r/Type: :css_selector_tokenizer\n\n  Reason: :invalid_input/, fn ->
+      Tokenizer.tokenize(selector)
+    end
   end
 end

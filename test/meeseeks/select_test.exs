@@ -3,7 +3,7 @@ defmodule Meeseeks.SelectTest do
 
   import Meeseeks.CSS
 
-  alias Meeseeks.{Accumulator, Context, Result, Select}
+  alias Meeseeks.{Accumulator, Context, Error, Result, Select}
 
   @document Meeseeks.Parser.parse("""
             <html>
@@ -60,7 +60,7 @@ defmodule Meeseeks.SelectTest do
 
   test "fetch_all links" do
     selector = css("link")
-    expected = {:error, :no_match}
+    expected = {:error, %Error{type: :select, reason: :no_match}}
     assert Select.fetch_all(@document, selector, %{}) == expected
   end
 
@@ -84,7 +84,7 @@ defmodule Meeseeks.SelectTest do
 
   test "fetch_one link" do
     selector = css("link")
-    expected = {:error, :no_match}
+    expected = {:error, %Error{type: :select, reason: :no_match}}
     assert Select.fetch_one(@document, selector, %{}) == expected
   end
 
@@ -172,7 +172,7 @@ defmodule Meeseeks.SelectTest do
   test "select with string instead of selector" do
     selector = "#first-p ~ *"
 
-    assert_raise RuntimeError, ~r/^Expected selectors/, fn ->
+    assert_raise Error, ~r/Type: :select\n\n  Reason: :invalid_selectors/, fn ->
       Select.all(@document, selector, %{})
     end
   end
@@ -181,7 +181,7 @@ defmodule Meeseeks.SelectTest do
     selector = css("#first-p ~ *")
     context = %{}
 
-    assert_raise RuntimeError, ~r/^No accumulator/, fn ->
+    assert_raise Error, ~r/Type: :context\n\n  Reason: :accumulator_required/, fn ->
       Select.select(@document, selector, context)
     end
   end

@@ -10,7 +10,7 @@ defmodule Meeseeks.Context do
   `matches` map, and halts selection if the `return?` boolean becomes true.
   """
 
-  alias Meeseeks.{Accumulator, Document, Selector}
+  alias Meeseeks.{Accumulator, Document, Error, Selector}
 
   @accumulator :__accumulator__
   @return? :"__return?__"
@@ -47,8 +47,14 @@ defmodule Meeseeks.Context do
   @spec ensure_accumulator!(t) :: t
   def ensure_accumulator!(context) do
     case Map.fetch(context, @accumulator) do
-      {:ok, _} -> context
-      :error -> raise "No accumulator in context"
+      {:ok, _} ->
+        context
+
+      :error ->
+        raise Error.new(:context, :accumulator_required, %{
+                message: "Context does not contain required accumulator",
+                context: context
+              })
     end
   end
 

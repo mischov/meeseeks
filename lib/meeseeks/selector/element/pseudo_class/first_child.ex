@@ -2,7 +2,7 @@ defmodule Meeseeks.Selector.Element.PseudoClass.FirstChild do
   use Meeseeks.Selector
   @moduledoc false
 
-  alias Meeseeks.Document
+  alias Meeseeks.{Document, Error}
   alias Meeseeks.Selector.Element.PseudoClass.Helpers
 
   defstruct args: []
@@ -27,8 +27,15 @@ defmodule Meeseeks.Selector.Element.PseudoClass.FirstChild do
   @impl true
   def validate(selector) do
     case selector.args do
-      [] -> {:ok, selector}
-      _ -> {:error, ":first-child expects no arguments"}
+      [] ->
+        {:ok, selector}
+
+      _ ->
+        {:error,
+         Error.new(:css_selector, :invalid, %{
+           description: ":first_child expects to arguments",
+           selector: selector
+         })}
     end
   end
 end

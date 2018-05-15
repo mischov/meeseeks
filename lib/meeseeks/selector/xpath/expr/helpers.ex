@@ -89,7 +89,6 @@ defmodule Meeseeks.Selector.XPath.Expr.Helpers do
   def boolean(x, _document) when is_integer(x), do: x != 0
   def boolean(x, _document) when is_float(x), do: x != 0.0
   def boolean(x, _document) when is_list(x), do: nodes?(x)
-  def boolean(x, _document), do: raise(ArgumentError, arg_error("boolean", x))
 
   # number
 
@@ -110,8 +109,6 @@ defmodule Meeseeks.Selector.XPath.Expr.Helpers do
       _ -> :NaN
     end
   end
-
-  def number(x, _document), do: raise(ArgumentError, arg_error("number", x))
 
   # string
 
@@ -147,11 +144,9 @@ defmodule Meeseeks.Selector.XPath.Expr.Helpers do
       [node | _] = x
       string(node, document)
     else
-      raise ArgumentError, arg_error("string", x)
+      raise ArgumentError, "invalid input to helper `string/2`: #{inspect(x)}"
     end
   end
-
-  def string(x, _document), do: raise(ArgumentError, arg_error("string", x))
 
   # nodes?
 
@@ -359,10 +354,6 @@ defmodule Meeseeks.Selector.XPath.Expr.Helpers do
   def negate(n), do: -n
 
   # misc
-
-  defp arg_error(f, arg) do
-    "Meeseeks.Selector.XPath.Expr.Helpers.#{f}(#{inspect(arg)})"
-  end
 
   defp plus_one(n), do: n + 1
 end

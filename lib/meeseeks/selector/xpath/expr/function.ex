@@ -2,7 +2,7 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
   use Meeseeks.Selector.XPath.Expr
   @moduledoc false
 
-  alias Meeseeks.{Context, Document}
+  alias Meeseeks.{Context, Document, Error}
   alias Meeseeks.Selector.XPath.Expr
 
   defstruct f: nil, args: []
@@ -20,8 +20,8 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
     |> Enum.count()
   end
 
-  def eval(%Expr.Function{f: :last, args: args}, _node, _document, _context) do
-    raise invalid_args("last", args)
+  def eval(%Expr.Function{f: :last, args: args} = expr, _node, _document, _context) do
+    raise invalid_args(expr, args)
   end
 
   # position
@@ -30,24 +30,24 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
     Expr.Helpers.position(node, context)
   end
 
-  def eval(%Expr.Function{f: :position, args: args}, _node, _document, _context) do
-    raise invalid_args("position", args)
+  def eval(%Expr.Function{f: :position, args: args} = expr, _node, _document, _context) do
+    raise invalid_args(expr, args)
   end
 
   # count
 
-  def eval(%Expr.Function{f: :count, args: [e]}, node, document, context) do
+  def eval(%Expr.Function{f: :count, args: [e]} = expr, node, document, context) do
     v = Expr.eval(e, node, document, context)
 
     if Expr.Helpers.nodes?(v) do
       Enum.count(v)
     else
-      raise invalid_evaluated_args("count", [v])
+      raise invalid_evaluated_args(expr, [v])
     end
   end
 
-  def eval(%Expr.Function{f: :count, args: args}, _node, _document, _context) do
-    raise invalid_args("count", args)
+  def eval(%Expr.Function{f: :count, args: args} = expr, _node, _document, _context) do
+    raise invalid_args(expr, args)
   end
 
   # id not supported, if added would involve id attribute
@@ -58,19 +58,19 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
     local_name(node)
   end
 
-  def eval(%Expr.Function{f: :"local-name", args: [e]}, node, document, context) do
+  def eval(%Expr.Function{f: :"local-name", args: [e]} = expr, node, document, context) do
     v = Expr.eval(e, node, document, context)
 
     if Expr.Helpers.nodes?(v) do
       [node | _] = v
       local_name(node)
     else
-      raise invalid_evaluated_args("local-name", [v])
+      raise invalid_evaluated_args(expr, [v])
     end
   end
 
-  def eval(%Expr.Function{f: :"local-name", args: args}, _node, _document, _context) do
-    raise invalid_args("local-name", args)
+  def eval(%Expr.Function{f: :"local-name", args: args} = expr, _node, _document, _context) do
+    raise invalid_args(expr, args)
   end
 
   # namespace-uri
@@ -81,19 +81,19 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
     namespace_uri(node)
   end
 
-  def eval(%Expr.Function{f: :"namespace-uri", args: [e]}, node, document, context) do
+  def eval(%Expr.Function{f: :"namespace-uri", args: [e]} = expr, node, document, context) do
     v = Expr.eval(e, node, document, context)
 
     if Expr.Helpers.nodes?(v) do
       [node | _] = v
       namespace_uri(node)
     else
-      raise invalid_evaluated_args("namespace-uri", [v])
+      raise invalid_evaluated_args(expr, [v])
     end
   end
 
-  def eval(%Expr.Function{f: :"namespace-uri", args: args}, _node, _document, _context) do
-    raise invalid_args("namespace-uri", args)
+  def eval(%Expr.Function{f: :"namespace-uri", args: args} = expr, _node, _document, _context) do
+    raise invalid_args(expr, args)
   end
 
   # name
@@ -102,19 +102,19 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
     name(node)
   end
 
-  def eval(%Expr.Function{f: :name, args: [e]}, node, document, context) do
+  def eval(%Expr.Function{f: :name, args: [e]} = expr, node, document, context) do
     v = Expr.eval(e, node, document, context)
 
     if Expr.Helpers.nodes?(v) do
       [node | _] = v
       name(node)
     else
-      raise invalid_evaluated_args("name", [v])
+      raise invalid_evaluated_args(expr, [v])
     end
   end
 
-  def eval(%Expr.Function{f: :name, args: args}, _node, _document, _context) do
-    raise invalid_args("name", args)
+  def eval(%Expr.Function{f: :name, args: args} = expr, _node, _document, _context) do
+    raise invalid_args(expr, args)
   end
 
   # string
@@ -128,8 +128,8 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
     |> Expr.Helpers.string(document)
   end
 
-  def eval(%Expr.Function{f: :string, args: args}, _node, _document, _context) do
-    raise invalid_args("string", args)
+  def eval(%Expr.Function{f: :string, args: args} = expr, _node, _document, _context) do
+    raise invalid_args(expr, args)
   end
 
   # concat
@@ -141,8 +141,8 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
     |> Enum.join("")
   end
 
-  def eval(%Expr.Function{f: :concat, args: args}, _node, _document, _context) do
-    raise invalid_args("concat", args)
+  def eval(%Expr.Function{f: :concat, args: args} = expr, _node, _document, _context) do
+    raise invalid_args(expr, args)
   end
 
   # starts-with
@@ -159,8 +159,8 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
     String.starts_with?(v1, v2)
   end
 
-  def eval(%Expr.Function{f: :"starts-with", args: args}, _node, _document, _context) do
-    raise invalid_args("starts-with", args)
+  def eval(%Expr.Function{f: :"starts-with", args: args} = expr, _node, _document, _context) do
+    raise invalid_args(expr, args)
   end
 
   # contains
@@ -177,8 +177,8 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
     String.contains?(v1, v2)
   end
 
-  def eval(%Expr.Function{f: :contains, args: args}, _node, _document, _context) do
-    raise invalid_args("contains", args)
+  def eval(%Expr.Function{f: :contains, args: args} = expr, _node, _document, _context) do
+    raise invalid_args(expr, args)
   end
 
   # substring-before
@@ -198,8 +198,8 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
     end
   end
 
-  def eval(%Expr.Function{f: :"substring-before", args: args}, _node, _document, _context) do
-    raise invalid_args("substring-before", args)
+  def eval(%Expr.Function{f: :"substring-before", args: args} = expr, _node, _document, _context) do
+    raise invalid_args(expr, args)
   end
 
   # substring-after
@@ -219,8 +219,8 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
     end
   end
 
-  def eval(%Expr.Function{f: :"substring-after", args: args}, _node, _document, _context) do
-    raise invalid_args("substring-after", args)
+  def eval(%Expr.Function{f: :"substring-after", args: args} = expr, _node, _document, _context) do
+    raise invalid_args(expr, args)
   end
 
   # substring
@@ -260,8 +260,8 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
     Expr.Helpers.substring(v1, v2, v3)
   end
 
-  def eval(%Expr.Function{f: :substring, args: args}, _node, _document, _context) do
-    raise invalid_args("substring", args)
+  def eval(%Expr.Function{f: :substring, args: args} = expr, _node, _document, _context) do
+    raise invalid_args(expr, args)
   end
 
   # string-length
@@ -278,8 +278,8 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
     |> String.length()
   end
 
-  def eval(%Expr.Function{f: :"string-length", args: args}, _node, _document, _context) do
-    raise invalid_args("string-length", args)
+  def eval(%Expr.Function{f: :"string-length", args: args} = expr, _node, _document, _context) do
+    raise invalid_args(expr, args)
   end
 
   # normalize-space
@@ -296,8 +296,8 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
     |> normalize_whitespace()
   end
 
-  def eval(%Expr.Function{f: :"normalize-space", args: args}, _node, _document, _context) do
-    raise invalid_args("normalize-space", args)
+  def eval(%Expr.Function{f: :"normalize-space", args: args} = expr, _node, _document, _context) do
+    raise invalid_args(expr, args)
   end
 
   # translate not supported
@@ -309,8 +309,8 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
     |> Expr.Helpers.boolean(document)
   end
 
-  def eval(%Expr.Function{f: :boolean, args: args}, _node, _document, _context) do
-    raise invalid_args("boolean", args)
+  def eval(%Expr.Function{f: :boolean, args: args} = expr, _node, _document, _context) do
+    raise invalid_args(expr, args)
   end
 
   # not
@@ -321,8 +321,8 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
     |> not_()
   end
 
-  def eval(%Expr.Function{f: :not, args: args}, _node, _document, _context) do
-    raise invalid_args("not", args)
+  def eval(%Expr.Function{f: :not, args: args} = expr, _node, _document, _context) do
+    raise invalid_args(expr, args)
   end
 
   # true
@@ -331,8 +331,8 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
     true
   end
 
-  def eval(%Expr.Function{f: true, args: args}, _node, _document, _context) do
-    raise invalid_args("true", args)
+  def eval(%Expr.Function{f: true, args: args} = expr, _node, _document, _context) do
+    raise invalid_args(expr, args)
   end
 
   # false
@@ -341,8 +341,8 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
     false
   end
 
-  def eval(%Expr.Function{f: false, args: args}, _node, _document, _context) do
-    raise invalid_args("false", args)
+  def eval(%Expr.Function{f: false, args: args} = expr, _node, _document, _context) do
+    raise invalid_args(expr, args)
   end
 
   # lang not supported
@@ -359,13 +359,13 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
     |> Expr.Helpers.number(document)
   end
 
-  def eval(%Expr.Function{f: :number, args: args}, _node, _document, _context) do
-    raise invalid_args("number", args)
+  def eval(%Expr.Function{f: :number, args: args} = expr, _node, _document, _context) do
+    raise invalid_args(expr, args)
   end
 
   # sum
 
-  def eval(%Expr.Function{f: :sum, args: [e]}, node, document, context) do
+  def eval(%Expr.Function{f: :sum, args: [e]} = expr, node, document, context) do
     v = Expr.eval(e, node, document, context)
 
     if Expr.Helpers.nodes?(v) do
@@ -376,12 +376,12 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
         |> Expr.Helpers.add(sum)
       end)
     else
-      raise invalid_evaluated_args("sum", [v])
+      raise invalid_evaluated_args(expr, [v])
     end
   end
 
-  def eval(%Expr.Function{f: :sum, args: args}, _node, _document, _context) do
-    raise invalid_args("sum", args)
+  def eval(%Expr.Function{f: :sum, args: args} = expr, _node, _document, _context) do
+    raise invalid_args(expr, args)
   end
 
   # floor
@@ -392,8 +392,8 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
     |> Expr.Helpers.floor()
   end
 
-  def eval(%Expr.Function{f: :floor, args: args}, _node, _document, _context) do
-    raise invalid_args("floor", args)
+  def eval(%Expr.Function{f: :floor, args: args} = expr, _node, _document, _context) do
+    raise invalid_args(expr, args)
   end
 
   # ceiling
@@ -404,8 +404,8 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
     |> Expr.Helpers.ceiling()
   end
 
-  def eval(%Expr.Function{f: :ceiling, args: args}, _node, _document, _context) do
-    raise invalid_args("ceiling", args)
+  def eval(%Expr.Function{f: :ceiling, args: args} = expr, _node, _document, _context) do
+    raise invalid_args(expr, args)
   end
 
   # round
@@ -416,24 +416,27 @@ defmodule Meeseeks.Selector.XPath.Expr.Function do
     |> Expr.Helpers.round_()
   end
 
-  def eval(%Expr.Function{f: :round, args: args}, _node, _document, _context) do
-    raise invalid_args("round", args)
+  def eval(%Expr.Function{f: :round, args: args} = expr, _node, _document, _context) do
+    raise invalid_args(expr, args)
   end
 
   # unknown function
 
-  def eval(%Expr.Function{f: f} = _expr, _node, _document, _context) do
-    raise "XPath function #{f} is unknown"
+  def eval(%Expr.Function{f: f} = expr, _node, _document, _context) do
+    raise Error.new(:xpath_expression, :unknown_function, %{function: f, expression: expr})
   end
 
   # helpers
 
-  defp invalid_args(f, args) do
-    "Invalid arguments to XPath function #{f}: #{inspect(args)}"
+  defp invalid_args(expr, args) do
+    Error.new(:xpath_expression, :invalid_arguments, %{arguments: args, expression: expr})
   end
 
-  defp invalid_evaluated_args(f, args) do
-    "Invalid evaluated arguments to XPath function #{f}: #{inspect(args)}"
+  defp invalid_evaluated_args(expr, args) do
+    Error.new(:xpath_expression, :invalid_evaluated_arguments, %{
+      evaluated_arguments: args,
+      expression: expr
+    })
   end
 
   defp local_name(%Document.Element{tag: local_name}), do: local_name

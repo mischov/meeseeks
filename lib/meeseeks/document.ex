@@ -57,7 +57,7 @@ defmodule Meeseeks.Document do
   ```
   """
 
-  alias Meeseeks.Document
+  alias Meeseeks.{Document, Error}
   alias Meeseeks.Document.{Element, Node}
 
   defstruct id_counter: nil, roots: [], nodes: %{}
@@ -103,7 +103,7 @@ defmodule Meeseeks.Document do
     case fetch_node(document, node_id) do
       {:ok, %Element{}} -> true
       {:ok, _} -> false
-      :error -> raise_unknown_node_id(node_id)
+      {:error, %Error{} = error} -> raise error
     end
   end
 
@@ -118,7 +118,7 @@ defmodule Meeseeks.Document do
     case fetch_node(document, node_id) do
       {:ok, %{parent: nil}} -> nil
       {:ok, %{parent: parent}} -> parent
-      :error -> raise_unknown_node_id(node_id)
+      {:error, %Error{} = error} -> raise error
     end
   end
 
@@ -151,7 +151,7 @@ defmodule Meeseeks.Document do
     case fetch_node(document, node_id) do
       {:ok, %Document.Element{children: children}} -> children
       {:ok, _} -> []
-      :error -> raise_unknown_node_id(node_id)
+      {:error, %Error{} = error} -> raise error
     end
   end
 
@@ -173,8 +173,8 @@ defmodule Meeseeks.Document do
       {:ok, _} ->
         []
 
-      :error ->
-        raise_unknown_node_id(node_id)
+      {:error, %Error{} = error} ->
+        raise error
     end
   end
 
@@ -196,7 +196,7 @@ defmodule Meeseeks.Document do
         parent -> children(document, parent)
       end
     else
-      :error -> raise_unknown_node_id(node_id)
+      {:error, %Error{} = error} -> raise error
     end
   end
 
@@ -293,7 +293,7 @@ defmodule Meeseeks.Document do
     Enum.map(node_ids, fn node_id ->
       case Map.fetch(nodes, node_id) do
         {:ok, node} -> node
-        :error -> raise_unknown_node_id(node_id)
+        {:error, %Error{} = error} -> raise error
       end
     end)
   end
@@ -301,9 +301,20 @@ defmodule Meeseeks.Document do
   @doc """
   Returns a tuple of {:ok, node}, where node is the node referred to by node_id in the context of the document, or :error.
   """
-  @spec fetch_node(Document.t(), node_id) :: {:ok, node} :: :error
-  def fetch_node(%Document{nodes: nodes}, node_id) do
-    Map.fetch(nodes, node_id)
+  @spec fetch_node(Document.t(), node_id) :: {:ok, node} :: {:error, Error.t()}
+  def fetch_node(%Document{nodes: nodes} = document, node_id) do
+    case Map.fetch(nodes, node_id) do
+      {:ok, _} = ok ->
+        ok
+
+      :error ->
+        {:error,
+         Error.new(:document, :unknown_node, %{
+           description: "No node with the provided id exists in the document",
+           document: document,
+           node_id: node_id
+         })}
+    end
   end
 
   @doc """
@@ -346,12 +357,6 @@ defmodule Meeseeks.Document do
       end)
 
     %{document | roots: roots, nodes: nodes}
-  end
-
-  # Helpers
-
-  defp raise_unknown_node_id(node_id) do
-    raise "Unknown node id, node #{inspect(node_id)} does not exist in document"
   end
 
   # Inspect

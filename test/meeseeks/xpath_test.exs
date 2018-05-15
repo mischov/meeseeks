@@ -4,7 +4,7 @@ defmodule Meeseeks.XPath_Test do
 
   import Meeseeks.XPath
 
-  alias Meeseeks.Result
+  alias Meeseeks.{Error, Result}
 
   @document Meeseeks.Parser.parse("""
             <!-- Test Document -->
@@ -323,7 +323,7 @@ defmodule Meeseeks.XPath_Test do
   test "raise on invalid arguments" do
     selector = xpath("//*[position(this) = 2]")
 
-    assert_raise RuntimeError, ~r/Invalid arguments to XPath function/, fn ->
+    assert_raise Error, ~r/Type: :xpath_expression\n\n  Reason: :invalid_arguments/, fn ->
       Meeseeks.all(@document, selector)
     end
   end
@@ -331,7 +331,7 @@ defmodule Meeseeks.XPath_Test do
   test "raise on unknown function" do
     selector = xpath("//*[unknown()]")
 
-    assert_raise RuntimeError, "XPath function unknown is unknown", fn ->
+    assert_raise Error, ~r/Type: :xpath_expression\n\n  Reason: :unknown_function/, fn ->
       Meeseeks.all(@document, selector)
     end
   end
@@ -339,7 +339,7 @@ defmodule Meeseeks.XPath_Test do
   test "raise if attempting to use id()" do
     selector = xpath("//*[id()]")
 
-    assert_raise RuntimeError, "XPath function id is unknown", fn ->
+    assert_raise Error, ~r/Type: :xpath_expression\n\n  Reason: :unknown_function/, fn ->
       Meeseeks.all(@document, selector)
     end
   end
@@ -347,7 +347,7 @@ defmodule Meeseeks.XPath_Test do
   test "raise if attempting to use lang()" do
     selector = xpath("//*[lang()]")
 
-    assert_raise RuntimeError, "XPath function lang is unknown", fn ->
+    assert_raise Error, ~r/Type: :xpath_expression\n\n  Reason: :unknown_function/, fn ->
       Meeseeks.all(@document, selector)
     end
   end
@@ -355,7 +355,7 @@ defmodule Meeseeks.XPath_Test do
   test "raise if attempting to use translate()" do
     selector = xpath("//*[translate()]")
 
-    assert_raise RuntimeError, "XPath function translate is unknown", fn ->
+    assert_raise Error, ~r/Type: :xpath_expression\n\n  Reason: :unknown_function/, fn ->
       Meeseeks.all(@document, selector)
     end
   end

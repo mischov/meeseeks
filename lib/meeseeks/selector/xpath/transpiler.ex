@@ -1,13 +1,17 @@
 defmodule Meeseeks.Selector.XPath.Transpiler do
   @moduledoc false
 
+  alias Meeseeks.Error
   alias Meeseeks.Selector
   alias Meeseeks.Selector.{Combinator, XPath}
 
   # to_selectors
 
-  def to_selectors(%XPath.Expr.Filter{}) do
-    raise "XPath filter expressions are not supported outside of predicates"
+  def to_selectors(%XPath.Expr.Filter{} = expr) do
+    raise Error.new(:xpath_selector, :invalid, %{
+            description: "XPath filter expressions are not supported outside of predicates",
+            expression: expr
+          })
   end
 
   def to_selectors(%XPath.Expr.Union{e1: e1, e2: e2}) do

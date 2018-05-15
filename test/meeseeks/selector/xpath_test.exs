@@ -1,6 +1,7 @@
 defmodule Meeseeks.Selector.XPathTest do
   use ExUnit.Case
 
+  alias Meeseeks.Error
   alias Meeseeks.Selector.{Combinator, Element, Node, Root, XPath}
   alias Meeseeks.Selector.XPath.Expr
 
@@ -295,8 +296,10 @@ defmodule Meeseeks.Selector.XPathTest do
   test "no top-level filters" do
     xpath = "(this|that)[2]"
 
-    assert_raise RuntimeError, fn ->
-      XPath.compile_selectors(xpath)
-    end
+    assert_raise Error,
+                 ~r/XPath filter expressions are not supported outside of predicates/,
+                 fn ->
+                   XPath.compile_selectors(xpath)
+                 end
   end
 end

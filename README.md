@@ -64,7 +64,7 @@ All these functions accept a queryable (a source, a document, or a [`Meeseeks.Re
 
 `all` returns a (possibly empty) list of results representing every node matching one of the provided selectors, while `one` returns a result representing the first node to match a selector (depth-first) or nil if there is no match.
 
-`fetch_all` and `fetch_one` work like `all` and `one` respectively, but wrap the result in `{:ok, ...}` if there is a match or return `{:error, :no_match}` if there is not.
+`fetch_all` and `fetch_one` work like `all` and `one` respectively, but wrap the result in `{:ok, ...}` if there is a match or return `{:error, %Meeseeks.Error{type: :select, reason: :no_match}}` if there is not.
 
 To generate selectors, use the `css` macro provided by [`Meeseeks.CSS`](https://hexdocs.pm/meeseeks/Meeseeks.CSS.html) or the `xpath` macro provided by [`Meeseeks.XPath`](https://hexdocs.pm/meeseeks/Meeseeks.XPath.html).
 
@@ -140,6 +140,8 @@ To make a pull request, fork the project, create a topic branch off of `master`,
 If you're submitting a bug fix, please include a test or tests that would have caught the problem.
 
 If you're submitting new features, please test and document as appropriate.
+
+Before submitting a PR, please run `mix format`.
 
 By submitting a patch, you agree to license your work under the license of this project.
 

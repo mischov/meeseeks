@@ -2,7 +2,7 @@ defmodule Meeseeks.Selector.Element.PseudoClass.Not do
   use Meeseeks.Selector
   @moduledoc false
 
-  alias Meeseeks.{Document, Selector}
+  alias Meeseeks.{Document, Error, Selector}
   alias Meeseeks.Selector.Element
 
   defstruct args: []
@@ -32,17 +32,31 @@ defmodule Meeseeks.Selector.Element.PseudoClass.Not do
         Enum.reduce_while(selectors, {:ok, selector}, &validate_selector/2)
 
       _ ->
-        {:error, ":not has invalid arguments"}
+        {:error,
+         Error.new(:css_selector, :invalid, %{
+           description: ":not has invalid arguments",
+           selector: selector
+         })}
     end
   end
 
   defp validate_selector(%Element{} = selector, ok) do
     cond do
       combinator?(selector) ->
-        {:halt, {:error, ":not doesn't allow selectors containing combinators"}}
+        {:halt,
+         {:error,
+          Error.new(:css_selector, :invalid, %{
+            description: ":not doesn't allow selectors containing combinators",
+            selector: selector
+          })}}
 
       contains_not_selector?(selector) ->
-        {:halt, {:error, ":not doesn't allow selectors containing :not selectors"}}
+        {:halt,
+         {:error,
+          Error.new(:css_selector, :invalid, %{
+            description: ":not doesn't allow selectors containing :not selectors",
+            selector: selector
+          })}}
 
       true ->
         {:cont, ok}

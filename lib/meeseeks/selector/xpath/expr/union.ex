@@ -2,6 +2,7 @@ defmodule Meeseeks.Selector.XPath.Expr.Union do
   use Meeseeks.Selector.XPath.Expr
   @moduledoc false
 
+  alias Meeseeks.Error
   alias Meeseeks.Selector.XPath.Expr
 
   defstruct e1: nil, e2: nil
@@ -19,7 +20,10 @@ defmodule Meeseeks.Selector.XPath.Expr.Union do
       |> MapSet.to_list()
       |> Enum.sort(&(comparable(&1) <= comparable(&2)))
     else
-      raise "Invalid evaluated arguments to XPath union: #{inspect([v1, v2])}"
+      raise Error.new(:xpath_expression, :invalid_evaluated_arguments, %{
+              evaluated_arguments: [v1, v2],
+              expression: expr
+            })
     end
   end
 

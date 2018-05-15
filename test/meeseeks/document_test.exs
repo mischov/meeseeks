@@ -1,7 +1,7 @@
 defmodule Meeseeks.DocumentTest do
   use ExUnit.Case
 
-  alias Meeseeks.Document
+  alias Meeseeks.{Document, Error}
 
   @tree [
     {:doctype, "html", "", ""},
@@ -128,7 +128,7 @@ defmodule Meeseeks.DocumentTest do
   end
 
   test "raise if attempting to provide node_id that doesn't exist in document" do
-    assert_raise RuntimeError, ~r/^Unknown node id/, fn ->
+    assert_raise Error, ~r/Type: :document\n\n  Reason: :unknown_node/, fn ->
       Document.children(@document, 9000)
     end
   end

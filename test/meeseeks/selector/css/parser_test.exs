@@ -1,9 +1,8 @@
 defmodule Meeseeks.Selector.CSS.ParserTest do
   use ExUnit.Case
 
-  alias Meeseeks.Selector.InvalidSelectorError
+  alias Meeseeks.Error
   alias Meeseeks.Selector.CSS.{Parser, Tokenizer}
-  alias Meeseeks.Selector.CSS.Parser.ParseError
   alias Meeseeks.Selector.Combinator
   alias Meeseeks.Selector.Element
 
@@ -247,21 +246,17 @@ defmodule Meeseeks.Selector.CSS.ParserTest do
   test "not pseudo class containing selector with combinator" do
     tokens = Tokenizer.tokenize("tag:not(li > a)")
 
-    assert_raise InvalidSelectorError,
-                 ":not doesn't allow selectors containing combinators",
-                 fn ->
-                   Parser.parse_elements(tokens)
-                 end
+    assert_raise Error, ~r/:not doesn't allow selectors containing combinators/, fn ->
+      Parser.parse_elements(tokens)
+    end
   end
 
   test "not pseudo class containing selector with not pseudo class" do
     tokens = Tokenizer.tokenize("tag:not(a:not(li))")
 
-    assert_raise InvalidSelectorError,
-                 ":not doesn't allow selectors containing :not selectors",
-                 fn ->
-                   Parser.parse_elements(tokens)
-                 end
+    assert_raise Error, ~r/:not doesn't allow selectors containing :not selectors/, fn ->
+      Parser.parse_elements(tokens)
+    end
   end
 
   test "multiple pseudo classes" do
@@ -285,7 +280,7 @@ defmodule Meeseeks.Selector.CSS.ParserTest do
   test "unknown pseudo class" do
     tokens = Tokenizer.tokenize(":nonexistent-pseudo")
 
-    assert_raise ParseError, "Pseudo class \"nonexistent-pseudo\" not supported", fn ->
+    assert_raise Error, ~r/Type: :css_selector_parser\n\n  Reason: :invalid_input/, fn ->
       Parser.parse_elements(tokens)
     end
   end
@@ -293,7 +288,7 @@ defmodule Meeseeks.Selector.CSS.ParserTest do
   test "pseudo class with invalid args" do
     tokens = Tokenizer.tokenize(":nth-child(evens)")
 
-    assert_raise InvalidSelectorError, ":nth-child has invalid arguments", fn ->
+    assert_raise Error, ~r/:nth-child has invalid arguments/, fn ->
       Parser.parse_elements(tokens)
     end
   end

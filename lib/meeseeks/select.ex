@@ -1,7 +1,7 @@
 defmodule Meeseeks.Select do
   @moduledoc false
 
-  alias Meeseeks.{Accumulator, Context, Document, Result, Selector}
+  alias Meeseeks.{Accumulator, Context, Document, Error, Result, Selector}
 
   @return? Context.return_key()
   @matches Context.matches_key()
@@ -12,10 +12,10 @@ defmodule Meeseeks.Select do
 
   # All
 
-  @spec fetch_all(queryable, selectors, Context.t()) :: {:ok, [Result.t()]} | {:error, :no_match}
+  @spec fetch_all(queryable, selectors, Context.t()) :: {:ok, [Result.t()]} | {:error, Error.t()}
   def fetch_all(queryable, selectors, context) do
     case all(queryable, selectors, context) do
-      [] -> {:error, :no_match}
+      [] -> {:error, Error.new(:select, :no_match)}
       results -> {:ok, results}
     end
   end
@@ -28,10 +28,10 @@ defmodule Meeseeks.Select do
 
   # One
 
-  @spec fetch_one(queryable, selectors, Context.t()) :: {:ok, Result.t()} | {:error, :no_match}
+  @spec fetch_one(queryable, selectors, Context.t()) :: {:ok, Result.t()} | {:error, Error.t()}
   def fetch_one(queryable, selectors, context) do
     case one(queryable, selectors, context) do
-      nil -> {:error, :no_match}
+      nil -> {:error, Error.new(:select, :no_match)}
       result -> {:ok, result}
     end
   end
@@ -48,7 +48,11 @@ defmodule Meeseeks.Select do
   def select(queryable, selectors, context)
 
   def select(_queryable, string, _context) when is_binary(string) do
-    raise "Expected selectors, received string- did you mean to wrap \"#{string}\" in the css or xpath macro?"
+    raise Error.new(:select, :invalid_selectors, %{
+            description:
+              "Expected selectors, received a string- did you mean to wrap the string in the `css` or `xpath` macro?",
+            string: string
+          })
   end
 
   def select(queryable, selectors, context) do

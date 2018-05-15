@@ -1,5 +1,5 @@
 defmodule Meeseeks do
-  alias Meeseeks.{Context, Document, Parser, Result, Select, Selector, TupleTree}
+  alias Meeseeks.{Context, Document, Error, Parser, Result, Select, Selector, TupleTree}
 
   @moduledoc """
   Meeseeks is an Elixir library for parsing and extracting data from HTML and
@@ -65,7 +65,8 @@ defmodule Meeseeks do
 
   `fetch_all` and `fetch_one` work like `all` and `one` respectively, but
   wrap the result in `{:ok, ...}` if there is a match or return
-  `{:error, :no_match}` if there is not.
+  `{:error, %Meeseeks.Error{type: :select, reason: :no_match}}` if there is
+  not.
 
   To generate selectors, use the `css` macro provided by `Meeseeks.CSS` or
   the `xpath` macro provided by `Meeseeks.XPath`.
@@ -161,12 +162,12 @@ defmodule Meeseeks do
       iex> Meeseeks.parse("<book><author>GGK</author></book>", :xml)
       #Meeseeks.Document<{...}>
   """
-  @spec parse(Parser.source()) :: Document.t() | Parser.error()
+  @spec parse(Parser.source()) :: Document.t() | {:error, Error.t()}
   def parse(source) do
     Parser.parse(source)
   end
 
-  @spec parse(Parser.source(), Parser.type()) :: Document.t() | Parser.error()
+  @spec parse(Parser.source(), Parser.type()) :: Document.t() | {:error, Error.t()}
   def parse(source, parser) do
     Parser.parse(source, parser)
   end
@@ -174,11 +175,15 @@ defmodule Meeseeks do
   # Select
 
   @doc """
-  Returns `{:ok, [Result, ...]}` if one of more nodes in the queryable match a selector, or `{:error, :no_match}` if none do.
+  Returns `{:ok, [Result, ...]}` if one of more nodes in the queryable match
+  a selector, or `{:error, %Meeseeks.Error{type: :select, reason: :no_match}}`
+  if none do.
 
   Optionally accepts a `Meeseeks.Context` map.
 
-  Parses the source if it is not a `Meeseeks.Document` or `Meeseeks.Result`, and may return {:error, reason} if there is a parse error.
+  Parses the source if it is not a `Meeseeks.Document` or `Meeseeks.Result`,
+  and may return `{:error, %Meeseeks.Error{type: parser}` if there is a parse
+  error.
 
   If multiple selections are being ran on the same unparsed source, parse
   first to avoid unnecessary computation.
@@ -189,12 +194,12 @@ defmodule Meeseeks do
       iex> Meeseeks.fetch_all("<div id=main><p>1</p><p>2</p><p>3</p></div>", css("#main p")) |> elem(1) |> List.first()
       #Meeseeks.Result<{ <p>1</p> }>
   """
-  @spec fetch_all(queryable, selectors) :: {:ok, [Result.t()]} | {:error, any}
+  @spec fetch_all(queryable, selectors) :: {:ok, [Result.t()]} | {:error, Error.t()}
   def fetch_all(queryable, selectors) do
     fetch_all(queryable, selectors, %{})
   end
 
-  @spec fetch_all(queryable, selectors, Context.t()) :: {:ok, [Result.t()]} | {:error, any}
+  @spec fetch_all(queryable, selectors, Context.t()) :: {:ok, [Result.t()]} | {:error, Error.t()}
   def fetch_all(queryable, selectors, context)
 
   def fetch_all({:error, _} = error, _selectors, _context), do: error
@@ -215,11 +220,14 @@ defmodule Meeseeks do
   end
 
   @doc """
-  Returns `[Result, ...]` if one or more nodes in the queryable match a selector, or `[]` if none do.
+  Returns `[Result, ...]` if one or more nodes in the queryable match a
+  selector, or `[]` if none do.
 
   Optionally accepts a `Meeseeks.Context` map.
 
-  Parses the source if it is not a `Meeseeks.Document` or `Meeseeks.Result`, and may return {:error, reason} if there is a parse error.
+  Parses the source if it is not a `Meeseeks.Document` or `Meeseeks.Result`,
+  and may return `{:error, %Meeseeks.Error{type: parser}` if there is a parse
+  error.
 
   If multiple selections are being ran on the same unparsed source, parse
   first to avoid unnecessary computation.
@@ -230,12 +238,12 @@ defmodule Meeseeks do
       iex> Meeseeks.all("<div id=main><p>1</p><p>2</p><p>3</p></div>", css("#main p")) |> List.first()
       #Meeseeks.Result<{ <p>1</p> }>
   """
-  @spec all(queryable, selectors) :: [Result.t()] | Parser.error()
+  @spec all(queryable, selectors) :: [Result.t()] | {:error, Error.t()}
   def all(queryable, selectors) do
     all(queryable, selectors, %{})
   end
 
-  @spec all(queryable, selectors, Context.t()) :: [Result.t()] | Parser.error()
+  @spec all(queryable, selectors, Context.t()) :: [Result.t()] | {:error, Error.t()}
   def all(queryable, selectors, context)
 
   def all({:error, _} = error, _selectors, _context), do: error
@@ -257,11 +265,14 @@ defmodule Meeseeks do
 
   @doc """
   Returns `{:ok, Result}` for the first node in the queryable (depth-first)
-  matching a selector, or `{:error, :no_match}` if none do.
+  matching a selector, or
+  `{:error, %Meeseeks.Error{type: :select, reason: :no_match}}` if none do.
 
   Optionally accepts a `Meeseeks.Context` map.
 
-  Parses the source if it is not a `Meeseeks.Document` or `Meeseeks.Result`, and may return {:error, reason} if there is a parse error.
+  Parses the source if it is not a `Meeseeks.Document` or `Meeseeks.Result`,
+  and may return `{:error, %Meeseeks.Error{type: parser}` if there is a parse
+  error.
 
   If multiple selections are being ran on the same unparsed source, parse
   first to avoid unnecessary computation.
@@ -272,12 +283,12 @@ defmodule Meeseeks do
       iex> Meeseeks.fetch_one("<div id=main><p>1</p><p>2</p><p>3</p></div>", css("#main p")) |> elem(1)
       #Meeseeks.Result<{ <p>1</p> }>
   """
-  @spec fetch_one(queryable, selectors) :: {:ok, Result.t()} | {:error, any}
+  @spec fetch_one(queryable, selectors) :: {:ok, Result.t()} | {:error, Error.t()}
   def fetch_one(queryable, selectors) do
     fetch_one(queryable, selectors, %{})
   end
 
-  @spec fetch_one(queryable, selectors, Context.t()) :: {:ok, Result.t()} | {:error, any}
+  @spec fetch_one(queryable, selectors, Context.t()) :: {:ok, Result.t()} | {:error, Error.t()}
   def fetch_one(queryable, selectors, context)
 
   def fetch_one({:error, _} = error, _selectors, _context), do: error
@@ -303,7 +314,9 @@ defmodule Meeseeks do
 
   Optionally accepts a `Meeseeks.Context` map.
 
-  Parses the source if it is not a `Meeseeks.Document` or `Meeseeks.Result`, and may return {:error, reason} if there is a parse error.
+  Parses the source if it is not a `Meeseeks.Document` or `Meeseeks.Result`,
+  and may return `{:error, %Meeseeks.Error{type: parser}` if there is a parse
+  error.
 
   If multiple selections are being ran on the same unparsed source, parse
   first to avoid unnecessary computation.
@@ -314,12 +327,12 @@ defmodule Meeseeks do
       iex> Meeseeks.one("<div id=main><p>1</p><p>2</p><p>3</p></div>", css("#main p"))
       #Meeseeks.Result<{ <p>1</p> }>
   """
-  @spec one(queryable, selectors) :: Result.t() | nil | Parser.error()
+  @spec one(queryable, selectors) :: Result.t() | nil | {:error, Error.t()}
   def one(queryable, selectors) do
     one(queryable, selectors, %{})
   end
 
-  @spec one(queryable, selectors, Context.t()) :: Result.t() | nil | Parser.error()
+  @spec one(queryable, selectors, Context.t()) :: Result.t() | nil | {:error, Error.t()}
   def one(queryable, selectors, context)
 
   def one({:error, _} = error, _selectors, _context), do: error
@@ -347,7 +360,9 @@ defmodule Meeseeks do
   Requires that a `Meeseeks.Accumulator` has been added to the context via
   `Meeseeks.Context.add_accumulator/2`, and will raise an error if it hasn't.
 
-  Parses the source if it is not a `Meeseeks.Document` or `Meeseeks.Result`, and may return {:error, reason} if there is a parse error.
+  Parses the source if it is not a `Meeseeks.Document` or `Meeseeks.Result`,
+  and may return `{:error, %Meeseeks.Error{type: parser}` if there is a parse
+  error.
 
   If multiple selections are being ran on the same unparsed source, parse
   first to avoid unnecessary computation.
@@ -360,7 +375,7 @@ defmodule Meeseeks do
       iex> Meeseeks.select("<div id=main><p>1</p><p>2</p><p>3</p></div>", css("#main p"), context)
       #Meeseeks.Result<{ <p>1</p> }>
   """
-  @spec select(queryable, selectors, Context.t()) :: any | Parser.error()
+  @spec select(queryable, selectors, Context.t()) :: any | {:error, Error.t()}
   def select(queryable, selectors, context)
 
   def select({:error, _} = error, _selectors, _context), do: error

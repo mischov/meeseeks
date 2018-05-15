@@ -1,21 +1,27 @@
 defmodule Meeseeks.Parser do
   @moduledoc false
 
-  alias Meeseeks.{Document, TupleTree}
+  alias Meeseeks.{Document, Error, TupleTree}
   alias Meeseeks.Document.{Comment, Data, Doctype, Element, ProcessingInstruction, Text}
 
   @type source :: String.t() | TupleTree.t()
-  @type error :: {:error, String.t()}
   @type type :: :html | :xml
 
   # Parse
 
-  @spec parse(source) :: Document.t() | error
+  @spec parse(source) :: Document.t() | {:error, Error.t()}
 
   def parse(string) when is_binary(string) do
     case MeeseeksHtml5ever.parse_html(string) do
-      {:ok, document} -> document
-      {:error, error} -> {:error, error}
+      {:ok, document} ->
+        document
+
+      {:error, description} ->
+        {:error,
+         Error.new(:parser, :invalid_input, %{
+           description: description,
+           input: string
+         })}
     end
   end
 
@@ -23,7 +29,7 @@ defmodule Meeseeks.Parser do
     parse_tuple_tree(tuple_tree)
   end
 
-  @spec parse(source, type) :: Document.t() | error
+  @spec parse(source, type) :: Document.t() | {:error, Error.t()}
 
   def parse(string, :html) when is_binary(string) do
     case MeeseeksHtml5ever.parse_html(string) do
@@ -46,7 +52,7 @@ defmodule Meeseeks.Parser do
   # Parse TupleTree
 
   # Can't return error, only Document, just surpressing dialyzer error
-  @spec parse_tuple_tree(TupleTree.t()) :: Document.t() | error
+  @spec parse_tuple_tree(TupleTree.t()) :: Document.t() | {:error, Error.t()}
 
   defp parse_tuple_tree(tuple_tree) when is_list(tuple_tree) do
     add_root_nodes(%Document{}, tuple_tree)

@@ -2,7 +2,7 @@ defmodule Meeseeks.Selector.Element.PseudoClass.NthChild do
   use Meeseeks.Selector
   @moduledoc false
 
-  alias Meeseeks.Document
+  alias Meeseeks.{Document, Error}
   alias Meeseeks.Selector.Element.PseudoClass.Helpers
 
   defstruct args: []
@@ -46,11 +46,24 @@ defmodule Meeseeks.Selector.Element.PseudoClass.NthChild do
   @impl true
   def validate(selector) do
     case selector.args do
-      ["even"] -> {:ok, selector}
-      ["odd"] -> {:ok, selector}
-      [n] when is_integer(n) -> {:ok, selector}
-      [a, b] when is_integer(a) and is_integer(b) -> {:ok, selector}
-      _ -> {:error, ":nth-child has invalid arguments"}
+      ["even"] ->
+        {:ok, selector}
+
+      ["odd"] ->
+        {:ok, selector}
+
+      [n] when is_integer(n) ->
+        {:ok, selector}
+
+      [a, b] when is_integer(a) and is_integer(b) ->
+        {:ok, selector}
+
+      _ ->
+        {:error,
+         Error.new(:css_selector, :invalid, %{
+           description: ":nth-child has invalid arguments",
+           selector: selector
+         })}
     end
   end
 end
