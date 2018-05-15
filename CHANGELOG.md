@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.9.0 (2018-05-15)
+
+### Breaking
+
+  * [Errors] Returned and raised errors throughout the project have been updated to use `Meeseeks.Error` instead of whatever assorted formats they were using before
+
+### Enhancements
+
+  * [Errors] Add `Meeseeks.Error`, a generic error struct implementing `Exception`
+  * [Select] Add `Meeseeks.fetch_all` and `Meeseeks.fetch_one`
+
+### Fixes
+
+  * [Extract] Fix bug in `Meeseeks.html` when encoding element attribute values that contain double quotes
+
 ## v0.8.0 (2018-04-14)
 
 ### Enhancements
