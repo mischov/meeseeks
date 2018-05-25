@@ -52,6 +52,7 @@ defmodule Meeseeks.Selector.Combinator do
               [Document.node_t()]
               | Document.node_t()
               | nil
+              | no_return
 
   @doc """
   Invoked to return the combinator's selector.
@@ -66,7 +67,8 @@ defmodule Meeseeks.Selector.Combinator do
   Returns the applicable node or nodes, or `nil` if there are no applicable
   nodes.
   """
-  @spec next(t, Document.node_t(), Document.t()) :: [Document.node_t()] | Document.node_t() | nil
+  @spec next(t, Document.node_t(), Document.t()) ::
+          [Document.node_t()] | Document.node_t() | nil | no_return
   def next(%{__struct__: struct} = combinator, node, document) do
     struct.next(combinator, node, document)
   end
