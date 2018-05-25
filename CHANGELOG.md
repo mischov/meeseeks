@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.9.1 (2018-05-25)
+
+### Fixes
+
+  * [Select] Fix inconsistency in `Document.get_nodes/1`
+  * [Select] Fix bug in `Document.get_nodes/2`, courtesy of @asonge
+  * [Select] Fix various typespecs, courtesy of @asonge
+
 ## v0.9.0 (2018-05-15)
 
 ### Breaking
