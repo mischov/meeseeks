@@ -288,12 +288,12 @@ defmodule Meeseeks.Document do
 
   Raises if any id in node_ids does not exist in the document.
   """
-  @spec get_nodes(Document.t(), [node_id]) :: [node_t]
-  def get_nodes(%Document{nodes: nodes}, node_ids) do
+  @spec get_nodes(Document.t(), [node_id]) :: [node_t] | no_return
+  def get_nodes(document, node_ids) do
     Enum.map(node_ids, fn node_id ->
-      case Map.fetch(nodes, node_id) do
+      case fetch_node(document, node_id) do
         {:ok, node} -> node
-        {:error, %Error{} = error} -> raise error
+        {:error, error} -> raise error
       end
     end)
   end
@@ -301,7 +301,7 @@ defmodule Meeseeks.Document do
   @doc """
   Returns a tuple of {:ok, node}, where node is the node referred to by node_id in the context of the document, or :error.
   """
-  @spec fetch_node(Document.t(), node_id) :: {:ok, node} :: {:error, Error.t()}
+  @spec fetch_node(Document.t(), node_id) :: {:ok, node_t} | {:error, Error.t()}
   def fetch_node(%Document{nodes: nodes} = document, node_id) do
     case Map.fetch(nodes, node_id) do
       {:ok, _} = ok ->
