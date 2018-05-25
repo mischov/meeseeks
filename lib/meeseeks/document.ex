@@ -274,11 +274,10 @@ defmodule Meeseeks.Document do
 
   Returns nodes in depth-first order.
   """
-  @spec get_nodes(Document.t()) :: [node_t]
-  def get_nodes(%Document{nodes: nodes} = document) do
-    for id <- get_node_ids(document) do
-      Map.get(nodes, id, nil)
-    end
+  @spec get_nodes(Document.t()) :: [node_t] | no_return
+  def get_nodes(document) do
+    node_ids = get_node_ids(document)
+    get_nodes(document, node_ids)
   end
 
   @doc """
@@ -320,7 +319,7 @@ defmodule Meeseeks.Document do
   @doc """
   Returns the node referred to by node_id in the context of the document, or nil.
   """
-  @spec get_node(Document.t(), node_id) :: node_t
+  @spec get_node(Document.t(), node_id) :: node_t | nil
   def get_node(%Document{nodes: nodes}, node_id) do
     Map.get(nodes, node_id, nil)
   end

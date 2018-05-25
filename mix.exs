@@ -22,7 +22,7 @@ defmodule Meeseeks.Mixfile do
   end
 
   def application do
-    [applications: [:meeseeks_html5ever, :logger, :rustler]]
+    [applications: [:logger, :meeseeks_html5ever, :rustler, :xmerl]]
   end
 
   defp deps do
