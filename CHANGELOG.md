@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.9.2 (2018-05-28)
+
+### Enhancements
+
+  * [Select] The `css` and `xpath` macros now accept vars
+
 ## v0.9.1 (2018-05-25)
 
 ### Fixes
