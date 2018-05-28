@@ -101,22 +101,18 @@ defmodule Meeseeks.XPath do
   Compiles a string representing XPath selector syntax into one or more
   `Meeseeks.Selector`s.
 
-  When the string is static this work will be done during Elixir's
-  compilation, but if the string interpolates values the work will
-  occur at runtime.
+  When a static string literal is provided this work will be done during
+  compilation, but if a string with interpolated values or a var is provided
+  this work will occur at run time.
   """
 
-  defmacro xpath(string) when is_binary(string) do
-    string
+  defmacro xpath(string_literal) when is_binary(string_literal) do
+    string_literal
     |> XPath.compile_selectors()
     |> Macro.escape()
   end
 
-  defmacro xpath({:<<>>, _meta, _pieces} = interpolated_string) do
-    quote do: XPath.compile_selectors(unquote(interpolated_string))
-  end
-
-  defmacro xpath({:<>, _meta, _pieces} = interpolated_string) do
-    quote do: XPath.compile_selectors(unquote(interpolated_string))
+  defmacro xpath(other) do
+    quote do: XPath.compile_selectors(unquote(other))
   end
 end

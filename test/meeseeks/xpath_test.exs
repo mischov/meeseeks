@@ -359,4 +359,36 @@ defmodule Meeseeks.XPath_Test do
       Meeseeks.all(@document, selector)
     end
   end
+
+  # macro input tests
+
+  @expected %Meeseeks.Selector.Element{
+    combinator: %Meeseeks.Selector.Combinator.Children{
+      selector: %Meeseeks.Selector.Element{
+        combinator: nil,
+        filters: nil,
+        selectors: [%Meeseeks.Selector.Element.Tag{value: "*"}]
+      }
+    },
+    filters: nil,
+    selectors: []
+  }
+
+  test "can compile string literal" do
+    assert xpath("*") == @expected
+  end
+
+  test "can compile interpolated with #" do
+    value = "*"
+    assert xpath("#{value}") == @expected
+  end
+
+  test "can compile interpolated with <>" do
+    assert xpath("" <> "*") == @expected
+  end
+
+  test "can compile from var" do
+    selector_string = "*"
+    assert xpath(selector_string) == @expected
+  end
 end

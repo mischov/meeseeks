@@ -1,7 +1,7 @@
 defmodule Meeseeks.Error do
   @errors %{
     context: [:accumulator_required],
-    css_selector: [:invalid],
+    css_selector: [:invalid, :invalid_input],
     css_selector_parser: [:invalid_input],
     css_selector_tokenizer: [:invalid_input],
     document: [:unknown_node],
@@ -9,7 +9,7 @@ defmodule Meeseeks.Error do
     select: [:no_match, :invalid_selectors],
     xpath_expression: [:invalid_arguments, :invalid_evaluated_arguments],
     xpath_expression_parser: [:invalid_input],
-    xpath_selector: [:invalid]
+    xpath_selector: [:invalid, :invalid_input]
   }
 
   @moduledoc """

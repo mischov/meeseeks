@@ -65,22 +65,18 @@ defmodule Meeseeks.CSS do
   Compiles a string representing CSS selector syntax into one or more
   `Meeseeks.Selector`s.
 
-  When the string is static this work will be done during Elixir's
-  compilation, but if the string interpolates values the work will
-  occur at runtime.
+  When a static string literal is provided this work will be done during
+  compilation, but if a string with interpolated values or a var is provided
+  this work will occur at run time.
   """
 
-  defmacro css(string) when is_binary(string) do
-    string
+  defmacro css(string_literal) when is_binary(string_literal) do
+    string_literal
     |> CSS.compile_selectors()
     |> Macro.escape()
   end
 
-  defmacro css({:<<>>, _meta, _pieces} = interpolated_string) do
-    quote do: CSS.compile_selectors(unquote(interpolated_string))
-  end
-
-  defmacro css({:<>, _meta, _pieces} = interpolated_string) do
-    quote do: CSS.compile_selectors(unquote(interpolated_string))
+  defmacro css(other) do
+    quote do: CSS.compile_selectors(unquote(other))
   end
 end
