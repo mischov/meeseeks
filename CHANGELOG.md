@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.9.3 (2018-06-15)
+
+### Fixes
+
+  * [Parse] Update to `meeseeks_html5ever v0.9.0`, which resolves a Dialyzer error
+
 ## v0.9.2 (2018-05-28)
 
 ### Enhancements
