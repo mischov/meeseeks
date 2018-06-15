@@ -27,7 +27,7 @@ defmodule Meeseeks.Mixfile do
 
   defp deps do
     [
-      {:meeseeks_html5ever, "~> 0.8.1"},
+      {:meeseeks_html5ever, "~> 0.9.0"},
 
       # dev
       {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
