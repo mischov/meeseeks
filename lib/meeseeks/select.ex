@@ -216,8 +216,6 @@ defmodule Meeseeks.Select do
   end
 
   defp filter_nodes(filters, nodes, document, context) when is_list(filters) do
-    context = Map.put(context, @nodes, nodes)
-
     Enum.reduce(filters, {nodes, context}, fn filter, {nodes, context} ->
       filter_nodes(filter, nodes, document, context)
       |> reverse_filtered_nodes()
@@ -225,6 +223,8 @@ defmodule Meeseeks.Select do
   end
 
   defp filter_nodes(filter, nodes, document, context) do
+    context = Map.put(context, @nodes, nodes)
+
     Enum.reduce(nodes, {[], context}, fn node, {nodes, context} ->
       case Selector.match(filter, node, document, context) do
         false -> {nodes, context}

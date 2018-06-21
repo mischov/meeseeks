@@ -13,14 +13,14 @@ defmodule Meeseeks.XPath_Test do
               <body>
                 <!-- Main -->
                 <div id="main">
-            <p id="first-p">1</p>
-            <p data-id="second-p">2</p>
-            <special:p class="a b">3</special:p>
-                 <div class="secondary">
-                   <p>4</p>
-                   <p class="b c">5</p>
-                 </div>
-            </div>
+                  <p id="first-p">1</p>
+                  <p data-id="second-p">2</p>
+                  <special:p class="a b">3</special:p>
+                  <div class="secondary">
+                    <p>4</p>
+                    <p class="b c">5</p>
+                  </div>
+                </div>
               </body>
             </html>
             """)
@@ -142,6 +142,12 @@ defmodule Meeseeks.XPath_Test do
     assert Meeseeks.all(@document, selector) == expected
   end
 
+  test "the second child p that isn't the second child" do
+    selector = xpath("//p[not(position() = 2)][2]")
+    expected = [%Result{id: 17, document: @document}]
+    assert Meeseeks.all(@document, selector) == expected
+  end
+
   test "second child p interpolation" do
     p = 2
     selector = xpath("//p[#{p}]")
@@ -157,6 +163,18 @@ defmodule Meeseeks.XPath_Test do
   test "second child p concat" do
     p = 2
     selector = xpath("//p[" <> Integer.to_string(p) <> "]")
+
+    expected = [
+      %Result{id: 14, document: @document},
+      %Result{id: 25, document: @document}
+    ]
+
+    assert Meeseeks.all(@document, selector) == expected
+  end
+
+  test "second child p var" do
+    p = "//p[2]"
+    selector = xpath(p)
 
     expected = [
       %Result{id: 14, document: @document},
@@ -246,6 +264,18 @@ defmodule Meeseeks.XPath_Test do
   test "parent of the first following p sibling of #first-p" do
     selector = xpath("//p[@id='first-p']/following-sibling::p[1]/..")
     expected = [%Result{id: 9, document: @document}]
+    assert Meeseeks.all(@document, selector) == expected
+  end
+
+  test "every p which isn't the descentant of multiple divs" do
+    selector = xpath("//p[not(ancestor::div[2])]")
+
+    expected = [
+      %Result{id: 11, document: @document},
+      %Result{id: 14, document: @document},
+      %Result{id: 17, document: @document}
+    ]
+
     assert Meeseeks.all(@document, selector) == expected
   end
 
