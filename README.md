@@ -34,7 +34,7 @@ Ensure Rust is installed, then add Meeseeks to your `mix.exs`:
 ```elixir
 defp deps do
   [
-    {:meeseeks, "~> 0.9.3"}
+    {:meeseeks, "~> 0.9.4"}
   ]
 end
 ```

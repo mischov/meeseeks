@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.9.4 (2018-06-22)
+
+### Fixes
+
+  * [Select] Fix error in how context was updated in `Select.filter_nodes`
+  * [Select] Fix error in how context was updated in `XPath.Expr.Step.eval`
+  * [Select] Fix error in how nodes were filtered in `XPath.Expr.Step.eval`
+  * [Select] Include filters when transpiling absolute XPaths to root selectors
+
 ## v0.9.3 (2018-06-15)
 
 ### Fixes
