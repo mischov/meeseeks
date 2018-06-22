@@ -35,6 +35,44 @@ defmodule Meeseeks.Selector.XPathTest do
     assert XPath.compile_selectors(xpath) == expected
   end
 
+  test "single segment abs selector with filters" do
+    xpath = "/root[@attribute][2]"
+
+    expected = %Meeseeks.Selector.Root{
+      combinator: nil,
+      filters: [
+        %Meeseeks.Selector.XPath.Predicate{
+          e: %Meeseeks.Selector.XPath.Expr.Predicate{
+            e: %Meeseeks.Selector.XPath.Expr.Path{
+              steps: [
+                %Meeseeks.Selector.XPath.Expr.Step{
+                  combinator: %Meeseeks.Selector.XPath.Combinator.Attributes{
+                    selector: nil
+                  },
+                  predicates: [
+                    %Meeseeks.Selector.XPath.Expr.AttributeNameTest{
+                      name: "attribute",
+                      namespace: nil
+                    }
+                  ]
+                }
+              ],
+              type: :rel
+            }
+          }
+        },
+        %Meeseeks.Selector.XPath.Predicate{
+          e: %Meeseeks.Selector.XPath.Expr.Predicate{
+            e: %Meeseeks.Selector.XPath.Expr.Number{value: 2}
+          }
+        }
+      ],
+      selectors: [%Meeseeks.Selector.Element.Tag{value: "root"}]
+    }
+
+    assert XPath.compile_selectors(xpath) == expected
+  end
+
   test "single segment rel selector" do
     xpath = "node"
 
@@ -102,6 +140,50 @@ defmodule Meeseeks.Selector.XPathTest do
       },
       filters: nil,
       selectors: [%Element.Tag{value: "root"}]
+    }
+
+    assert XPath.compile_selectors(xpath) == expected
+  end
+
+  test "multiple segment abs selector with filters" do
+    xpath = "/root[@attribute][2]/child"
+
+    expected = %Meeseeks.Selector.Root{
+      combinator: %Meeseeks.Selector.Combinator.Children{
+        selector: %Meeseeks.Selector.Element{
+          combinator: nil,
+          filters: nil,
+          selectors: [%Meeseeks.Selector.Element.Tag{value: "child"}]
+        }
+      },
+      filters: [
+        %Meeseeks.Selector.XPath.Predicate{
+          e: %Meeseeks.Selector.XPath.Expr.Predicate{
+            e: %Meeseeks.Selector.XPath.Expr.Path{
+              steps: [
+                %Meeseeks.Selector.XPath.Expr.Step{
+                  combinator: %Meeseeks.Selector.XPath.Combinator.Attributes{
+                    selector: nil
+                  },
+                  predicates: [
+                    %Meeseeks.Selector.XPath.Expr.AttributeNameTest{
+                      name: "attribute",
+                      namespace: nil
+                    }
+                  ]
+                }
+              ],
+              type: :rel
+            }
+          }
+        },
+        %Meeseeks.Selector.XPath.Predicate{
+          e: %Meeseeks.Selector.XPath.Expr.Predicate{
+            e: %Meeseeks.Selector.XPath.Expr.Number{value: 2}
+          }
+        }
+      ],
+      selectors: [%Meeseeks.Selector.Element.Tag{value: "root"}]
     }
 
     assert XPath.compile_selectors(xpath) == expected

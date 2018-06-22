@@ -20,8 +20,8 @@ defmodule Meeseeks.Selector.XPath.Transpiler do
 
   def to_selectors(%XPath.Expr.Path{type: :abs, steps: steps}) do
     case combine_steps(Enum.reverse(steps)) do
-      %Combinator.Self{selector: %{combinator: c, selectors: s}} ->
-        %Selector.Root{combinator: c, selectors: s}
+      %Combinator.Self{selector: %{combinator: c, selectors: s, filters: f}} ->
+        %Selector.Root{combinator: c, selectors: s, filters: f}
 
       %Combinator.DescendantsOrSelf{
         selector: %Selector.Element{
