@@ -4,10 +4,15 @@ defmodule Meeseeks.Result do
   together a node id and the `Meeseeks.Document` for which that id is
   valid.
 
-  Results may be used in two ways:
+  Results are generally used in one of two ways: either data, such as an
+  element's tag, is extracted from a result, or further selections are ran
+  using the result as a source.
 
-    - Data, such as an element's tag, can be extracted from a result
-    - Further selections may be ran using the result as a source
+  When a result is used as a source for further selection, the original
+  document the result came from is used for context, meaning that questions
+  about the results ancestors may be asked, but also that queries involving
+  ancestors need to account for the whole document, not just the contents of
+  the result.
 
   ## Examples
 
