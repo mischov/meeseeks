@@ -279,6 +279,18 @@ defmodule Meeseeks.XPath_Test do
     assert Meeseeks.all(@document, selector) == expected
   end
 
+  test "the first root html node or every not second p node" do
+    selector = xpath("/html[1]|//p[not(position() = 2)]")
+
+    expected = [
+      %Result{id: 2, document: @document},
+      %Result{id: 11, document: @document},
+      %Result{id: 17, document: @document},
+      %Result{id: 22, document: @document}
+    ]
+    assert Meeseeks.all(@document, selector) == expected
+  end
+
   test "elements with 'special' namespace via path" do
     selector = xpath("*[namespace::special]")
     expected = [%Result{id: 17, document: @document}]

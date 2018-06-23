@@ -158,28 +158,22 @@ defmodule Meeseeks.Select do
   # Handle Match
 
   defp handle_match(node, document, selector, context) do
-    case Selector.filters(selector) do
-      # No filters, accumulate or walk directly
-      nil ->
-        case Selector.combinator(selector) do
-          nil -> Context.add_to_accumulator(context, document, node.id)
-          combinator -> walk_combinator(combinator, node, document, context)
-        end
+    combinator = Selector.combinator(selector)
+    filters = Selector.filters(selector)
 
-      # Filters, accumulate or store for filtering
-      filters ->
-        combinator = Selector.combinator(selector)
+    case {combinator, filters} do
+      # Add to accumulator if there is no combinator and no filters
+      {nil, nil} ->
+        Context.add_to_accumulator(context, document, node.id)
 
-        case {combinator, filters} do
-          # Add to accumulator if there is no combinator and no filters
-          {nil, []} ->
-            Context.add_to_accumulator(context, document, node.id)
+      # Add to accumulator if there is no combinator and empty filters
+      {nil, []} ->
+        Context.add_to_accumulator(context, document, node.id)
 
-          # Add to @matches so all matching nodes can be filtered prior to
-          # continuing
-          _ ->
-            Context.add_to_matches(context, selector, node)
-        end
+      # Add to @matches so all matching nodes can be filtered before to
+      # continuing
+      _ ->
+        Context.add_to_matches(context, selector, node)
     end
   end
 
@@ -209,6 +203,10 @@ defmodule Meeseeks.Select do
           walk_combinator(combinator, node, document, context)
       end
     end)
+  end
+
+  defp filter_nodes(nil, nodes, _, context) do
+    {nodes, context}
   end
 
   defp filter_nodes([], nodes, _, context) do
