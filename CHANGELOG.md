@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.9.5 (2018-06-23)
+
+### Fixes
+
+  * [Select] Remove optimization in `Select.handle_match` that could indirectly cause matches stored in the context for filtering to be prematurely cleared
+
 ## v0.9.4 (2018-06-22)
 
 ### Fixes
