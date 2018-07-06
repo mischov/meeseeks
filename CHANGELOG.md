@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.10.0 (2018-07-06)
+
+### Fixes
+
+  * [Parse] Update to `meeseeks_html5ever v0.10.0`, which supports OTP 21
+
 ## v0.9.5 (2018-06-23)
 
 ### Fixes
