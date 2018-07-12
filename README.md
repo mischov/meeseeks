@@ -27,6 +27,19 @@ Because html5ever is a Rust library, you will need to have the Rust compiler [in
 
 This dependency is necessary because there are no HTML5 spec compliant parsers written in Elixir/Erlang.
 
+#### Deploying to Heroku?
+
+Most Heroku buildpacks for Elixir do not come with Rust installed; you will need to:
+
+- Add a Rust buildpack to your app, setting it to run before Elixir; and
+- Add a `RustConfig` file to your project's root directory, with `RUST_SKIP_BUILD=1` set.
+
+For example:
+```bash
+heroku buildpacks:add -i 1 https://github.com/emk/heroku-buildpack-rust.git
+echo "RUST_SKIP_BUILD=1" > RustConfig
+```
+
 ## Installation
 
 Ensure Rust is installed, then add Meeseeks to your `mix.exs`:
