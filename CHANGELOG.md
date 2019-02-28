@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.11.0 (2019-02-28)
+
+### Compatibility
+
+  * No longer support Elixir 1.3 (minimum tested compatibility is now Elixir 1.4 and Erlang/OTP 19.3)
+  * Support Elixir 1.8
+
+### Enhancements
+
+  * [Parse] Update to `meeseeks_html5ever v0.11.0`, which is faster and more memory efficient on Erlang/OTP 21
+
 ## v0.10.1 (2018-09-27)
 
   * [Meta] Test more Elixir+OTP combinations with Travis CI
