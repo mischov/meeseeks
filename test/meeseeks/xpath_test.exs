@@ -288,6 +288,7 @@ defmodule Meeseeks.XPath_Test do
       %Result{id: 17, document: @document},
       %Result{id: 22, document: @document}
     ]
+
     assert Meeseeks.all(@document, selector) == expected
   end
 

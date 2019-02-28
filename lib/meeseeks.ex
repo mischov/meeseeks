@@ -18,6 +18,96 @@ defmodule Meeseeks do
   #=> [%{title: "...", url: "..."}, %{title: "...", url: "..."}, ...]
   ```
 
+  ## Features
+
+  - Friendly API
+  - Browser-grade HTML5 parser
+  - Permissive XML parser
+  - CSS and XPath selectors
+  - Rich, extensible selector architecture
+  - Helpers to extract data from selections
+
+  ## Why?
+
+  Meeseeks exists in the same space as an earlier library called Floki, so
+  why was Meeseeks created and why would you use it instead of Floki?
+
+  #### Floki is a couple years older than Meeseeks, so why does Meeseeks even exist?
+
+  Meeseeks exists because Floki used to be unable to do what I needed.
+
+  When I started learning Elixir I reimplemented a small project I had
+  written in another language. Part of that project involved extracting data
+  from HTML, and unbeknownst to me some of the HTML I needed to extract data
+  from was malformed.
+
+  This had never been a problem before because the HTML parser I was using
+  in the other language was HTML5 spec compliant and handled the malformed
+  HTML just as well as a browser. Unfortunately for me, Floki used (and still
+  uses by default) the `:mochiweb_html` parser which is nowhere near HTML5
+  spec compliant, and just silently dropped the data I needed when parsing.
+
+  Meeseeks started out as an attempt to write an HTML5 spec compliant parser
+  in Elixir (spoiler: it's really hard), then switched to using Mozilla's
+  [html5ever](https://github.com/servo/html5ever) via Rustler after
+  [Hans](https://github.com/hansihe) wrote `html5ever_elixir`.
+
+  Floki gained optional support for using `html5ever_elixir` as its parser
+  around the same time, but it still used `:mochiweb_html` (which doesn't
+  require Rust to be part of the build process) by default and I released
+  Meeseeks as a safer alternative.
+
+  #### Why should I use Meeseeks instead of Floki?
+
+  When Meeseeks was released it came with a safer default HTML parser, a more
+  complete collection of CSS selectors, and a more extensible selector
+  architecture than Floki.
+
+  Since then Meeseeks has been further expanded with functionality Floki
+  just doesn't have, such as an XML parser and XPath selectors.
+
+  It won't matter to most users, but the selection architecture is much
+  richer than Floki's, and permits the creation all kinds of interesting
+  custom, stateful selectors (in fact, both the CSS and XPath selector
+  strings compile down to the same selector structs that anybody can define).
+
+  What probably will matter more to users is the friendly API, extensive
+  documentation, and the attention to the details of usability seen in such
+  places as the custom formatting for result structs
+  (`#Meeseeks.Result<{ <p>1</p> }>`) and the descriptive errors.
+
+  #### Is Floki ever a better choice than Meeseeks?
+
+  Yes, there are two main cases when Floki is clearly a better choice than
+  Meeseeks.
+
+  Firstly, if you absolutely can't include Rust in your build process AND you
+  know that the HTML you'll be working with is well-formed and won't require
+  an HTML5 spec compliant parser then using Floki with the `:mochiweb_html`
+  parser is a reasonable choice.
+
+  However, if you have any doubts about the HTML you'll be parsing you should
+  probably figure out a way to use a better parser because using
+  `:mochiweb_html` in that situation may be a timebomb.
+
+  Secondly, if you want to make updates to an HTML document then Floki
+  provides facilities to do so while Meeseeks, which is entirely focused on
+  selecting and extracting data, does not.
+
+  #### How does performance compare between Floki and Meeseeks?
+
+  Performance is similar enough between the two that it's probably not worth
+  choosing one over the other for that reason.
+
+  For details and benchmarks, see [Meeseeks vs. Floki Performance
+  ](https://github.com/mischov/meeseeks_floki_bench).
+
+  ## Compatibility
+
+  Meeseeks is tested with a minimum combination of Elixir 1.4.0 and
+  Erlang/OTP 19.3, and a maximum combination of Elixir 1.8.1 and
+  Erlang/OTP 21.0.
+
   ## Dependencies
 
   Meeseeks depends on [html5ever](https://github.com/servo/html5ever) via

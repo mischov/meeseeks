@@ -17,7 +17,7 @@ defmodule Meeseeks.Mixfile do
       # HexDocs
       name: "Meeseeks",
       source_url: "https://github.com/mischov/meeseeks",
-      docs: [main: "Meeseeks"]
+      docs: docs()
     ]
   end
 
@@ -30,12 +30,15 @@ defmodule Meeseeks.Mixfile do
       {:meeseeks_html5ever, "~> 0.11.0"},
 
       # dev
-      {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
+      {:dialyxir, "~> 0.5", only: :dev, runtime: false},
 
       # docs
-      {:ex_doc, "~> 0.14", only: :docs},
-      {:markdown, github: "devinus/markdown", only: :docs}
+      {:ex_doc, ex_doc_version(), only: :docs, runtime: false}
     ]
+  end
+
+  defp ex_doc_version do
+    if System.version() >= "1.7", do: "~> 0.19.0", else: "~> 0.18.0"
   end
 
   defp description do
@@ -59,5 +62,9 @@ defmodule Meeseeks.Mixfile do
       ],
       links: %{"Github" => "https://github.com/mischov/meeseeks"}
     ]
+  end
+
+  defp docs do
+    [main: "Meeseeks"]
   end
 end
