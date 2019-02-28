@@ -97,8 +97,8 @@ defmodule Meeseeks do
   Performance is similar enough between the two that it's probably not worth
   choosing one over the other for that reason.
 
-  For details and benchmarks, see [Meeseeks vs. Floki Performance](
-  https://github.com/mischov/meeseeks_floki_bench).
+  For details and benchmarks, see [Meeseeks vs. Floki Performance
+  ](https://github.com/mischov/meeseeks_floki_bench).
 
   ## Compatibility
 

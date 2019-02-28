@@ -9,14 +9,14 @@ defmodule Meeseeks.CSS do
   | **Basic Selectors** | --- | --- |
   | `*` | `*` | Matches any for `ns` or `tag` |
   | `tag` | `div` | |
-  | `ns|tag` | `<foo:div>` | |
+  | `ns\\|tag` | `foo\\|div` | |
   | `#id` | `div#bar`, `#bar` | |
   | `.class` | `div.baz`, `.baz` | |
   | `[attr]` | `a[href]`, `[lang]` | |
   | `[^attrPrefix]` | `div[^data-]` | |
   | `[attr=val]` | `a[rel="nofollow"]` | |
   | `[attr~=valIncludes]` | `div[things~=thing1]` | |
-  | `[attr|=valDash]` | `p[lang|=en]` | |
+  | `[attr\\|=valDash]` | `p[lang\\|=en]` | |
   | `[attr^=valPrefix]` | `a[href^=https:]` | |
   | `[attr$=valSuffix]` | `img[src$=".png"]` | |
   | `[attr*=valContaining]` | `a[href*=admin]` | |
