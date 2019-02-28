@@ -7,7 +7,7 @@ defmodule Meeseeks.Mixfile do
     [
       app: :meeseeks,
       version: @version,
-      elixir: "~> 1.3",
+      elixir: "~> 1.4",
       deps: deps(),
 
       # Hex
