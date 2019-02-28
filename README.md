@@ -28,11 +28,13 @@ See the [HexDocs](https://hexdocs.pm/meeseeks/Meeseeks.html) for additional docu
 - Rich, extensible selector architecture
 - Helpers to extract data from selections
 
-## Rationale
+## Why?
+
+Meeseeks exists in the same space as an earlier library called Floki, so why was Meeseeks created and why would you use it instead of Floki?
 
 #### Floki is a couple years older than Meeseeks, so why does Meeseeks even exist?
 
-Meeseeks exists because Floki used to be literally incapable of doing what I needed.
+Meeseeks exists because Floki used to be unable to do what I needed.
 
 When I started learning Elixir I reimplemented a small project I had written in another language. Part of that project involved extracting data from HTML, and unbeknownst to me some of the HTML I needed to extract data from was malformed.
 
