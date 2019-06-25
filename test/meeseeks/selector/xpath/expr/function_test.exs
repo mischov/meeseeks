@@ -20,7 +20,8 @@ defmodule Meeseeks.Selector.XPath.Expr.FunctionTest do
                        {"p", [], ["5"]}
                      ]}
                   ]}
-               ]}
+               ]},
+              :tuple_tree
             )
 
   # last

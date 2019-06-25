@@ -6,7 +6,8 @@ defmodule Meeseeks.Selector.XPath.Expr.UnionTest do
   alias Meeseeks.Selector.XPath.Expr
 
   @document Meeseeks.parse(
-              {"book", [], [{"chapter", [], [{"page", [], ["1"]}, {"page", [], ["2"]}]}]}
+              {"book", [], [{"chapter", [], [{"page", [], ["1"]}, {"page", [], ["2"]}]}]},
+              :tuple_tree
             )
 
   test "union both match" do

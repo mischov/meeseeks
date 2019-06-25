@@ -5,7 +5,7 @@ defmodule Meeseeks.Selector.XPath.CombinatorsTest do
   alias Meeseeks.Selector.{Combinator, XPath}
 
   @attributes [{"id", "unique"}, {"class", "a couple"}]
-  @document Meeseeks.Parser.parse({"awesome:div", @attributes, []})
+  @document Meeseeks.Parser.parse({"awesome:div", @attributes, []}, :tuple_tree)
 
   test "attributes" do
     combinator = %XPath.Combinator.Attributes{}

@@ -5,7 +5,7 @@ defmodule Meeseeks.Parser do
   alias Meeseeks.Document.{Comment, Data, Doctype, Element, ProcessingInstruction, Text}
 
   @type source :: String.t() | TupleTree.t()
-  @type type :: :html | :xml
+  @type type :: :html | :xml | :tuple_tree
 
   # Parse
 
@@ -26,7 +26,12 @@ defmodule Meeseeks.Parser do
   end
 
   def parse(tuple_tree) do
-    parse_tuple_tree(tuple_tree)
+    IO.warn(
+      "parse/1 with a tuple tree is deprecated. " <>
+        "Please use parse/2 with the :tuple_tree type instead."
+    )
+
+    parse(tuple_tree, :tuple_tree)
   end
 
   @spec parse(source, type) :: Document.t() | {:error, Error.t()}
@@ -45,7 +50,7 @@ defmodule Meeseeks.Parser do
     end
   end
 
-  def parse(tuple_tree, _) do
+  def parse(tuple_tree, :tuple_tree) when is_list(tuple_tree) or is_tuple(tuple_tree) do
     parse_tuple_tree(tuple_tree)
   end
 
