@@ -239,17 +239,18 @@ defmodule Meeseeks do
   Parses a string or `Meeseeks.TupleTree` into a `Meeseeks.Document`.
 
   `parse/1` parses as HTML, while `parse/2` accepts a second argument of
-  either `:html` or `:xml` that specifies how the source is parsed.
+  either `:html`, `:xml`, or `tuple_tree` that specifies how the source is
+  parsed.
 
   ## Examples
 
       iex> Meeseeks.parse("<div id=main><p>Hello, Meeseeks!</p></div>")
       #Meeseeks.Document<{...}>
 
-      iex> Meeseeks.parse({"div", [{"id", "main"}], [{"p", [], ["Hello, Meeseeks!"]}]})
+      iex> Meeseeks.parse("<book><author>GGK</author></book>", :xml)
       #Meeseeks.Document<{...}>
 
-      iex> Meeseeks.parse("<book><author>GGK</author></book>", :xml)
+      iex> Meeseeks.parse({"div", [{"id", "main"}], [{"p", [], ["Hello, Meeseeks!"]}]}, :tuple_tree)
       #Meeseeks.Document<{...}>
   """
   @spec parse(Parser.source()) :: Document.t() | {:error, Error.t()}

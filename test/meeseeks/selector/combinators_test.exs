@@ -18,7 +18,8 @@ defmodule Meeseeks.Selector.CombinatorsTest do
                        {"p", [], ["5"]}
                      ]}
                   ]}
-               ]}
+               ]},
+              :tuple_tree
             )
 
   test "parent" do

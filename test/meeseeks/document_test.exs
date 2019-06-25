@@ -20,7 +20,7 @@ defmodule Meeseeks.DocumentTest do
         ]}
      ]}
   ]
-  @document Meeseeks.Parser.parse(@tree)
+  @document Meeseeks.Parser.parse(@tree, :tuple_tree)
 
   test "html" do
     expected =

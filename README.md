@@ -115,7 +115,7 @@ Finally, run `mix deps.get`.
 
 Start by parsing a source (HTML/XML string or [`Meeseeks.TupleTree`](https://hexdocs.pm/meeseeks/Meeseeks.TupleTree.html)) into a [`Meeseeks.Document`](https://hexdocs.pm/meeseeks/Meeseeks.Document.html) so that it can be queried.
 
-`Meeseeks.parse/1` parses the source as HTML, but `Meeseeks.parse/2` accepts a second argument of either `:html` or `:xml` that specifies how the source is parsed.
+`Meeseeks.parse/1` parses the source as HTML, but `Meeseeks.parse/2` accepts a second argument of either `:html`, `:xml`, or `:tuple_tree` that specifies how the source is parsed.
 
 ```elixir
 document = Meeseeks.parse("<div id=main><p>1</p><p>2</p><p>3</p></div>")

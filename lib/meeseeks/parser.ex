@@ -5,7 +5,7 @@ defmodule Meeseeks.Parser do
   alias Meeseeks.Document.{Comment, Data, Doctype, Element, ProcessingInstruction, Text}
 
   @type source :: String.t() | TupleTree.t()
-  @type type :: :html | :xml
+  @type type :: :html | :xml | :tuple_tree
 
   # Parse
 
@@ -26,7 +26,12 @@ defmodule Meeseeks.Parser do
   end
 
   def parse(tuple_tree) do
-    parse_tuple_tree(tuple_tree)
+    IO.warn(
+      "parse/1 with a tuple tree is deprecated. " <>
+        "Please use parse/2 with the :tuple_tree type instead."
+    )
+
+    parse(tuple_tree, :tuple_tree)
   end
 
   @spec parse(source, type) :: Document.t() | {:error, Error.t()}
@@ -45,13 +50,12 @@ defmodule Meeseeks.Parser do
     end
   end
 
-  def parse(tuple_tree, _) do
+  def parse(tuple_tree, :tuple_tree) when is_list(tuple_tree) or is_tuple(tuple_tree) do
     parse_tuple_tree(tuple_tree)
   end
 
   # Parse TupleTree
 
-  # Can't return error, only Document, just surpressing dialyzer error
   @spec parse_tuple_tree(TupleTree.t()) :: Document.t() | {:error, Error.t()}
 
   defp parse_tuple_tree(tuple_tree) when is_list(tuple_tree) do
@@ -63,7 +67,12 @@ defmodule Meeseeks.Parser do
   end
 
   defp add_root_nodes(document, roots) do
-    Enum.reduce(roots, document, &add_root_node(&2, &1))
+    Enum.reduce_while(roots, document, fn root, doc ->
+      case add_root_node(doc, root) do
+        %Document{} = doc -> {:cont, doc}
+        {:error, _} = err -> {:halt, err}
+      end
+    end)
   end
 
   # :mochiweb_html parses <?php ...?> to {:pi, "php ..."}
@@ -145,12 +154,21 @@ defmodule Meeseeks.Parser do
     }
   end
 
-  defp add_root_node(document, _other) do
-    document
+  defp add_root_node(_document, other) do
+    {:error,
+     Error.new(:parser, :invalid_input, %{
+       description: "invalid tuple tree root node",
+       input: other
+     })}
   end
 
   defp add_child_nodes(document, parent_id, children) do
-    Enum.reduce(children, document, &add_child_node(&2, parent_id, &1))
+    Enum.reduce_while(children, document, fn child, doc ->
+      case add_child_node(doc, parent_id, child) do
+        %Document{} = doc -> {:cont, doc}
+        {:error, _} = err -> {:halt, err}
+      end
+    end)
   end
 
   # :mochiweb_html parses <?php ... ?> to {:pi, "php ..."}
@@ -204,8 +222,12 @@ defmodule Meeseeks.Parser do
     end
   end
 
-  defp add_child_node(document, _parent, _other) do
-    document
+  defp add_child_node(_document, _parent, other) do
+    {:error,
+     Error.new(:parser, :invalid_input, %{
+       description: "invalid tuple tree node",
+       input: other
+     })}
   end
 
   defp next_id(nil), do: 1

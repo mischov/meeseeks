@@ -5,7 +5,8 @@ defmodule Meeseeks.Selector.XPath.Expr.NegativeTest do
   alias Meeseeks.Selector.XPath.Expr
 
   @document Meeseeks.parse(
-              {"book", [], [{"chapter", [], [{"page", [], ["1"]}, {"page", [], ["2"]}]}]}
+              {"book", [], [{"chapter", [], [{"page", [], ["1"]}, {"page", [], ["2"]}]}]},
+              :tuple_tree
             )
 
   test "negate positive" do
