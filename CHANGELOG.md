@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.11.1 (2019-06-28)
+
+### Deprecations
+
+  * [Parse] Deprecate parsing tuple trees with `parse/1`
+
+### Enhancements
+
+  * [Parse] Add `:tuple_tree` type to `parse/2`
+
+### Fixes
+
+  * [Parse] Update to `meeseeks_html5ever v0.11.1`, which returns a better error when provided with non-UTF-8 input
+  * [Parse] Return parser errors if parsing an invalid tuple tree
+
 ## v0.11.0 (2019-02-28)
 
 ### Compatibility
