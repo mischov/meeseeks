@@ -28,9 +28,33 @@ defmodule Meeseeks.Selector.CSS.TokenizerTest do
     assert Tokenizer.tokenize(selector) == tokens
   end
 
+  test "start with escaped class" do
+    selector = ".\\123"
+    tokens = [class: '123']
+    assert Tokenizer.tokenize(selector) == tokens
+  end
+
+  test "start with unicode class" do
+    selector = ".❤"
+    tokens = [class: [?❤]]
+    assert Tokenizer.tokenize(selector) == tokens
+  end
+
   test "start with id" do
     selector = "#id.class"
     tokens = [{:id, 'id'}, {:class, 'class'}]
+    assert Tokenizer.tokenize(selector) == tokens
+  end
+
+  test "start with escaped id" do
+    selector = "#\\123"
+    tokens = [id: '123']
+    assert Tokenizer.tokenize(selector) == tokens
+  end
+
+  test "start with unicode id" do
+    selector = "#❤"
+    tokens = [id: [?❤]]
     assert Tokenizer.tokenize(selector) == tokens
   end
 
@@ -102,6 +126,24 @@ defmodule Meeseeks.Selector.CSS.TokenizerTest do
   test "attribute equals" do
     selector = "tag[attr=value]"
     tokens = [{:ident, 'tag'}, '[', {:ident, 'attr'}, :value, {:ident, 'value'}, ']']
+    assert Tokenizer.tokenize(selector) == tokens
+  end
+
+  test "attribute equals string" do
+    selector = "tag[attr=\"value\"]"
+    tokens = [{:ident, 'tag'}, '[', {:ident, 'attr'}, :value, {:string, 'value'}, ']']
+    assert Tokenizer.tokenize(selector) == tokens
+  end
+
+  test "attribute equals string with escaped" do
+    selector = "tag[attr=\"\\~\\~\\~\"]"
+    tokens = [{:ident, 'tag'}, '[', {:ident, 'attr'}, :value, {:string, '~~~'}, ']']
+    assert Tokenizer.tokenize(selector) == tokens
+  end
+
+  test "attribute equals string with unicode" do
+    selector = "tag[attr=\"❤\"]"
+    tokens = [{:ident, 'tag'}, '[', {:ident, 'attr'}, :value, {:string, [?❤]}, ']']
     assert Tokenizer.tokenize(selector) == tokens
   end
 
