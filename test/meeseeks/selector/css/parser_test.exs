@@ -504,4 +504,20 @@ defmodule Meeseeks.Selector.CSS.ParserTest do
 
     assert Parser.parse_elements(tokens) == selectors
   end
+
+  test "unparsable element" do
+    tokens = Tokenizer.tokenize("ele~=ment")
+
+    assert_raise Error, ~r/Unsupported sequence of tokens when parsing element/, fn ->
+      Parser.parse_elements(tokens)
+    end
+  end
+
+  test "unparsable attribute" do
+    tokens = Tokenizer.tokenize("[attr~=~bute]")
+
+    assert_raise Error, ~r/Unsupported sequence of tokens when parsing attribute/, fn ->
+      Parser.parse_elements(tokens)
+    end
+  end
 end
