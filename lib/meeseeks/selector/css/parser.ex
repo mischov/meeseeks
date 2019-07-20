@@ -113,6 +113,14 @@ defmodule Meeseeks.Selector.CSS.Parser do
     parse_element([',' | toks], element)
   end
 
+  defp parse_element(toks, element) do
+    raise Error.new(:css_selector_parser, :invalid_input, %{
+            description: "Unsupported sequence of tokens when parsing element",
+            tokens: toks,
+            element: element
+          })
+  end
+
   # Parse Attribute
 
   @attribute_value_selector_types [
@@ -144,6 +152,13 @@ defmodule Meeseeks.Selector.CSS.Parser do
   defp parse_attribute([{:ident, attr}, ']' | toks]) do
     selector = %Attribute.Attribute{attribute: List.to_string(attr)}
     {selector, toks}
+  end
+
+  defp parse_attribute(toks) do
+    raise Error.new(:css_selector_parser, :invalid_input, %{
+            description: "Unsupported sequence of tokens when parsing attribute",
+            tokens: toks
+          })
   end
 
   defp attribute_value_selector(type, attr, val) do
