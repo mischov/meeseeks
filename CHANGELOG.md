@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.11.2 (2019-07-21)
+
+### Fixes
+
+  * [Select] Support escaped characters in CSS selector names, idents, and strings
+  * [Select] Support Elixir-style unicode code points in CSS selector names, idents, and strings
+  * [Select] Add better errors when parsing CSS selectors
+
 ## v0.11.1 (2019-06-28)
 
 ### Deprecations
