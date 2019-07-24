@@ -24,9 +24,18 @@ defmodule Meeseeks.DocumentTest do
 
   test "html" do
     expected =
-      "<!DOCTYPE html><html><head></head><body><div attr='1 \"2\" 3'><p></p><p></p><div><p></p><p></p></div><p></p></div></body></html>"
+      "<!DOCTYPE html><html><head></head><body><div attr=\"1 &quot;2&quot; 3\"><p></p><p></p><div><p></p><p></p></div><p></p></div></body></html>"
 
     assert Document.html(@document) == expected
+  end
+
+  test "html with attribute containing quotes returns escaped attribute" do
+    html =
+      {"span", [{"data-stuff", "\"'"}], []}
+      |> Meeseeks.Parser.parse(:tuple_tree)
+      |> Document.html()
+
+    assert html == "<span data-stuff=\"&quot;&apos;\"></span>"
   end
 
   test "tree" do

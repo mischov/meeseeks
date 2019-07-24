@@ -27,6 +27,7 @@ defmodule Meeseeks.Mixfile do
 
   defp deps do
     [
+      {:html_entities, "~> 0.4.0"},
       {:meeseeks_html5ever, "~> 0.11.1"},
 
       # dev
