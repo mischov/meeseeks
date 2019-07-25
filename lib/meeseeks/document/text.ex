@@ -9,7 +9,7 @@ defmodule Meeseeks.Document.Text do
 
   @impl true
   def html(node, _document) do
-    node.content
+    Helpers.html_escape_text(node.content)
   end
 
   @impl true
