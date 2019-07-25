@@ -129,11 +129,7 @@ defmodule Meeseeks.Document.Element do
   end
 
   defp join_attribute({attribute, value}, acc) do
-    if String.contains?(value, "\"") do
-      "#{acc} #{attribute}='#{value}'"
-    else
-      "#{acc} #{attribute}=\"#{value}\""
-    end
+    "#{acc} #{attribute}=\"#{Helpers.html_escape_attribute_value(value)}\""
   end
 
   defp join_data(node, acc, document) do
