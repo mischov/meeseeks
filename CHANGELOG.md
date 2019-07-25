@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.12.0 (2019-07-25)
+
+### Breaking
+
+  * [Extract] `Meeseeks.html/1` now escapes problematic characters when encoding attribute values and text, so its output may be slightly different than before
+
+### Fixes
+
+  * [Extract] Always use double quotes and escape `&` and `"` when encoding attribute values with `Meeseeks.html/1`
+  * [Extract] Escape `<`, `>`, and `&` when encoding text with `Meeseeks.html/1`
+
 ## v0.11.2 (2019-07-21)
 
 ### Fixes
