@@ -7,7 +7,7 @@ defmodule Meeseeks.Mixfile do
     [
       app: :meeseeks,
       version: @version,
-      elixir: "~> 1.4",
+      elixir: "~> 1.6",
       deps: deps(),
 
       # Hex
@@ -27,7 +27,7 @@ defmodule Meeseeks.Mixfile do
 
   defp deps do
     [
-      {:meeseeks_html5ever, "~> 0.11.1"},
+      {:meeseeks_html5ever, "~> 0.12.0"},
 
       # dev
       {:dialyxir, "~> 0.5", only: :dev, runtime: false},
