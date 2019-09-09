@@ -20,3 +20,9 @@ sudo: false
 before_install:
   - curl https://sh.rustup.rs | sh -s -- -y
   - export PATH="$HOME/.cargo/bin:$PATH"
+
+cache:
+  directories:
+    - _build
+    - deps
+    - $HOME/.cargo
