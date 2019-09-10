@@ -72,7 +72,7 @@ For details and benchmarks, see [Meeseeks vs. Floki Performance](https://github.
 
 ## Compatibility
 
-Meeseeks is tested with a minimum combination of Elixir 1.6.0 and Erlang/OTP 20, and a maximum combination of Elixir 1.9.0 and Erlang/OTP 22.0.
+Meeseeks requires a minimum combination of Elixir 1.6.0 and Erlang/OTP 20, and has been tested with a maximum combination of Elixir 1.9.0 and Erlang/OTP 22.0.
 
 ## Dependencies
 
