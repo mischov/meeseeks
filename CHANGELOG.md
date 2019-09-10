@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.13.1 (2019-09-09)
+
+### Enhancements
+
+  * [Parse] Update to `meeseeks_html5ever v0.12.1`, which uses a dirty scheduler for the NIF instead of working asynchronously
+
 ## v0.13.0 (2019-09-08)
 
 ### Compatability
