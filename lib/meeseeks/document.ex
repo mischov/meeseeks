@@ -57,7 +57,7 @@ defmodule Meeseeks.Document do
   ```
   """
 
-  alias Meeseeks.{Document, Error}
+  alias Meeseeks.{Document, Error, Extractor}
   alias Meeseeks.Document.{Element, Node}
 
   defstruct id_counter: nil, roots: [], nodes: %{}
@@ -76,9 +76,9 @@ defmodule Meeseeks.Document do
   def html(%Document{} = document) do
     document
     |> get_root_nodes()
-    |> Enum.reduce("", fn root_node, acc ->
-      acc <> Node.html(root_node, document)
-    end)
+    |> Enum.map(&Extractor.Html.from_node(&1, document))
+    |> IO.iodata_to_binary()
+    |> String.trim()
   end
 
   @doc """
@@ -87,7 +87,7 @@ defmodule Meeseeks.Document do
   def tree(%Document{} = document) do
     document
     |> get_root_nodes()
-    |> Enum.map(&Node.tree(&1, document))
+    |> Enum.map(&Extractor.Tree.from_node(&1, document))
   end
 
   # Query

@@ -1,113 +1,90 @@
 defmodule Meeseeks.Document.Node do
   @moduledoc false
 
-  alias Meeseeks.{Document, TupleTree}
+  alias Meeseeks.{Document, Extractor}
+
+  alias Meeseeks.Document.{
+    Comment,
+    Data,
+    Doctype,
+    Element,
+    ProcessingInstruction,
+    Text
+  }
 
   @type t :: struct
 
-  @callback attr(node :: t, attribute :: String.t()) :: String.t() | nil
+  # types
 
-  @callback attrs(node :: t) :: [{String.t(), String.t()}] | nil
+  @types [Comment, Data, Doctype, Element, ProcessingInstruction, Text]
 
-  @callback data(node :: t, document :: Document.t()) :: String.t()
-
-  @callback html(node :: t, document :: Document.t()) :: String.t()
-
-  @callback own_text(node :: t, document :: Document.t()) :: String.t()
-
-  @callback tag(node :: t) :: String.t() | nil
-
-  @callback text(node :: t, document :: Document.t()) :: String.t()
-
-  @callback tree(node :: t, document :: Document.t()) :: TupleTree.node_t()
+  @spec types() :: [atom]
+  def types(), do: @types
 
   # attr
 
   @spec attr(t, String.t()) :: String.t() | nil
-  def attr(%{__struct__: struct} = node, attribute) do
-    struct.attr(node, attribute)
+  def attr(node, attribute) do
+    Extractor.Attribute.from_node(node, attribute)
   end
 
   # attrs
 
   @spec attrs(t) :: [{String.t(), String.t()}] | nil
-  def attrs(%{__struct__: struct} = node) do
-    struct.attrs(node)
+  def attrs(node) do
+    Extractor.Attributes.from_node(node)
   end
 
   # data
 
   @spec data(t, Document.t()) :: String.t()
-  def data(%{__struct__: struct} = node, document) do
-    struct.data(node, document)
+  def data(node, document) do
+    Extractor.Data.from_node(node, document)
+    |> Extractor.Helpers.collapse_whitespace()
+    |> IO.iodata_to_binary()
+    |> String.trim()
   end
 
   # html
 
   @spec html(t, Document.t()) :: String.t()
-  def html(%{__struct__: struct} = node, document) do
-    struct.html(node, document)
+  def html(node, document) do
+    Extractor.Html.from_node(node, document)
+    |> IO.iodata_to_binary()
+    |> String.trim()
   end
 
   # own_text
 
   @spec own_text(t, Document.t()) :: String.t()
-  def own_text(%{__struct__: struct} = node, document) do
-    struct.own_text(node, document)
+  def own_text(node, document) do
+    Extractor.OwnText.from_node(node, document)
+    |> Extractor.Helpers.collapse_whitespace()
+    |> IO.iodata_to_binary()
+    |> String.trim()
   end
 
   # tag
 
   @spec tag(t) :: String.t() | nil
-  def tag(%{__struct__: struct} = node) do
-    struct.tag(node)
+  def tag(node) do
+    Extractor.Tag.from_node(node)
   end
 
   # text
 
   @spec text(t, Document.t()) :: String.t()
-  def text(%{__struct__: struct} = node, document) do
-    struct.text(node, document)
+  def text(node, document) do
+    Extractor.Text.from_node(node, document)
+    |> Extractor.Helpers.collapse_whitespace()
+    |> IO.iodata_to_binary()
+    |> String.trim()
   end
 
   # tree
 
   @spec tree(t, Document.t()) :: TupleTree.node_t()
-  def tree(%{__struct__: struct} = node, document) do
-    struct.tree(node, document)
-  end
-
-  # __using__
-
-  defmacro __using__(_) do
-    quote do
-      @behaviour Document.Node
-
-      @impl Document.Node
-      def attr(_, _), do: nil
-
-      @impl Document.Node
-      def attrs(_), do: nil
-
-      @impl Document.Node
-      def data(_, _), do: ""
-
-      @impl Document.Node
-      def html(_, _), do: raise("html/2 not implemented")
-
-      @impl Document.Node
-      def own_text(_, _), do: ""
-
-      @impl Document.Node
-      def tag(_), do: nil
-
-      @impl Document.Node
-      def text(_, _), do: ""
-
-      @impl Document.Node
-      def tree(_, _), do: raise("tree/2 not implemented")
-
-      defoverridable attr: 2, attrs: 1, data: 2, html: 2, own_text: 2, tag: 1, text: 2, tree: 2
-    end
+  def tree(node, document) do
+    Extractor.Tree.from_node(node, document)
   end
 end

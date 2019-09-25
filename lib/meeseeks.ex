@@ -531,6 +531,10 @@ defmodule Meeseeks do
   Returns the combined data of a result or the result's children, which may
   be an empty string.
 
+  Once the data has been combined the whitespace is compacted by replacing
+  all instances of more than one whitespace character with a single space
+  and then trimmed.
+
   Data is the content of `<script>` or `<style>` tags, or the content of
   comments starting with "[CDATA[" and ending with "]]". The latter behavior
   is to support the extraction of CDATA from HTML, since HTML5 parsers parse
@@ -609,6 +613,10 @@ defmodule Meeseeks do
   Returns the combined text of a result or the result's children, which may
   be an empty string.
 
+  Once the text has been combined the whitespace is compacted by replacing
+  all instances of more than one whitespace character with a single space
+  and then trimmed.
+
   Nil input returns `nil`.
 
   ## Examples
@@ -648,6 +656,10 @@ defmodule Meeseeks do
   @doc """
   Returns the combined text of a result or the result's descendants, which
   may be an empty string.
+
+  Once the text has been combined the whitespace is compacted by replacing
+  all instances of more than one whitespace character with a single space
+  and then trimmed.
 
   Nil input returns `nil`.
 
