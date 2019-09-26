@@ -69,13 +69,20 @@ defmodule Meeseeks.Result do
   comments starting with "[CDATA[" and ending with "]]". The latter behavior
   is to support the extraction of CDATA from HTML, since HTML5 parsers parse
   CDATA as comments.
-  """
-  @spec data(Result.t()) :: String.t()
-  def data(result)
 
-  def data(%Result{id: id, document: document}) do
+  ## Options
+
+    * `:collapse_whitespace` - Boolean determining whether or not to replace
+      blocks of whitespace with a single space character. Defaults to `true`.
+    * `:trim` - Boolean determining whether or not to trim the resulting
+      text. Defaults to `true`.
+  """
+  @spec data(Result.t(), Keyword.t()) :: String.t()
+  def data(result, opts \\ [])
+
+  def data(%Result{id: id, document: document}, opts) do
     node = Document.get_node(document, id)
-    Document.Node.data(node, document)
+    Document.Node.data(node, document, opts)
   end
 
   @doc """
@@ -129,13 +136,20 @@ defmodule Meeseeks.Result do
   Once the text has been combined the whitespace is compacted by replacing
   all instances of more than one whitespace character with a single space
   and then trimmed.
-  """
-  @spec own_text(Result.t()) :: String.t()
-  def own_text(result)
 
-  def own_text(%Result{id: id, document: document}) do
+  ## Options
+
+    * `:collapse_whitespace` - Boolean determining whether or not to replace
+      blocks of whitespace with a single space character. Defaults to `true`.
+    * `:trim` - Boolean determining whether or not to trim the resulting
+      text. Defaults to `true`.
+  """
+  @spec own_text(Result.t(), Keyword.t()) :: String.t()
+  def own_text(result, opts \\ [])
+
+  def own_text(%Result{id: id, document: document}, opts) do
     node = Document.get_node(document, id)
-    Document.Node.own_text(node, document)
+    Document.Node.own_text(node, document, opts)
   end
 
   @doc """
@@ -156,13 +170,20 @@ defmodule Meeseeks.Result do
   Once the text has been combined the whitespace is compacted by replacing
   all instances of more than one whitespace character with a single space
   and then trimmed.
-  """
-  @spec text(Result.t()) :: String.t()
-  def text(result)
 
-  def text(%Result{id: id, document: document}) do
+  ## Options
+
+    * `:collapse_whitespace` - Boolean determining whether or not to replace
+      blocks of whitespace with a single space character. Defaults to `true`.
+    * `:trim` - Boolean determining whether or not to trim the resulting
+      text. Defaults to `true`.
+  """
+  @spec text(Result.t(), Keyword.t()) :: String.t()
+  def text(result, opts \\ [])
+
+  def text(%Result{id: id, document: document}, opts) do
     node = Document.get_node(document, id)
-    Document.Node.text(node, document)
+    Document.Node.text(node, document, opts)
   end
 
   @doc """

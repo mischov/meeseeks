@@ -542,6 +542,13 @@ defmodule Meeseeks do
 
   Nil input returns `nil`.
 
+  ## Options
+
+    * `:collapse_whitespace` - Boolean determining whether or not to replace
+      blocks of whitespace with a single space character. Defaults to `true`.
+    * `:trim` - Boolean determining whether or not to trim the resulting
+      text. Defaults to `true`.
+
   ## Examples
 
       iex> import Meeseeks.CSS
@@ -554,11 +561,11 @@ defmodule Meeseeks do
       iex> Meeseeks.data(result2)
       "Hi"
   """
-  @spec data(extractable) :: String.t() | nil
-  def data(extractable)
-  def data(nil), do: nil
-  def data(%Result{} = result), do: Result.data(result)
-  def data(x), do: raise_cannot_extract(x, "data/1")
+  @spec data(extractable, Keyword.t()) :: String.t() | nil
+  def data(extractable, opts \\ [])
+  def data(nil, _), do: nil
+  def data(%Result{} = result, opts), do: Result.data(result, opts)
+  def data(x, _), do: raise_cannot_extract(x, "data/1")
 
   @doc """
   Returns a map of a result's data attributes, or nil if the result
@@ -619,6 +626,13 @@ defmodule Meeseeks do
 
   Nil input returns `nil`.
 
+  ## Options
+
+    * `:collapse_whitespace` - Boolean determining whether or not to replace
+      blocks of whitespace with a single space character. Defaults to `true`.
+    * `:trim` - Boolean determining whether or not to trim the resulting
+      text. Defaults to `true`.
+
   ## Examples
 
       iex> import Meeseeks.CSS
@@ -627,11 +641,11 @@ defmodule Meeseeks do
       iex> Meeseeks.own_text(result)
       "Hello,"
   """
-  @spec own_text(extractable) :: String.t() | nil
-  def own_text(extractable)
-  def own_text(nil), do: nil
-  def own_text(%Result{} = result), do: Result.own_text(result)
-  def own_text(x), do: raise_cannot_extract(x, "own_text/1")
+  @spec own_text(extractable, Keyword.t()) :: String.t() | nil
+  def own_text(extractable, opts \\ [])
+  def own_text(nil, _), do: nil
+  def own_text(%Result{} = result, opts), do: Result.own_text(result, opts)
+  def own_text(x, _), do: raise_cannot_extract(x, "own_text/1")
 
   @doc """
   Returns a result's tag, or `nil` if the result represents a node without a
@@ -663,6 +677,13 @@ defmodule Meeseeks do
 
   Nil input returns `nil`.
 
+  ## Options
+
+    * `:collapse_whitespace` - Boolean determining whether or not to replace
+      blocks of whitespace with a single space character. Defaults to `true`.
+    * `:trim` - Boolean determining whether or not to trim the resulting
+      text. Defaults to `true`.
+
   ## Examples
 
       iex> import Meeseeks.CSS
@@ -671,11 +692,11 @@ defmodule Meeseeks do
       iex> Meeseeks.text(result)
       "Hello, World!"
   """
-  @spec text(extractable) :: String.t() | nil
-  def text(extractable)
-  def text(nil), do: nil
-  def text(%Result{} = result), do: Result.text(result)
-  def text(x), do: raise_cannot_extract(x, "text/1")
+  @spec text(extractable, Keyword.t()) :: String.t() | nil
+  def text(extractable, opts \\ [])
+  def text(nil, _), do: nil
+  def text(%Result{} = result, opts), do: Result.text(result, opts)
+  def text(x, _), do: raise_cannot_extract(x, "text/1")
 
   @doc """
   Returns the `Meeseeks.TupleTree` of a document or result and its

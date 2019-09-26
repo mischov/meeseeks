@@ -37,12 +37,15 @@ defmodule Meeseeks.Document.Node do
 
   # data
 
-  @spec data(t, Document.t()) :: String.t()
-  def data(node, document) do
+  @spec data(t, Document.t(), Keyword.t()) :: String.t()
+  def data(node, document, opts \\ []) do
+    collapse_whitespace? = Keyword.get(opts, :collapse_whitespace, true)
+    trim? = Keyword.get(opts, :trim, true)
+
     Extractor.Data.from_node(node, document)
-    |> Extractor.Helpers.collapse_whitespace()
+    |> maybe_collapse_whitespace(collapse_whitespace?)
     |> IO.iodata_to_binary()
-    |> String.trim()
+    |> maybe_trim(trim?)
   end
 
   # html
@@ -56,12 +59,15 @@ defmodule Meeseeks.Document.Node do
 
   # own_text
 
-  @spec own_text(t, Document.t()) :: String.t()
-  def own_text(node, document) do
+  @spec own_text(t, Document.t(), Keyword.t()) :: String.t()
+  def own_text(node, document, opts \\ []) do
+    collapse_whitespace? = Keyword.get(opts, :collapse_whitespace, true)
+    trim? = Keyword.get(opts, :trim, true)
+
     Extractor.OwnText.from_node(node, document)
-    |> Extractor.Helpers.collapse_whitespace()
+    |> maybe_collapse_whitespace(collapse_whitespace?)
     |> IO.iodata_to_binary()
-    |> String.trim()
+    |> maybe_trim(trim?)
   end
 
   # tag
@@ -73,12 +79,15 @@ defmodule Meeseeks.Document.Node do
 
   # text
 
-  @spec text(t, Document.t()) :: String.t()
-  def text(node, document) do
+  @spec text(t, Document.t(), Keyword.t()) :: String.t()
+  def text(node, document, opts \\ []) do
+    collapse_whitespace? = Keyword.get(opts, :collapse_whitespace, true)
+    trim? = Keyword.get(opts, :trim, true)
+
     Extractor.Text.from_node(node, document)
-    |> Extractor.Helpers.collapse_whitespace()
+    |> maybe_collapse_whitespace(collapse_whitespace?)
     |> IO.iodata_to_binary()
-    |> String.trim()
+    |> maybe_trim(trim?)
   end
 
   # tree
@@ -87,4 +96,22 @@ defmodule Meeseeks.Document.Node do
   def tree(node, document) do
     Extractor.Tree.from_node(node, document)
   end
+
+  # maybe_collapse_whitespace
+
+  defp maybe_collapse_whitespace(iodata, collapse_whitespace?)
+
+  defp maybe_collapse_whitespace(iodata, false), do: iodata
+
+  defp maybe_collapse_whitespace(iodata, true) do
+    Extractor.Helpers.collapse_whitespace(iodata)
+  end
+
+  # maybe_trim
+
+  defp maybe_trim(string, trim?)
+
+  defp maybe_trim(string, false), do: string
+
+  defp maybe_trim(string, true), do: String.trim(string)
 end

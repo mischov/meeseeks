@@ -10,11 +10,11 @@ defmodule Meeseeks.Document.NodeTest do
    <head></head>
    <body>
      <div class="main">
-          0
+          0   0.5
        <special:p id="first-p">  1</special:p>
        <script>2</script>
        <![CDATA[  3 ]]>
-       <![CDATA[4]]>
+       <![CDATA[4   5 ]]>
      </div>
    </body>
   </html>
@@ -59,8 +59,20 @@ defmodule Meeseeks.Document.NodeTest do
 
   test "get data when node has data" do
     node = Document.get_node(@document, 7)
-    expected = "3 4"
+    expected = "3 4 5"
     assert Node.data(node, @document) == expected
+  end
+
+  test "get data without collapsing whitespace when node has data" do
+    node = Document.get_node(@document, 7)
+    expected = "3  4   5"
+    assert Node.data(node, @document, collapse_whitespace: false) == expected
+  end
+
+  test "get data without trimming when node has data" do
+    node = Document.get_node(@document, 7)
+    expected = " 3 4 5 "
+    assert Node.data(node, @document, trim: false) == expected
   end
 
   test "get data when node doesn't have data" do
@@ -75,7 +87,7 @@ defmodule Meeseeks.Document.NodeTest do
     node = Document.get_node(@document, 2)
 
     expected =
-      "<html><head></head>\n <body>\n   <div class=\"main\">\n        0\n     <special:p id=\"first-p\">  1</special:p>\n     <script>2</script>\n     <![CDATA[  3 ]]>\n     <![CDATA[4]]>\n   </div>\n \n\n</body></html>"
+      "<html><head></head>\n <body>\n   <div class=\"main\">\n        0   0.5\n     <special:p id=\"first-p\">  1</special:p>\n     <script>2</script>\n     <![CDATA[  3 ]]>\n     <![CDATA[4   5 ]]>\n   </div>\n \n\n</body></html>"
 
     assert Node.html(node, @document) == expected
   end
@@ -84,8 +96,20 @@ defmodule Meeseeks.Document.NodeTest do
 
   test "get own text when node has text" do
     node = Document.get_node(@document, 7)
-    expected = "0"
+    expected = "0 0.5"
     assert Node.own_text(node, @document) == expected
+  end
+
+  test "get own text without collapsing whitespace when node has text" do
+    node = Document.get_node(@document, 7)
+    expected = "0   0.5"
+    assert Node.own_text(node, @document, collapse_whitespace: false) == expected
+  end
+
+  test "get own text without trimming when node has text" do
+    node = Document.get_node(@document, 7)
+    expected = " 0 0.5 "
+    assert Node.own_text(node, @document, trim: false) == expected
   end
 
   test "get own text when node doesn't have text" do
@@ -112,8 +136,20 @@ defmodule Meeseeks.Document.NodeTest do
 
   test "get text when node has text" do
     node = Document.get_node(@document, 7)
-    expected = "0 1"
+    expected = "0 0.5 1"
     assert Node.text(node, @document) == expected
+  end
+
+  test "get text without collapsing whitespace when node has text" do
+    node = Document.get_node(@document, 7)
+    expected = "0   0.5\n        1"
+    assert Node.text(node, @document, collapse_whitespace: false) == expected
+  end
+
+  test "get text without trimming when node has text" do
+    node = Document.get_node(@document, 7)
+    expected = " 0 0.5 1 "
+    assert Node.text(node, @document, trim: false) == expected
   end
 
   test "get text when node doesn't have text" do
@@ -137,14 +173,14 @@ defmodule Meeseeks.Document.NodeTest do
             "\n   ",
             {"div", [{"class", "main"}],
              [
-               "\n        0\n     ",
+               "\n        0   0.5\n     ",
                {"p", [{"id", "first-p"}], ["  1"]},
                "\n     ",
                {"script", [], ["2"]},
                "\n     ",
                "  3 ",
                "\n     ",
-               "4",
+               "4   5 ",
                "\n   "
              ]},
             "\n \n\n"
