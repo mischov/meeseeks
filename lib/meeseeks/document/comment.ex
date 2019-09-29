@@ -7,7 +7,7 @@ defmodule Meeseeks.Document.Comment do
 
   @impl true
   def html(node, _document) do
-    "<!-- #{node.content} -->"
+    "<!--#{node.content}-->"
   end
 
   @impl true

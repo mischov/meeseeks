@@ -132,4 +132,12 @@ defmodule Meeseeks.DocumentTest do
       Document.children(@document, 9000)
     end
   end
+
+  test "comment survives round trip" do
+    original =
+      "<html><head><!-- test&%;><'\" - &quot; <script>alert(1)</script> --></head><body></body></html>"
+
+    result = original |> Meeseeks.parse() |> Meeseeks.html()
+    assert result == original
+  end
 end
