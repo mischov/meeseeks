@@ -27,9 +27,7 @@ defmodule Meeseeks.Result do
       #Meeseeks.Result<{ <li>2</li> }>
   """
 
-  alias Meeseeks.Document
-  alias Meeseeks.Result
-  alias Meeseeks.TupleTree
+  alias Meeseeks.{Document, Result, TupleTree}
 
   @enforce_keys [:document, :id]
   defstruct document: nil, id: nil
@@ -63,19 +61,28 @@ defmodule Meeseeks.Result do
   Returns the combined data of result or result's children, which may be an
   empty string.
 
+  Once the data has been combined the whitespace is compacted by replacing
+  all instances of more than one whitespace character with a single space
+  and then trimmed.
+
   Data is the content of `<script>` or `<style>` tags, or the content of
   comments starting with "[CDATA[" and ending with "]]". The latter behavior
   is to support the extraction of CDATA from HTML, since HTML5 parsers parse
   CDATA as comments.
+
+  ## Options
+
+    * `:collapse_whitespace` - Boolean determining whether or not to replace
+      blocks of whitespace with a single space character. Defaults to `true`.
+    * `:trim` - Boolean determining whether or not to trim the resulting
+      text. Defaults to `true`.
   """
-  @spec data(Result.t()) :: String.t()
-  def data(result)
+  @spec data(Result.t(), Keyword.t()) :: String.t()
+  def data(result, opts \\ [])
 
-  def data(%Result{id: id, document: document}) do
+  def data(%Result{id: id, document: document}, opts) do
     node = Document.get_node(document, id)
-
-    Document.Node.data(node, document)
-    |> String.trim()
+    Document.Node.data(node, document, opts)
   end
 
   @doc """
@@ -119,23 +126,30 @@ defmodule Meeseeks.Result do
 
   def html(%Result{id: id, document: document}) do
     node = Document.get_node(document, id)
-
     Document.Node.html(node, document)
-    |> String.trim()
   end
 
   @doc """
   Returns the combined text of result or result's children, which may be an
   empty string.
+
+  Once the text has been combined the whitespace is compacted by replacing
+  all instances of more than one whitespace character with a single space
+  and then trimmed.
+
+  ## Options
+
+    * `:collapse_whitespace` - Boolean determining whether or not to replace
+      blocks of whitespace with a single space character. Defaults to `true`.
+    * `:trim` - Boolean determining whether or not to trim the resulting
+      text. Defaults to `true`.
   """
-  @spec own_text(Result.t()) :: String.t()
-  def own_text(result)
+  @spec own_text(Result.t(), Keyword.t()) :: String.t()
+  def own_text(result, opts \\ [])
 
-  def own_text(%Result{id: id, document: document}) do
+  def own_text(%Result{id: id, document: document}, opts) do
     node = Document.get_node(document, id)
-
-    Document.Node.own_text(node, document)
-    |> String.trim()
+    Document.Node.own_text(node, document, opts)
   end
 
   @doc """
@@ -152,15 +166,24 @@ defmodule Meeseeks.Result do
   @doc """
   Returns the combined text of result or result's descendants, which may be
   an empty string.
+
+  Once the text has been combined the whitespace is compacted by replacing
+  all instances of more than one whitespace character with a single space
+  and then trimmed.
+
+  ## Options
+
+    * `:collapse_whitespace` - Boolean determining whether or not to replace
+      blocks of whitespace with a single space character. Defaults to `true`.
+    * `:trim` - Boolean determining whether or not to trim the resulting
+      text. Defaults to `true`.
   """
-  @spec text(Result.t()) :: String.t()
-  def text(result)
+  @spec text(Result.t(), Keyword.t()) :: String.t()
+  def text(result, opts \\ [])
 
-  def text(%Result{id: id, document: document}) do
+  def text(%Result{id: id, document: document}, opts) do
     node = Document.get_node(document, id)
-
-    Document.Node.text(node, document)
-    |> String.trim()
+    Document.Node.text(node, document, opts)
   end
 
   @doc """
