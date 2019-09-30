@@ -1,7 +1,7 @@
 defmodule Meeseeks.Mixfile do
   use Mix.Project
 
-  @version "0.13.1"
+  @version "0.14.0"
 
   def project do
     [
