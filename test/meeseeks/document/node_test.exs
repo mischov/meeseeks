@@ -65,7 +65,7 @@ defmodule Meeseeks.Document.NodeTest do
 
   test "get data without collapsing whitespace when node has data" do
     node = Document.get_node(@document, 7)
-    expected = "3  4   5"
+    expected = "3 4   5"
     assert Node.data(node, @document, collapse_whitespace: false) == expected
   end
 
@@ -142,7 +142,7 @@ defmodule Meeseeks.Document.NodeTest do
 
   test "get text without collapsing whitespace when node has text" do
     node = Document.get_node(@document, 7)
-    expected = "0   0.5\n        1"
+    expected = "0   0.5\n       1"
     assert Node.text(node, @document, collapse_whitespace: false) == expected
   end
 

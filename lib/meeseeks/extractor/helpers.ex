@@ -56,4 +56,72 @@ defmodule Meeseeks.Extractor.Helpers do
   defp html_escape_char("&"), do: "&amp;"
   defp html_escape_char("\""), do: "&quot;"
   defp html_escape_char("'"), do: "&#39;"
+
+  # ends_in_whitespace?
+
+  # Adapted from trim_trailing in String.Break, which is found in
+  # elixir/unicode/properties.ex
+
+  @whitespace_max_size 3
+
+  whitespace = List.flatten([
+    Enum.map(String.to_integer("0009", 16)..String.to_integer("000D", 16), fn int -> <<int::utf8>> end),
+    <<String.to_integer("0020", 16)::utf8>>,
+    <<String.to_integer("0085", 16)::utf8>>,
+    <<String.to_integer("00A0", 16)::utf8>>,
+    <<String.to_integer("1680", 16)::utf8>>,
+    Enum.map(String.to_integer("2000", 16)..String.to_integer("200A", 16), fn int -> <<int::utf8>> end),
+    <<String.to_integer("2028", 16)::utf8>>,
+    <<String.to_integer("2029", 16)::utf8>>,
+    <<String.to_integer("202F", 16)::utf8>>,
+    <<String.to_integer("205F", 16)::utf8>>,
+    <<String.to_integer("3000", 16)::utf8>>
+  ])
+
+  def ends_in_whitespace?(iodata)
+  def ends_in_whitespace?(l) when is_list(l), do: list_ends_in_whitespace?(l)
+  def ends_in_whitespace?(b) when is_binary(b), do: bin_ends_in_whitespace?(b)
+
+  defp list_ends_in_whitespace?([]), do: false
+  defp list_ends_in_whitespace?([x]), do: ends_in_whitespace?(x)
+  defp list_ends_in_whitespace?([_, x]), do: ends_in_whitespace?(x)
+  defp list_ends_in_whitespace?([_, _, x]), do: ends_in_whitespace?(x)
+
+  defp list_ends_in_whitespace?(l) do
+    [x | _] = :lists.reverse(l)
+    ends_in_whitespace?(x)
+  end
+
+  defp bin_ends_in_whitespace?(""), do: false
+  defp bin_ends_in_whitespace?(b) do
+    bin_ends_in_whitespace?(b, byte_size(b))
+  end
+
+  defp bin_ends_in_whitespace?(b, size) when size < @whitespace_max_size do
+    s_bin_ends_in_whitespace?(b)
+  end
+
+  defp bin_ends_in_whitespace?(b, size) do
+    b_end = binary_part(b, size, -@whitespace_max_size)
+    l_bin_ends_in_whitespace?(b_end)
+  end
+
+  for cp <- whitespace do
+    case byte_size(cp) do
+      3 ->
+        defp l_bin_ends_in_whitespace?(unquote(cp)), do: true
+
+      2 ->
+        defp l_bin_ends_in_whitespace?(<<_, unquote(cp)>>), do: true
+        defp s_bin_ends_in_whitespace?(unquote(cp)), do: true
+
+      1 ->
+        defp l_bin_ends_in_whitespace?(<<_, _, unquote(cp)>>), do: true
+        defp s_bin_ends_in_whitespace?(<<_, unquote(cp)>>), do: true
+        defp s_bin_ends_in_whitespace?(unquote(cp)), do: true
+    end
+  end
+
+  defp l_bin_ends_in_whitespace?(_), do: false
+  defp s_bin_ends_in_whitespace?(_), do: false
 end
