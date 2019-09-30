@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.14.0 (2019-09-30)
+
+### Breaking
+
+  * [Extract] The private `Document.Node` behaviour was removed, so any direct use of its callbacks with nodes will be broken
+  * [Extract] Comments no longer have spaces added around the content when encoding to HTML, so `html` output may be slightly different than before
+  * [Extract] A space is now only added between nodes by text extractors if the previous sibling's text didn't end in whitespace, so `data`, `own_text`, and `text` output may be slightly different than before
+
+### Enhancements
+
+  * [Extract] Refactor extractors, removing the `Document.Node` behaviour and adding that functionality to modules under `Meeseeks.Extractor`
+  * [Extract] Use iodata in string building extractors instead of string concatenation
+  * [Extract] Optimize how whitespace is collapsed by text extractors
+  * [Extract] Document which extractors collapse whitespace and make it optional (on by default)
+
+### Fixes
+
+  * [Extract] Remove incorrectly added whitespace when encoding comments to HTML
+  * [Extract] No longer add space between nodes when extracting text if the previous sibling's text ended in whitespace
+
 ## v0.13.1 (2019-09-09)
 
 ### Enhancements
