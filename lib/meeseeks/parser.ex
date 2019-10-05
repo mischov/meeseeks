@@ -54,7 +54,7 @@ defmodule Meeseeks.Parser do
     parse_tuple_tree(tuple_tree)
   end
 
-  # Parse TupleTree
+  # parse_tuple_tree
 
   @spec parse_tuple_tree(TupleTree.t()) :: Document.t() | {:error, Error.t()}
 
@@ -66,6 +66,8 @@ defmodule Meeseeks.Parser do
     add_root_node(%Document{}, tuple_tree)
   end
 
+  # add_root_nodes
+
   defp add_root_nodes(document, roots) do
     Enum.reduce_while(roots, document, fn root, doc ->
       case add_root_node(doc, root) do
@@ -75,92 +77,90 @@ defmodule Meeseeks.Parser do
     end)
   end
 
+  # add_root_node
+
+  # Comment
+
+  defp add_root_node(document, {:comment, comment} = input) do
+    with true <- is_binary(comment) do
+      id = next_id(document.id_counter)
+      node = %Comment{id: id, content: comment}
+      insert_root_node(document, id, node)
+    else
+      _ -> {:error, invalid_node(input)}
+    end
+  end
+
+  # Doctype
+
+  defp add_root_node(document, {:doctype, name, public, system} = input) do
+    with true <- is_binary(name),
+         true <- is_binary(public),
+         true <- is_binary(system) do
+      id = next_id(document.id_counter)
+      node = %Doctype{id: id, name: name, public: public, system: system}
+      insert_root_node(document, id, node)
+    else
+      _ -> {:error, invalid_node(input)}
+    end
+  end
+
+  # Element
+
+  defp add_root_node(document, {tag, attributes, children} = input) when is_binary(tag) do
+    with true <- valid_attributes?(attributes),
+         true <- is_list(children) do
+      id = next_id(document.id_counter)
+      [ns, tg] = split_namespace_from_tag(tag)
+      node = %Element{id: id, namespace: ns, tag: tg, attributes: attributes}
+
+      insert_root_node(document, id, node)
+      |> add_child_nodes(id, children)
+    else
+      _ -> {:error, invalid_node(input)}
+    end
+  end
+
+  # ProcessingInstruction
+
   # :mochiweb_html parses <?php ...?> to {:pi, "php ..."}
-  defp add_root_node(document, {:pi, php_string}) do
+  defp add_root_node(document, {:pi, <<"php" <> data>>}) do
     id = next_id(document.id_counter)
-    [_, data] = String.split(php_string, "php ")
     data = String.trim(data)
     node = %ProcessingInstruction{id: id, target: "php", data: data}
-
-    %{
-      document
-      | id_counter: id,
-        roots: document.roots ++ [id],
-        nodes: insert_node(document.nodes, node)
-    }
+    insert_root_node(document, id, node)
   end
 
   # `:mochiweb_html` parses `<?target data ?>` into `{:pi, "target", [{"data", "data"}]}`
-  defp add_root_node(document, {:pi, target, attributes}) when is_list(attributes) do
-    id = next_id(document.id_counter)
-    data = join_pi(attributes)
-    node = %ProcessingInstruction{id: id, target: target, data: data}
-
-    %{
-      document
-      | id_counter: id,
-        roots: document.roots ++ [id],
-        nodes: insert_node(document.nodes, node)
-    }
+  defp add_root_node(document, {:pi, target, attributes} = input) when is_list(attributes) do
+    with true <- is_binary(target) do
+      id = next_id(document.id_counter)
+      data = join_pi(attributes)
+      node = %ProcessingInstruction{id: id, target: target, data: data}
+      insert_root_node(document, id, node)
+    else
+      _ -> {:error, invalid_node(input)}
+    end
   end
 
-  defp add_root_node(document, {:pi, target, data}) do
-    id = next_id(document.id_counter)
-    node = %ProcessingInstruction{id: id, target: target, data: data}
-
-    %{
-      document
-      | id_counter: id,
-        roots: document.roots ++ [id],
-        nodes: insert_node(document.nodes, node)
-    }
+  defp add_root_node(document, {:pi, target, data} = input) do
+    with true <- is_binary(target),
+         true <- is_binary(data) do
+      id = next_id(document.id_counter)
+      node = %ProcessingInstruction{id: id, target: target, data: data}
+      insert_root_node(document, id, node)
+    else
+      _ -> {:error, invalid_node(input)}
+    end
   end
 
-  defp add_root_node(document, {tag, attributes, children}) do
-    id = next_id(document.id_counter)
-    [ns, tg] = split_namespace_from_tag(tag)
-    node = %Element{id: id, namespace: ns, tag: tg, attributes: attributes}
-
-    %{
-      document
-      | id_counter: id,
-        roots: document.roots ++ [id],
-        nodes: insert_node(document.nodes, node)
-    }
-    |> add_child_nodes(id, children)
-  end
-
-  defp add_root_node(document, {:comment, comment}) do
-    id = next_id(document.id_counter)
-    node = %Comment{id: id, content: comment}
-
-    %{
-      document
-      | id_counter: id,
-        roots: document.roots ++ [id],
-        nodes: insert_node(document.nodes, node)
-    }
-  end
-
-  defp add_root_node(document, {:doctype, name, public, system}) do
-    id = next_id(document.id_counter)
-    node = %Doctype{id: id, name: name, public: public, system: system}
-
-    %{
-      document
-      | id_counter: id,
-        roots: document.roots ++ [id],
-        nodes: insert_node(document.nodes, node)
-    }
-  end
+  # else
 
   defp add_root_node(_document, other) do
-    {:error,
-     Error.new(:parser, :invalid_input, %{
-       description: "invalid tuple tree root node",
-       input: other
-     })}
+    {:error, invalid_node(other)}
   end
+
+  # add_child_nodes
 
   defp add_child_nodes(document, parent_id, children) do
     Enum.reduce_while(children, document, fn child, doc ->
@@ -171,43 +171,21 @@ defmodule Meeseeks.Parser do
     end)
   end
 
-  # :mochiweb_html parses <?php ... ?> to {:pi, "php ..."}
-  defp add_child_node(document, parent, {:pi, php_string}) do
-    id = next_id(document.id_counter)
-    [_, data] = String.split(php_string, "php ")
-    data = String.trim(data)
-    node = %ProcessingInstruction{parent: parent, id: id, target: "php", data: data}
-    %{document | id_counter: id, nodes: insert_node(document.nodes, node)}
+  # add_child_node
+
+  # Comment
+
+  defp add_child_node(document, parent, {:comment, comment} = input) do
+    with true <- is_binary(comment) do
+      id = next_id(document.id_counter)
+      node = %Comment{parent: parent, id: id, content: comment}
+      insert_node(document, id, node)
+    else
+      _ -> {:error, invalid_node(input)}
+    end
   end
 
-  # `:mochiweb_html` parses `<?target data ?>` into `{:pi, "target", [{"data", "data"}]}`
-  defp add_child_node(document, parent, {:pi, target, attributes}) when is_list(attributes) do
-    id = next_id(document.id_counter)
-    data = join_pi(attributes)
-    node = %ProcessingInstruction{parent: parent, id: id, target: target, data: data}
-    %{document | id_counter: id, nodes: insert_node(document.nodes, node)}
-  end
-
-  defp add_child_node(document, parent, {:pi, target, data}) do
-    id = next_id(document.id_counter)
-    node = %ProcessingInstruction{parent: parent, id: id, target: target, data: data}
-    %{document | id_counter: id, nodes: insert_node(document.nodes, node)}
-  end
-
-  defp add_child_node(document, parent, {tag, attributes, children}) do
-    id = next_id(document.id_counter)
-    [ns, tg] = split_namespace_from_tag(tag)
-    node = %Element{parent: parent, id: id, namespace: ns, tag: tg, attributes: attributes}
-
-    %{document | id_counter: id, nodes: insert_node(document.nodes, node)}
-    |> add_child_nodes(id, children)
-  end
-
-  defp add_child_node(document, parent, {:comment, comment}) do
-    id = next_id(document.id_counter)
-    node = %Comment{parent: parent, id: id, content: comment}
-    %{document | id_counter: id, nodes: insert_node(document.nodes, node)}
-  end
+  # Data | Text
 
   defp add_child_node(document, parent, text) when is_binary(text) do
     id = next_id(document.id_counter)
@@ -215,20 +193,71 @@ defmodule Meeseeks.Parser do
 
     if parent_node.tag == "script" or parent_node.tag == "style" do
       node = %Data{parent: parent, id: id, content: text}
-      %{document | id_counter: id, nodes: insert_node(document.nodes, node)}
+      insert_node(document, id, node)
     else
       node = %Text{parent: parent, id: id, content: text}
-      %{document | id_counter: id, nodes: insert_node(document.nodes, node)}
+      insert_node(document, id, node)
     end
   end
 
-  defp add_child_node(_document, _parent, other) do
-    {:error,
-     Error.new(:parser, :invalid_input, %{
-       description: "invalid tuple tree node",
-       input: other
-     })}
+  # Element
+
+  defp add_child_node(document, parent, {tag, attributes, children} = input)
+       when is_binary(tag) do
+    with true <- valid_attributes?(attributes),
+         true <- is_list(children) do
+      id = next_id(document.id_counter)
+      [ns, tg] = split_namespace_from_tag(tag)
+      node = %Element{parent: parent, id: id, namespace: ns, tag: tg, attributes: attributes}
+
+      insert_node(document, id, node)
+      |> add_child_nodes(id, children)
+    else
+      _ -> {:error, invalid_node(input)}
+    end
   end
+
+  # ProcessingInstruction
+
+  # :mochiweb_html parses <?php ... ?> to {:pi, "php ..."}
+  defp add_child_node(document, parent, {:pi, <<"php" <> data>>}) do
+    id = next_id(document.id_counter)
+    data = String.trim(data)
+    node = %ProcessingInstruction{parent: parent, id: id, target: "php", data: data}
+    insert_node(document, id, node)
+  end
+
+  # `:mochiweb_html` parses `<?target data ?>` into `{:pi, "target", [{"data", "data"}]}`
+  defp add_child_node(document, parent, {:pi, target, attributes} = input)
+       when is_list(attributes) do
+    with true <- is_binary(target) do
+      id = next_id(document.id_counter)
+      data = join_pi(attributes)
+      node = %ProcessingInstruction{parent: parent, id: id, target: target, data: data}
+      insert_node(document, id, node)
+    else
+      _ -> {:error, invalid_node(input)}
+    end
+  end
+
+  defp add_child_node(document, parent, {:pi, target, data} = input) do
+    with true <- is_binary(target),
+         true <- is_binary(data) do
+      id = next_id(document.id_counter)
+      node = %ProcessingInstruction{parent: parent, id: id, target: target, data: data}
+      insert_node(document, id, node)
+    else
+      _ -> {:error, invalid_node(input)}
+    end
+  end
+
+  # else
+
+  defp add_child_node(_document, _parent, other) do
+    {:error, invalid_node(other)}
+  end
+
+  # helpers
 
   defp next_id(nil), do: 1
   defp next_id(n), do: n + 1
@@ -260,19 +289,40 @@ defmodule Meeseeks.Parser do
     end
   end
 
-  defp insert_node(nodes, %{parent: nil, id: id} = node) do
-    Map.put(nodes, id, node)
+  defp insert_root_node(%{nodes: nodes} = document, id, node) do
+    nodes = Map.put(nodes, id, node)
+
+    %{
+      document
+      | id_counter: id,
+        roots: document.roots ++ [id],
+        nodes: nodes
+    }
   end
 
-  defp insert_node(nodes, %{parent: parent, id: child} = node) do
-    parent_node = Map.get(nodes, parent)
-    children = parent_node.children
+  defp insert_node(%{nodes: nodes} = document, id, %{parent: parent} = node) do
+    %{children: children} = parent_node = Map.fetch!(nodes, parent)
 
-    nodes
-    |> Map.put(child, node)
-    # List append is a horrible way to build children, but the alternative
-    # is walking all of the nodes at the end and reversing children, which
-    # ends up being more expensive due to the iteration and map update costs.
-    |> Map.put(parent, %{parent_node | children: children ++ [child]})
+    nodes =
+      nodes
+      |> Map.put(id, node)
+      # List append is less expensive than rewalking all of the nodes at
+      # the end and reversing children.
+      |> Map.put(parent, %{parent_node | children: children ++ [id]})
+
+    %{document | id_counter: id, nodes: nodes}
+  end
+
+  defp valid_attributes?(attributes) when is_list(attributes) do
+    Enum.all?(attributes, fn {k, v} -> is_binary(k) and is_binary(v) end)
+  end
+
+  defp valid_attributes?(_), do: false
+
+  defp invalid_node(input) do
+    Error.new(:parser, :invalid_input, %{
+      description: "invalid tuple tree node",
+      input: input
+    })
   end
 end
