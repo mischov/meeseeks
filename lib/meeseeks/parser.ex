@@ -1,5 +1,5 @@
 defmodule Meeseeks.Parser do
-  @moduledoc false
+  @moduledoc "Parsing utilities."
 
   alias Meeseeks.{Document, Error, TupleTree}
   alias Meeseeks.Document.{Comment, Data, Doctype, Element, ProcessingInstruction, Text}
@@ -8,6 +8,8 @@ defmodule Meeseeks.Parser do
   @type type :: :html | :xml | :tuple_tree
 
   # Parse
+  
+  @doc false
 
   @spec parse(source) :: Document.t() | {:error, Error.t()}
 
@@ -33,6 +35,8 @@ defmodule Meeseeks.Parser do
 
     parse(tuple_tree, :tuple_tree)
   end
+  
+  @doc false
 
   @spec parse(source, type) :: Document.t() | {:error, Error.t()}
 
