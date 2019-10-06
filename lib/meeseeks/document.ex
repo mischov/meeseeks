@@ -23,7 +23,7 @@ defmodule Meeseeks.Document do
                         {"p", [], ["2"]},
                         {"p", [], ["3"]}]}]}]}
 
-  document = Meeseeks.Parser.parse(tuple_tree, :tuple_tree)
+  document = Meeseeks.parse(tuple_tree, :tuple_tree)
   #=> %Meeseeks.Document{
   #      id_counter: 12,
   #      roots: [1],
