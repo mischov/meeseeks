@@ -5,7 +5,7 @@ defmodule Meeseeks.TupleTree do
 
   ```elixir
   {"html", [], [
-    {"head", [], []}
+    {"head", [], []},
     {"body", [], [
       {"h1", [{"id", "greeting"}], ["Hello, World!"]}]}]}
   ```
