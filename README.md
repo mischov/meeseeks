@@ -197,36 +197,9 @@ Meeseeks.one("<!-- TODO: Close vuln! -->", selector)
 
 To learn more, check the documentation for [`Meeseeks.Selector`](https://hexdocs.pm/meeseeks/Meeseeks.Selector.html) and [`Meeseeks.Selector.Combinator`](https://hexdocs.pm/meeseeks/Meeseeks.Selector.Combinator.html)
 
-## Contribute
+## Contributing
 
-Contributions are very welcome, especially bug reports.
-
-If submitting a bug report, please search open and closed issues first.
-
-To make a pull request, fork the project, create a topic branch off of `master`, push your topic branch to your fork, and open a pull request.
-
-If you're submitting a bug fix, please include a test or tests that would have caught the problem.
-
-If you're submitting new features, please test and document as appropriate.
-
-Before submitting a PR, please run `mix format`.
-
-By submitting a patch, you agree to license your work under the license of this project.
-
-### Running Tests
-
-```
-$ git clone https://github.com/mischov/meeseeks.git
-$ cd meeseeks
-$ mix deps.get
-$ mix test
-```
-
-### Building Docs
-
-```
-$ MIX_ENV=docs mix docs
-```
+If you are interested in contributing please read the [contribution guidelines](CONTRIBUTING.md).
 
 ## License
 
