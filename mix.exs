@@ -38,7 +38,7 @@ defmodule Meeseeks.Mixfile do
   end
 
   defp ex_doc_version do
-    if System.version() >= "1.7", do: "~> 0.19.0", else: "~> 0.18.0"
+    if System.version() >= "1.7", do: "~> 0.21.0", else: "~> 0.18.0"
   end
 
   defp description do
@@ -57,14 +57,31 @@ defmodule Meeseeks.Mixfile do
         "src/*.yrl",
         "mix.exs",
         "README.md",
-        "LICENSE",
-        "LICENSE-APACHE"
+        "LICENSE.md",
+        "LICENSE-APACHE.md"
       ],
-      links: %{"Github" => "https://github.com/mischov/meeseeks"}
+      links: %{"GitHub" => "https://github.com/mischov/meeseeks"}
     ]
   end
 
   defp docs do
-    [main: "Meeseeks"]
+    [
+      markdown_processor: ExDoc.Markdown.Meeseeks,
+      source_ref: "v#{@version}",
+      main: "readme",
+      extras: [
+        "README.md": [],
+        "CHANGELOG.md": [],
+        "CONTRIBUTING.md": [],
+        "guides/meeseeks_vs_floki.md": [],
+        "guides/css_selectors.md": [],
+        "guides/xpath_selectors.md": [],
+        "guides/custom_selectors.md": [],
+        "guides/deployment.md": []
+      ],
+      groups_for_extras: [
+        Guides: Path.wildcard("guides/*.md")
+      ]
+    ]
   end
 end
