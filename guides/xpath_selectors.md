@@ -4,7 +4,7 @@
 
 ### No top-level filter expressions
 
-Due to the way Meeseeks selection works, top-level filter expressions like `xpath("(//ol|//ul)[2]")`, which would select the second list element in the document, are particularly difficult to implement. An error will be raised if you try to use the above or any other top-level filter expression.
+Due to the way selection works, top-level filter expressions like `xpath("(//ol|//ul)[2]")`, which would select the second list element in the document, are particularly difficult to implement. An error will be raised if you try to use the above or any other top-level filter expression.
 
 To do the above try something like:
 
@@ -13,6 +13,19 @@ Meeseeks.all(doc, xpath("ol|ul")) |> Enum.at(1)
 ```
 
 All other filter expressions, like `xpath("//div[2]")`, are valid.
+
+### No attribute steps outside of predicates
+
+Due both to how selection works and how attributes are represented in documents (stored as part of an element, rather than as a separate node) there is no easy way to implement attribute selection, and use of attributes steps are prohibited outside of predicates and will raise an error.
+
+For example, `xpath("//p[@class]")` which returns elements with class attributes is allowed, but `xpath("//p/@class")` which would return the class attributes themselves is prohibited.
+
+To extract a selected element's attribute use the `attr` extractor.
+
+```elixir
+Meeseeks.all(doc, xpath("//p[@class]"))
+|> Enum.map(&Meeseeks.attr(&1, "class"))
+```
 
 ### No support for variable references
 
