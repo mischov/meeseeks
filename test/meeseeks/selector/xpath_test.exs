@@ -306,15 +306,38 @@ defmodule Meeseeks.Selector.XPathTest do
   end
 
   test "abbreviated attribute selector" do
-    xpath = "@*"
+    xpath = "*[@*]"
 
-    expected = %Node{
-      combinator: %XPath.Combinator.Attributes{
-        selector: %Node{
+    expected = %Meeseeks.Selector.Element{
+      combinator: %Meeseeks.Selector.Combinator.Children{
+        selector: %Meeseeks.Selector.Element{
           combinator: nil,
-          selectors: [%XPath.Predicate{e: %Expr.AttributeNameTest{name: "*", namespace: nil}}]
+          filters: [
+            %Meeseeks.Selector.XPath.Predicate{
+              e: %Meeseeks.Selector.XPath.Expr.Predicate{
+                e: %Meeseeks.Selector.XPath.Expr.Path{
+                  steps: [
+                    %Meeseeks.Selector.XPath.Expr.Step{
+                      combinator: %Meeseeks.Selector.XPath.Combinator.Attributes{
+                        selector: nil
+                      },
+                      predicates: [
+                        %Meeseeks.Selector.XPath.Expr.AttributeNameTest{
+                          name: "*",
+                          namespace: nil
+                        }
+                      ]
+                    }
+                  ],
+                  type: :rel
+                }
+              }
+            }
+          ],
+          selectors: [%Meeseeks.Selector.Element.Tag{value: "*"}]
         }
       },
+      filters: nil,
       selectors: []
     }
 
@@ -380,6 +403,16 @@ defmodule Meeseeks.Selector.XPathTest do
 
     assert_raise Error,
                  ~r/XPath filter expressions are not supported outside of predicates/,
+                 fn ->
+                   XPath.compile_selectors(xpath)
+                 end
+  end
+
+  test "no attribute steps outside of predicates" do
+    xpath = "//@class"
+
+    assert_raise Error,
+                 ~r/XPath attribute steps are not supported outside of predicates/,
                  fn ->
                    XPath.compile_selectors(xpath)
                  end

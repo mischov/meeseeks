@@ -18,7 +18,9 @@ defmodule Meeseeks.Selector.XPath.Transpiler do
     List.flatten([to_selectors(e1), to_selectors(e2)])
   end
 
-  def to_selectors(%XPath.Expr.Path{type: :abs, steps: steps}) do
+  def to_selectors(%XPath.Expr.Path{type: :abs, steps: steps} = expr) do
+    validate_steps!(steps, expr)
+
     case combine_steps(Enum.reverse(steps)) do
       %Combinator.Self{selector: %{combinator: c, selectors: s, filters: f}} ->
         %Selector.Root{combinator: c, selectors: s, filters: f}
@@ -37,7 +39,9 @@ defmodule Meeseeks.Selector.XPath.Transpiler do
     end
   end
 
-  def to_selectors(%XPath.Expr.Path{type: :rel, steps: steps}) do
+  def to_selectors(%XPath.Expr.Path{type: :rel, steps: steps} = expr) do
+    validate_steps!(steps, expr)
+
     case combine_steps(Enum.reverse(steps)) do
       %Combinator.Self{selector: selector} -> selector
       %Combinator.Children{} = c -> %Selector.Element{combinator: c}
@@ -45,6 +49,28 @@ defmodule Meeseeks.Selector.XPath.Transpiler do
       c -> %Selector.Node{combinator: c}
     end
   end
+
+  # validate_steps!
+
+  defp validate_steps!(steps, expr) do
+    cond do
+      Enum.any?(steps, &step_combinator_is_attributes?/1) ->
+        raise Error.new(:xpath_selector, :invalid, %{
+                description: "XPath attribute steps are not supported outside of predicates",
+                expression: expr
+              })
+
+      true ->
+        :ok
+    end
+  end
+
+  defp step_combinator_is_attributes?(step) do
+    attributes_combinator?(step.combinator)
+  end
+
+  defp attributes_combinator?(%XPath.Combinator.Attributes{}), do: true
+  defp attributes_combinator?(_), do: false
 
   # combine_steps
 
