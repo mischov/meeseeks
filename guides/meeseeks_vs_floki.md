@@ -9,7 +9,7 @@ Meeseeks was created to provide a correct-by-default solution for parsing HTML s
 - When needing to parse HTML which may not be wellformed (anything scraped), Meeseeks should be preferred to Floki with its default, `:mochiweb_html`-based parser (Meeseeks has no advantage in correctness over Floki with a `html5ever` or other HTML5 compliant parser)
 - When needing to parse XML, Meeseeks should be preferred to Floki which doesn't include an XML parser
 - When needing to select with XPath selectors, Meeseeks should be preferred to Floki which doesn't provide XPath selectors
-- When needing to select with a custom selector, Meeseeks should be preffered to Floki which doesn't allow custom selectors
+- When needing to select with a custom selector, Meeseeks should be preferred to Floki which doesn't allow custom selectors
 
 ### When should I used Floki instead of Meeseeks?
 
