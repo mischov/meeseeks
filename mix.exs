@@ -33,12 +33,8 @@ defmodule Meeseeks.Mixfile do
       {:dialyxir, "~> 0.5", only: :dev, runtime: false},
 
       # docs
-      {:ex_doc, ex_doc_version(), only: :docs, runtime: false}
+      {:ex_doc, "~> 0.21.0", only: :docs, runtime: false}
     ]
-  end
-
-  defp ex_doc_version do
-    if System.version() >= "1.7", do: "~> 0.21.0", else: "~> 0.18.0"
   end
 
   defp description do
