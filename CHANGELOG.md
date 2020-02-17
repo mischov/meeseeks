@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased
+
+No changes from v0.15.0.
+
+## v0.15.0 (2020-02-16)
+
+### Compatibility
+
+  * Support Elixir 1.10
+
+### Enhancements
+
+  * [Parse] Prevent tuple tree parser from accepting invalid input
+  * [Select] Prohibit XPath attributes steps outside of predicates
+
 ## v0.14.0 (2019-09-30)
 
 ### Breaking
