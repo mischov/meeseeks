@@ -2,7 +2,13 @@
 
 ## Unreleased
 
-No changes from v0.15.0.
+No changes from v0.15.1.
+
+## v0.15.1 (2020-05-27)
+
+### Fixes
+
+  * [Select] Support unicode characters in XPath selectors
 
 ## v0.15.0 (2020-02-16)
 
