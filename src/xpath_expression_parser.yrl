@@ -430,7 +430,7 @@ predicate_expr(E) ->
 %% literal_expr
 literal_expr(X) ->
         #{'__struct__' => 'Elixir.Meeseeks.Selector.XPath.Expr.Literal',
-          value => list_to_binary(value(X))}.
+          value => unicode:characters_to_binary(value(X))}.
 
 %% number_expr
 number_expr(X) ->
@@ -473,19 +473,19 @@ negative_expr(E) ->
 name_test({'wildcard', _Line, _Wildcard}) ->
         #{'__struct__' => 'Elixir.Meeseeks.Selector.XPath.Expr.NameTest',
           namespace => nil,
-          tag => list_to_binary("*")};
+          tag => unicode:characters_to_binary("*")};
 name_test({'prefix_test', _Line, Ns}) ->
         #{'__struct__' => 'Elixir.Meeseeks.Selector.XPath.Expr.NameTest',
-          namespace => list_to_binary(Ns),
+          namespace => unicode:characters_to_binary(Ns),
           tag => nil};
 name_test({'name', _Line, {_All, [], N}}) ->
         #{'__struct__' => 'Elixir.Meeseeks.Selector.XPath.Expr.NameTest',
           namespace => nil,
-          tag => list_to_binary(N)};
+          tag => unicode:characters_to_binary(N)};
 name_test({'name', _Line, {_All, Ns, N}}) ->
         #{'__struct__' => 'Elixir.Meeseeks.Selector.XPath.Expr.NameTest',
-          namespace => list_to_binary(Ns),
-          tag => list_to_binary(N)};
+          namespace => unicode:characters_to_binary(Ns),
+          tag => unicode:characters_to_binary(N)};
 name_test(Else) ->
         Else.
 
@@ -493,34 +493,34 @@ name_test(Else) ->
 attribute_name_test({'wildcard', _Line, _Wildcard}) ->
         #{'__struct__' => 'Elixir.Meeseeks.Selector.XPath.Expr.AttributeNameTest',
           namespace => nil,
-          name => list_to_binary("*")};
+          name => unicode:characters_to_binary("*")};
 attribute_name_test({'prefix_test', _Line, Ns}) ->
         #{'__struct__' => 'Elixir.Meeseeks.Selector.XPath.Expr.AttributeNameTest',
-          namespace => list_to_binary(Ns),
+          namespace => unicode:characters_to_binary(Ns),
           name => nil};
 attribute_name_test({'name', _Line, {_All, [], N}}) ->
         #{'__struct__' => 'Elixir.Meeseeks.Selector.XPath.Expr.AttributeNameTest',
           namespace => nil,
-          name => list_to_binary(N)};
+          name => unicode:characters_to_binary(N)};
 attribute_name_test({'name', _Line, {_All, Ns, N}}) ->
         #{'__struct__' => 'Elixir.Meeseeks.Selector.XPath.Expr.AttributeNameTest',
-          namespace => list_to_binary(Ns),
-          name => list_to_binary(N)}.
+          namespace => unicode:characters_to_binary(Ns),
+          name => unicode:characters_to_binary(N)}.
 
 %% namespace_name_test
 namespace_name_test({'wildcard', _Line, _Wildcard}) ->
         #{'__struct__' => 'Elixir.Meeseeks.Selector.XPath.Expr.NamespaceNameTest',
           namespace => nil,
-          name => list_to_binary("*")};
+          name => unicode:characters_to_binary("*")};
 namespace_name_test({'prefix_test', _Line, Ns}) ->
         #{'__struct__' => 'Elixir.Meeseeks.Selector.XPath.Expr.NamespaceNameTest',
-          namespace => list_to_binary(Ns),
+          namespace => unicode:characters_to_binary(Ns),
           name => nil};
 namespace_name_test({'name', _Line, {_All, [], N}}) ->
         #{'__struct__' => 'Elixir.Meeseeks.Selector.XPath.Expr.NamespaceNameTest',
           namespace => nil,
-          name => list_to_binary(N)};
+          name => unicode:characters_to_binary(N)};
 namespace_name_test({'name', _Line, {_All, Ns, N}}) ->
         #{'__struct__' => 'Elixir.Meeseeks.Selector.XPath.Expr.NamespaceNameTest',
-          namespace => list_to_binary(Ns),
-          name => list_to_binary(N)}.
+          namespace => unicode:characters_to_binary(Ns),
+          name => unicode:characters_to_binary(N)}.

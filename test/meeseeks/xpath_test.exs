@@ -25,6 +25,17 @@ defmodule Meeseeks.XPath_Test do
             </html>
             """)
 
+  @unicode_document Meeseeks.Parser.parse("""
+                    <html>
+                      <head></head>
+                      <body>
+                        <div id="main">
+                          <p>胡麻油大好き</p>
+                        </div>
+                      </body>
+                    </html>
+                    """)
+
   test "absolute path single segment" do
     selector = xpath("/comment()")
     expected = [%Result{id: 1, document: @document}]
@@ -401,6 +412,12 @@ defmodule Meeseeks.XPath_Test do
     assert_raise Error, ~r/Type: :xpath_expression\n\n  Reason: :unknown_function/, fn ->
       Meeseeks.all(@document, selector)
     end
+  end
+
+  test "selects unicode text equal to '胡麻油大好き'" do
+    selector = xpath("p[text() = '胡麻油大好き']")
+    expected = [%Result{id: 8, document: @unicode_document}]
+    assert Meeseeks.all(@unicode_document, selector) == expected
   end
 
   # macro input tests
