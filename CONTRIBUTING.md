@@ -11,7 +11,7 @@ If you want to add new or change existing behavior, please submit an issue expla
 In order to submit a pull request:
 
 1. Fork the project
-2. Create a topic branch off of `master`, following [branch naming](#branch-naming) conventions
+2. Create a topic branch off of `main`, following [branch naming](#branch-naming) conventions
 3. Push the topic branch to your fork
 4. Open pull request, following [PR formatting](#pr-formatting) conventions
 
