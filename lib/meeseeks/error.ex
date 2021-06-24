@@ -26,13 +26,7 @@ defmodule Meeseeks.Error do
     - `metadata` is a map containing any additional information useful for
   debugging the error, such as `%{input: "..."}`.
 
-  #{
-    Enum.reduce(@errors, "\n\n### Meeseeks Errors:\n", fn {type, reasons}, acc ->
-      Enum.reduce(reasons, acc, fn reason, acc ->
-        acc <> "\n  - `%Meeseeks.Error{type: #{inspect(type)}, reason: #{inspect(reason)}}`"
-      end)
-    end)
-  }
+  #{Enum.reduce(@errors, "\n\n### Meeseeks Errors:\n", fn {type, reasons}, acc -> Enum.reduce(reasons, acc, fn reason, acc -> acc <> "\n  - `%Meeseeks.Error{type: #{inspect(type)}, reason: #{inspect(reason)}}`" end) end)}
   """
 
   @enforce_keys [:type, :reason]
