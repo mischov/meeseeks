@@ -33,7 +33,7 @@ defmodule Meeseeks.Mixfile do
       {:dialyxir, "~> 0.5", only: :dev, runtime: false},
 
       # docs
-      {:ex_doc, "~> 0.21.0", only: :docs, runtime: false}
+      {:ex_doc, "~> 0.24.0", only: :docs, runtime: false}
     ]
   end
 
