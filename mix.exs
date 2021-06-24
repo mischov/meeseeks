@@ -1,13 +1,13 @@
 defmodule Meeseeks.Mixfile do
   use Mix.Project
 
-  @version "0.15.1"
+  @version "0.16.0"
 
   def project do
     [
       app: :meeseeks,
       version: @version,
-      elixir: "~> 1.6",
+      elixir: "~> 1.7",
       deps: deps(),
 
       # Hex
@@ -22,7 +22,7 @@ defmodule Meeseeks.Mixfile do
   end
 
   def application do
-    [applications: [:logger, :meeseeks_html5ever, :rustler, :xmerl]]
+    [extra_applications: [:logger, :xmerl]]
   end
 
   defp deps do

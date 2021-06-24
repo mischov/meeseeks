@@ -1,8 +1,8 @@
 # Changelog
 
-## Unreleased
+## v0.16.0 (2021-06-24)
 
-### Compatability
+### Compatibility
 
   * No longer support Elixir 1.6 or Erlang/OTP 20
   * Support Elixir 1.12 and Erlang/OTP 24
