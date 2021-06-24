@@ -5,7 +5,8 @@
 ### Compatability
 
   * No longer support Elixir 1.6 or Erlang/OTP 20
-  * Support Elixir 1.11 and Erlang/OTP 23
+  * Support Elixir 1.12 and Erlang/OTP 24
+  * Use `meeseeks_html5ever v0.13.0`, which supports Erlang/OTP 24
 
 ## v0.15.1 (2020-05-27)
 
