@@ -12,16 +12,10 @@ if Code.ensure_loaded?(ExDoc.Markdown.Earmark) do
 
     @behaviour ExDoc.Markdown
 
-    defdelegate assets(arg), to: Earmark
-    defdelegate before_closing_head_tag(arg), to: Earmark
-    defdelegate before_closing_body_tag(arg), to: Earmark
-    defdelegate configure(arg), to: Earmark
-    defdelegate available?(), to: Earmark
-
-    def to_html(text, opts) do
+    def to_ast(text, opts) do
       text
       |> rewrite_urls()
-      |> Earmark.to_html(opts)
+      |> Earmark.to_ast(opts)
     end
 
     @markdown_link_regex ~r/(\[[\S ]*\]\()([\S]*?)(\.md)([\S]*?\))/
