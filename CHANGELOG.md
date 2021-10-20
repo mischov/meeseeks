@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Compatibility
+
+  * Use `meeseeks_html5ever v0.13.1`, which supports compilation on Apple M1
+
 ## v0.16.0 (2021-06-24)
 
 ### Compatibility
