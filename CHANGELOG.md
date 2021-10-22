@@ -1,5 +1,10 @@
 # Changelog
 
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
 ## Unreleased
 
 ## v0.16.1 (2021-10-20)
@@ -61,9 +66,9 @@
 
 ## v0.13.0 (2019-09-08)
 
-### Compatability
+### Compatibility
 
-  * No longer support Elixir 1.4, Elixir 1.5, or Erlang/OTP 19 (minumum tested compatiblity is now Elixir 1.6 and Erlang/OTP 20)
+  * No longer support Elixir 1.4, Elixir 1.5, or Erlang/OTP 19 (minimum tested compatibility is now Elixir 1.6 and Erlang/OTP 20)
   * Support Elixir 1.9 and Erlang/OTP 22
 
 ### Fixes

@@ -1,8 +1,12 @@
 # Meeseeks
 
-[![Hex Version](https://img.shields.io/hexpm/v/meeseeks.svg?style=flat&color=%23714a94)](https://hex.pm/packages/meeseeks)
-[![Hex Docs](https://img.shields.io/badge/hex-docs-%23714a94.svg?style=flat")](https://hexdocs.pm/meeseeks)
-![tests](https://github.com/mischov/meeseeks/workflows/tests/badge.svg)
+[![tests](https://github.com/mischov/meeseeks/actions/workflows/tests.yml/badge.svg)](https://github.com/mischov/meeseeks/actions/workflows/tests.yml)
+[![Module Version](https://img.shields.io/hexpm/v/meeseeks.svg?style=flat&color=%23714a94)](https://hex.pm/packages/meeseeks)
+[![Hex Docs](https://img.shields.io/badge/hex-docs-%23714a94.svg)](https://hexdocs.pm/meeseeks/)
+[![Total Download](https://img.shields.io/hexpm/dt/meeseeks.svg?style=flat&color=%23714a94)](https://hex.pm/packages/meeseeks)
+[![License](https://img.shields.io/hexpm/l/meeseeks.svg?style=flat&color=%23714a94)](https://github.com/mischov/meeseeks/blob/master/LICENSE.md)
+[![Last Updated](https://img.shields.io/github/last-commit/mischov/meeseeks.svg?style=flat&color=%23714a94)](https://github.com/mischov/meeseeks/commits/master)
+
 
 Meeseeks is an Elixir library for parsing and extracting data from HTML and XML with CSS or XPath selectors.
 
@@ -124,11 +128,11 @@ Meeseeks.html(document)
 
 If you are interested in contributing please read the [contribution guidelines](CONTRIBUTING.md).
 
-## License
+## Copyright and License
 
 The MIT License (MIT)
 
-Copyright (c) 2016-2020 Mischov (https://github.com/mischov)
+Copyright (c) 2016 Mischov (https://github.com/mischov)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
