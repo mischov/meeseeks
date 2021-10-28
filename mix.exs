@@ -1,6 +1,11 @@
 defmodule Meeseeks.Mixfile do
   use Mix.Project
 
+  @description """
+  Meeseeks is a library for parsing and extracting data from HTML and XML
+  with CSS or XPath selectors.
+  """
+
   @source_url "https://github.com/mischov/meeseeks"
   @version "0.16.1"
 
@@ -12,6 +17,7 @@ defmodule Meeseeks.Mixfile do
       deps: deps(),
 
       # Hex
+      description: @description,
       package: package(),
 
       # HexDocs
@@ -38,8 +44,6 @@ defmodule Meeseeks.Mixfile do
 
   defp package do
     [
-      description: "Meeseeks is a library for parsing and extracting data " <>
-        "from HTML and XML with CSS or XPath selectors.",
       maintainers: ["Mischov"],
       licenses: ["MIT"],
       files: [
@@ -48,8 +52,8 @@ defmodule Meeseeks.Mixfile do
         "src/*.yrl",
         "mix.exs",
         "README.md",
-        "LICENSE.md",
-        "LICENSE-APACHE.md"
+        "LICENSE",
+        "LICENSE-APACHE"
       ],
       links: %{"GitHub" => @source_url}
     ]
@@ -63,9 +67,9 @@ defmodule Meeseeks.Mixfile do
       formatters: ["html"],
       main: "readme",
       extras: [
+        "README.md": [],
         "CHANGELOG.md": [],
         "CONTRIBUTING.md": [],
-        "README.md": [],
         "guides/meeseeks_vs_floki.md": [],
         "guides/css_selectors.md": [],
         "guides/xpath_selectors.md": [],
