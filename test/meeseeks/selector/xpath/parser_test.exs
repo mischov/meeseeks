@@ -577,7 +577,7 @@ defmodule Meeseeks.Selector.XPath.ParserTest do
   # boolean
 
   test "boolean" do
-    tokens = Tokenizer.tokenize("*[postition() = last() and @class = 'odd']")
+    tokens = Tokenizer.tokenize("*[position() = last() and @class = 'odd']")
 
     expression = %Expr.Path{
       steps: [
@@ -588,7 +588,7 @@ defmodule Meeseeks.Selector.XPath.ParserTest do
             %Expr.Predicate{
               e: %Expr.Boolean{
                 e1: %Expr.Comparative{
-                  e1: %Expr.Function{args: [], f: :postition},
+                  e1: %Expr.Function{args: [], f: :position},
                   e2: %Expr.Function{args: [], f: :last},
                   op: :=
                 },
@@ -620,7 +620,7 @@ defmodule Meeseeks.Selector.XPath.ParserTest do
   # comparative
 
   test "comparative" do
-    tokens = Tokenizer.tokenize("*[postition() <= 3]")
+    tokens = Tokenizer.tokenize("*[position() <= 3]")
 
     expression = %Expr.Path{
       steps: [
@@ -630,7 +630,7 @@ defmodule Meeseeks.Selector.XPath.ParserTest do
             %Expr.NameTest{namespace: nil, tag: "*"},
             %Expr.Predicate{
               e: %Expr.Comparative{
-                e1: %Expr.Function{args: [], f: :postition},
+                e1: %Expr.Function{args: [], f: :position},
                 e2: %Expr.Number{value: 3},
                 op: :<=
               }

@@ -8,7 +8,7 @@ defmodule Meeseeks.Document do
 
   ## Examples
 
-  The actual contents of a document become quickly unwieldly in iex, so
+  The actual contents of a document become quickly unwieldy in iex, so
   the inspect value of a document is always `#Meeseeks.Document<{...}>`
   regardless of the content. The example below ignores this fact for
   educational purposes.

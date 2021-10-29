@@ -2,7 +2,9 @@
 
 [![Hex Version](https://img.shields.io/hexpm/v/meeseeks.svg?style=flat&color=%23714a94)](https://hex.pm/packages/meeseeks)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-%23714a94.svg?style=flat")](https://hexdocs.pm/meeseeks)
-![tests](https://github.com/mischov/meeseeks/workflows/tests/badge.svg)
+[![License](https://img.shields.io/hexpm/l/meeseeks.svg?style=flat&color=%23714a94)](https://github.com/mischov/meeseeks/blob/main/LICENSE)
+[![Total Download](https://img.shields.io/hexpm/dt/meeseeks.svg?style=flat&color=%23714a94)](https://hex.pm/packages/meeseeks)
+[![tests](https://github.com/mischov/meeseeks/workflows/tests/badge.svg)](https://github.com/mischov/meeseeks/actions/workflows/tests.yml)
 
 Meeseeks is an Elixir library for parsing and extracting data from HTML and XML with CSS or XPath selectors.
 
@@ -126,24 +128,4 @@ If you are interested in contributing please read the [contribution guidelines](
 
 ## License
 
-The MIT License (MIT)
-
-Copyright (c) 2016-2020 Mischov (https://github.com/mischov)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+Meeseeks is licensed under the [MIT license](https://opensource.org/licenses/mit-license.php).
