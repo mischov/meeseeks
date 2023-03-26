@@ -32,30 +32,13 @@ defmodule Meeseeks.Mixfile do
 
   defp deps do
     [
-      {:meeseeks_html5ever, "~> 0.13.1"},
+      {:meeseeks_html5ever, "~> 0.14.3"},
 
-      # dev
+      # Dev
       {:dialyxir, "~> 0.5", only: :dev, runtime: false},
 
-      # docs
+      # Docs
       {:ex_doc, "~> 0.24.0", only: :docs, runtime: false}
-    ]
-  end
-
-  defp package do
-    [
-      maintainers: ["Mischov"],
-      licenses: ["MIT"],
-      files: [
-        "lib",
-        "src/*.xrl",
-        "src/*.yrl",
-        "mix.exs",
-        "README.md",
-        "LICENSE",
-        "LICENSE-APACHE"
-      ],
-      links: %{"GitHub" => @source_url}
     ]
   end
 
@@ -79,6 +62,23 @@ defmodule Meeseeks.Mixfile do
       groups_for_extras: [
         Guides: Path.wildcard("guides/*.md")
       ]
+    ]
+  end
+
+  defp package do
+    [
+      maintainers: ["Mischov"],
+      licenses: ["MIT"],
+      files: [
+        "lib",
+        "src/*.xrl",
+        "src/*.yrl",
+        "mix.exs",
+        "README.md",
+        "LICENSE",
+        "LICENSE-APACHE"
+      ],
+      links: %{"GitHub" => @source_url}
     ]
   end
 end

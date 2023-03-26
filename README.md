@@ -35,15 +35,13 @@ end
 
 ## Compatibility
 
-Meeseeks requires a minimum combination of Elixir 1.7.0 and Erlang/OTP 21, and has been tested with a maximum combination of Elixir 1.12.0 and Erlang/OTP 24.0.
+Meeseeks requires a minimum combination of Elixir 1.12.0 and Erlang/OTP 23.0, and is tested with a maximum combination of Elixir 1.14.0 and Erlang/OTP 25.0.
 
 ## Installation
 
-Meeseeks depends on [html5ever](https://github.com/servo/html5ever) via [meeseeks_html5ever](https://github.com/mischov/meeseeks_html5ever).
+Meeseeks depends on the Rust library [`html5ever`](https://github.com/servo/html5ever) via [`meeseeks_html5ever`](https://github.com/mischov/meeseeks_html5ever), but because `meeseeks_html5ever` provides pre-compiled NIFs via [`rustler_precompiled`](https://github.com/philss/rustler_precompiled) **you do not need to have Rust installed** to use Meeseeks.
 
-Because html5ever is a Rust library, you will need to have the Rust compiler [installed](https://www.rust-lang.org/tools/install) wherever Meeseeks is compiled.
-
-Ensure Rust is installed, then add Meeseeks to your `mix.exs`:
+To install Meeseeks, add it to your `mix.exs`:
 
 ```elixir
 defp deps do
@@ -53,7 +51,11 @@ defp deps do
 end
 ```
 
-Finally, run `mix deps.get`.
+Then run `mix deps.get`.
+
+### Force Compilation
+
+If you need to force compilation of the Rust NIF for some reason, see the instructions [here](https://github.com/mischov/meeseeks_html5ever#dependencies).
 
 ## Getting Started
 
