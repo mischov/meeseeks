@@ -4,7 +4,7 @@
 [![Hex Docs](https://img.shields.io/badge/hex-docs-%23714a94.svg?style=flat")](https://hexdocs.pm/meeseeks)
 [![License](https://img.shields.io/hexpm/l/meeseeks.svg?style=flat&color=%23714a94)](https://github.com/mischov/meeseeks/blob/main/LICENSE)
 [![Total Download](https://img.shields.io/hexpm/dt/meeseeks.svg?style=flat&color=%23714a94)](https://hex.pm/packages/meeseeks)
-[![tests](https://github.com/mischov/meeseeks/workflows/tests/badge.svg)](https://github.com/mischov/meeseeks/actions/workflows/tests.yml)
+[![CI](https://github.com/mischov/meeseeks/actions/workflows/ci.yml/badge.svg)](https://github.com/mischov/meeseeks/actions/workflows/ci.yml)
 
 Meeseeks is an Elixir library for parsing and extracting data from HTML and XML with CSS or XPath selectors.
 
