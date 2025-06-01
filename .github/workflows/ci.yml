@@ -16,8 +16,8 @@ jobs:
       - name: Set up Elixir
         uses: erlef/setup-beam@v1
         with:
-          otp-version: 25.0
-          elixir-version: 1.14
+          otp-version: 27.0
+          elixir-version: 1.18
 
       - name: Check Elixir formatting
         run: mix format --check-formatted
@@ -32,17 +32,14 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - elixir: 1.12
-            otp: 23
-          - elixir: 1.13
-            otp: 24
-          - elixir: 1.14
-            otp: 25
+          - elixir: 1.16
+            otp: 26
+          - elixir: 1.17
+            otp: 27
+          - elixir: 1.18
+            otp: 27
 
-    # TODO change this to ubuntu-latest after OTP 23 is deprecated, see
-    # https://github.com/erlef/setup-beam#compatibility-between-operating-system-and-erlangotp
-    # for compatibility
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
