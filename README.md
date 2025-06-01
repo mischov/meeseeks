@@ -35,7 +35,7 @@ end
 
 ## Compatibility
 
-Meeseeks requires a minimum combination of Elixir 1.12.0 and Erlang/OTP 23.0, and is tested with a maximum combination of Elixir 1.14.0 and Erlang/OTP 25.0.
+Meeseeks is tested with a a minimum combination of Elixir 1.16.0 and Erlang/OTP 26.0 and a maximum combination of Elixir 1.18.0 and Erlang/OTP 27.0.
 
 ## Installation
 

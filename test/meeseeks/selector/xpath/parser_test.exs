@@ -311,7 +311,7 @@ defmodule Meeseeks.Selector.XPath.ParserTest do
       steps: [
         %Expr.Step{
           combinator: %Combinator.Self{selector: nil},
-          predicates: [%Expr.ProcessingInstruction{target: 'xml-spreadsheet'}]
+          predicates: [%Expr.ProcessingInstruction{target: ~c"xml-spreadsheet"}]
         }
       ],
       type: :abs

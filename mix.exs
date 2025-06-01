@@ -14,6 +14,7 @@ defmodule Meeseeks.Mixfile do
       app: :meeseeks,
       version: @version,
       elixir: "~> 1.7",
+      compilers: compilers(),
       deps: deps(),
 
       # Hex
@@ -30,9 +31,13 @@ defmodule Meeseeks.Mixfile do
     [extra_applications: [:logger, :xmerl]]
   end
 
+  defp compilers do
+    [:leex, :yecc] ++ Mix.compilers()
+  end
+
   defp deps do
     [
-      {:meeseeks_html5ever, "~> 0.14.3"},
+      {:meeseeks_html5ever, "~> 0.15.0"},
 
       # Dev
       {:dialyxir, "~> 0.5", only: :dev, runtime: false},

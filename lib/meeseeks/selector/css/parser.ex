@@ -31,18 +31,18 @@ defmodule Meeseeks.Selector.CSS.Parser do
     {element, []}
   end
 
-  defp parse_element([',' | toks], element) do
+  defp parse_element([~c"," | toks], element) do
     element = %{element | selectors: Enum.reverse(element.selectors)}
     {element, toks}
   end
 
-  defp parse_element([{:ident, namespace}, '|' | toks], element) do
+  defp parse_element([{:ident, namespace}, ~c"|" | toks], element) do
     selector = %Namespace{value: List.to_string(namespace)}
     element = %{element | selectors: [selector | element.selectors]}
     parse_element(toks, element)
   end
 
-  defp parse_element(['*', '|' | toks], element) do
+  defp parse_element([~c"*", ~c"|" | toks], element) do
     selector = %Namespace{value: "*"}
     element = %{element | selectors: [selector | element.selectors]}
     parse_element(toks, element)
@@ -54,7 +54,7 @@ defmodule Meeseeks.Selector.CSS.Parser do
     parse_element(toks, element)
   end
 
-  defp parse_element(['*' | toks], element) do
+  defp parse_element([~c"*" | toks], element) do
     selector = %Tag{value: "*"}
     element = %{element | selectors: [selector | element.selectors]}
     parse_element(toks, element)
@@ -72,45 +72,45 @@ defmodule Meeseeks.Selector.CSS.Parser do
     parse_element(toks, element)
   end
 
-  defp parse_element(['[' | toks], element) do
+  defp parse_element([~c"[" | toks], element) do
     {selector, toks} = parse_attribute(toks)
     element = %{element | selectors: [selector | element.selectors]}
     parse_element(toks, element)
   end
 
-  defp parse_element([':' | toks], element) do
+  defp parse_element([~c":" | toks], element) do
     {selector, toks} = parse_pseudo_class(toks)
     element = %{element | selectors: [selector | element.selectors]}
     Selector.validate!(selector)
     parse_element(toks, element)
   end
 
-  defp parse_element(['>' | toks], element) do
+  defp parse_element([~c">" | toks], element) do
     {combinator_selector, toks} = parse_element(toks)
     combinator = %Combinator.ChildElements{selector: combinator_selector}
     element = %{element | combinator: combinator}
-    parse_element([',' | toks], element)
+    parse_element([~c"," | toks], element)
   end
 
   defp parse_element([:space | toks], element) do
     {combinator_selector, toks} = parse_element(toks)
     combinator = %Combinator.DescendantElements{selector: combinator_selector}
     element = %{element | combinator: combinator}
-    parse_element([',' | toks], element)
+    parse_element([~c"," | toks], element)
   end
 
-  defp parse_element(['+' | toks], element) do
+  defp parse_element([~c"+" | toks], element) do
     {combinator_selector, toks} = parse_element(toks)
     combinator = %Combinator.NextSiblingElement{selector: combinator_selector}
     element = %{element | combinator: combinator}
-    parse_element([',' | toks], element)
+    parse_element([~c"," | toks], element)
   end
 
-  defp parse_element(['~' | toks], element) do
+  defp parse_element([~c"~" | toks], element) do
     {combinator_selector, toks} = parse_element(toks)
     combinator = %Combinator.NextSiblingElements{selector: combinator_selector}
     element = %{element | combinator: combinator}
-    parse_element([',' | toks], element)
+    parse_element([~c"," | toks], element)
   end
 
   defp parse_element(toks, element) do
@@ -132,24 +132,24 @@ defmodule Meeseeks.Selector.CSS.Parser do
     :value_suffix
   ]
 
-  defp parse_attribute(['^', {:ident, attr}, ']' | toks]) do
+  defp parse_attribute([~c"^", {:ident, attr}, ~c"]" | toks]) do
     selector = %Attribute.AttributePrefix{attribute: List.to_string(attr)}
     {selector, toks}
   end
 
-  defp parse_attribute([{:ident, attr}, type, {:ident, val}, ']' | toks])
+  defp parse_attribute([{:ident, attr}, type, {:ident, val}, ~c"]" | toks])
        when type in @attribute_value_selector_types do
     selector = attribute_value_selector(type, List.to_string(attr), List.to_string(val))
     {selector, toks}
   end
 
-  defp parse_attribute([{:ident, attr}, type, {:string, val}, ']' | toks])
+  defp parse_attribute([{:ident, attr}, type, {:string, val}, ~c"]" | toks])
        when type in @attribute_value_selector_types do
     selector = attribute_value_selector(type, List.to_string(attr), List.to_string(val))
     {selector, toks}
   end
 
-  defp parse_attribute([{:ident, attr}, ']' | toks]) do
+  defp parse_attribute([{:ident, attr}, ~c"]" | toks]) do
     selector = %Attribute.Attribute{attribute: List.to_string(attr)}
     {selector, toks}
   end
@@ -185,7 +185,7 @@ defmodule Meeseeks.Selector.CSS.Parser do
     {selector, toks}
   end
 
-  defp parse_pseudo_class_args('not', toks) do
+  defp parse_pseudo_class_args(~c"not", toks) do
     parse_not_args(toks, 0, [])
   end
 
@@ -193,7 +193,7 @@ defmodule Meeseeks.Selector.CSS.Parser do
     parse_pseudo_class_args(type, toks, [])
   end
 
-  defp parse_pseudo_class_args(_type, [')' | toks], args) do
+  defp parse_pseudo_class_args(_type, [~c")" | toks], args) do
     {Enum.reverse(args), toks}
   end
 
@@ -243,15 +243,15 @@ defmodule Meeseeks.Selector.CSS.Parser do
     |> String.to_integer()
   end
 
-  defp parse_not_args([')' | toks], 0, acc) do
+  defp parse_not_args([~c")" | toks], 0, acc) do
     tokens = Enum.reverse(acc)
     selectors = parse_elements(tokens)
 
     {[selectors], toks}
   end
 
-  defp parse_not_args([')' | toks], depth, acc) do
-    parse_not_args(toks, depth - 1, [')' | acc])
+  defp parse_not_args([~c")" | toks], depth, acc) do
+    parse_not_args(toks, depth - 1, [~c")" | acc])
   end
 
   defp parse_not_args([{:function, _type} = tok | toks], depth, acc) do
@@ -264,31 +264,31 @@ defmodule Meeseeks.Selector.CSS.Parser do
 
   defp pseudo_class_selector(type, args) do
     case type do
-      'first-child' ->
+      ~c"first-child" ->
         %PseudoClass.FirstChild{args: args}
 
-      'first-of-type' ->
+      ~c"first-of-type" ->
         %PseudoClass.FirstOfType{args: args}
 
-      'last-child' ->
+      ~c"last-child" ->
         %PseudoClass.LastChild{args: args}
 
-      'last-of-type' ->
+      ~c"last-of-type" ->
         %PseudoClass.LastOfType{args: args}
 
-      'not' ->
+      ~c"not" ->
         %PseudoClass.Not{args: args}
 
-      'nth-child' ->
+      ~c"nth-child" ->
         %PseudoClass.NthChild{args: args}
 
-      'nth-last-child' ->
+      ~c"nth-last-child" ->
         %PseudoClass.NthLastChild{args: args}
 
-      'nth-last-of-type' ->
+      ~c"nth-last-of-type" ->
         %PseudoClass.NthLastOfType{args: args}
 
-      'nth-of-type' ->
+      ~c"nth-of-type" ->
         %PseudoClass.NthOfType{args: args}
 
       _ ->
