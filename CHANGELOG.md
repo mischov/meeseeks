@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## v0.18.0 (2025-06-01)
+
+### Compatibility
+
+  * No longer support Elixir versions under 1.16 or Erlang/OTP versions under 26.0
+  * Support Elixir 1.16, 1.17, and 1.18 as well as Erlang/OTP 26.0 and 27.0
+
 ## v0.17.0 (2023-03-27)
 
 ### Compatibility
