@@ -46,7 +46,7 @@ To install Meeseeks, add it to your `mix.exs`:
 ```elixir
 defp deps do
   [
-    {:meeseeks, "~> 0.17.0"}
+    {:meeseeks, "~> 0.18.0"}
   ]
 end
 ```
